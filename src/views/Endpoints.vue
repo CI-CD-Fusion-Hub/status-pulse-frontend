@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       backendUrl: import.meta.env.VITE_backendUrl,
-      isLoading: false,
+      isLoading: true,
       isBtnLoading: false,
       isModalVissible: false,
       interval: null,
@@ -92,7 +92,6 @@ export default {
       }, 3000);
     },
     async loadData() {
-      this.isLoading = true;
       try {
         const response = await this.axios({
           method: 'get',

@@ -140,7 +140,7 @@ export default {
   width: 100px;
   background-image: url('/logo.png');
   background-size: contain;
-  height: 83px;
+  height: 108px;
   margin: 0 auto 10px auto;
 }
 
