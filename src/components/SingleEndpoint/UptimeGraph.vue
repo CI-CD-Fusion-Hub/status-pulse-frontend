@@ -15,6 +15,7 @@ export default {
       backendUrl: import.meta.env.VITE_backendUrl,
       isBtnLoading: false,
       isModalVissible: false,
+      interval: null,
       modalData: {},
       endpoint: [],
       userStore: useUserStore(),
@@ -22,6 +23,12 @@ export default {
   },
   async created() {
     this.loadData();
+  },
+  mounted() {
+    this.intervalLoadData();
+  },
+  unmounted() {
+    this.clearInterval(this.interval);
   },
   methods: {
     getEndpointTooltip(item) {
@@ -36,6 +43,10 @@ export default {
       else {
         return `No Data`;
       }
+    },
+    showUptimeModal(item) {
+      this.modalData = item;
+      this.isModalVissible = true;
     },
     async loadData() {
       this.isLoading = true;
@@ -53,9 +64,10 @@ export default {
 
       this.isLoading = false;
     },
-    showUptimeModal(item) {
-      this.modalData = item;
-      this.isModalVissible = true;
+    async intervalLoadData() {
+      this.interval = setInterval(() => {
+        this.loadData();
+      }, 3000);
     },
   },
 };

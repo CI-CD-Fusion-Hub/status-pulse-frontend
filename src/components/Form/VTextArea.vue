@@ -30,26 +30,27 @@ export default {
       default: 'Left',
     },
   },
+  emits: ['update:data'],
   data() {
     return {
       textAreaData: this.data,
     };
   },
-  emits: ['update:data'],
   methods: {
-    getData(value){
-      console.log(value)
+    getData(value) {
+      console.log(value);
       try {
         const parsedJSON = JSON.parse(this.data);
         const beautifiedJSON = JSON.stringify(parsedJSON, null, 2);
-        this.textAreaData = beautifiedJSON
-      } catch (error) {
-        this.textAreaData = "Invalid JSON";
+        this.textAreaData = beautifiedJSON;
+      }
+      catch (error) {
+        this.textAreaData = 'Invalid JSON';
       }
 
-      this.$emit('update:data', this.textAreaData)
-    }
-  }
+      this.$emit('update:data', this.textAreaData);
+    },
+  },
 };
 </script>
 
@@ -63,7 +64,7 @@ export default {
       :id="name"
       :name="name"
       placeholder=" "
-      @input="this.$emit('update:data', $event.target.value)"
+      @input="$emit('update:data', $event.target.value)"
     />
     <label :for="name">{{ placeholder }}</label>
     <font-awesome-icon

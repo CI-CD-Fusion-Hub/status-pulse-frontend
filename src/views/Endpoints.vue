@@ -34,6 +34,7 @@ export default {
       isLoading: false,
       isBtnLoading: false,
       isModalVissible: false,
+      interval: null,
       userStore: useUserStore(),
       endpoints: [],
       formData: {},
@@ -69,15 +70,26 @@ export default {
   async created() {
     this.loadData();
   },
+  mounted() {
+    this.intervalLoadData();
+  },
+  unmounted() {
+    this.clearInterval(this.interval);
+  },
   methods: {
     clearForm() {
       Object.keys(this.formData).forEach(key => (this.formData[key] = undefined));
     },
     showEditModal(data) {
       this.clearForm();
-      data.response = toString(data.response)
+      data.response = toString(data.response);
       Object.assign(this.formData, data);
       this.isModalVissible = true;
+    },
+    async intervalLoadData() {
+      this.interval = setInterval(() => {
+        this.loadData();
+      }, 3000);
     },
     async loadData() {
       this.isLoading = true;
@@ -110,7 +122,7 @@ export default {
           return;
         }
 
-        this.formData.response = JSON.parse(this.formData.response)
+        this.formData.response = JSON.parse(this.formData.response);
         const response = await this.axios({
           method: 'post',
           url: `${this.backendUrl}/endpoints`,
@@ -142,7 +154,7 @@ export default {
           return;
         }
 
-        this.formData.response = JSON.parse(this.formData.response)
+        this.formData.response = JSON.parse(this.formData.response);
         const response = await this.axios({
           method: 'put',
           url: `${this.backendUrl}/endpoints/${this.formData.id}`,

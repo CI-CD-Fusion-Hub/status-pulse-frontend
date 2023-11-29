@@ -14,6 +14,7 @@ export default {
     return {
       backendUrl: import.meta.env.VITE_backendUrl,
       isBtnLoading: false,
+      interval: null,
       endpoint: [],
       userStore: useUserStore(),
       chartData: {
@@ -63,6 +64,12 @@ export default {
   async created() {
     await this.loadData();
   },
+  mounted() {
+    this.intervalLoadData();
+  },
+  unmounted() {
+    this.clearInterval(this.interval);
+  },
   methods: {
     async loadData() {
       this.isBtnLoading = true;
@@ -81,6 +88,11 @@ export default {
       finally {
         this.isBtnLoading = false;
       }
+    },
+    async intervalLoadData() {
+      this.interval = setInterval(() => {
+        this.loadData();
+      }, 3000);
     },
     prepareChartData() {
       const labels = this.endpoint.map((item) => {

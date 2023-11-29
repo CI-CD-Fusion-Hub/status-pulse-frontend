@@ -18,12 +18,19 @@ export default {
     return {
       backendUrl: import.meta.env.VITE_backendUrl,
       isBtnLoading: false,
+      interval: null,
       endpoint: [],
       userStore: useUserStore(),
     };
   },
   async created() {
     this.loadData();
+  },
+  mounted() {
+    this.intervalLoadData();
+  },
+  unmounted() {
+    this.clearInterval(this.interval);
   },
   methods: {
     async loadData() {
@@ -41,6 +48,11 @@ export default {
       }
 
       this.isLoading = false;
+    },
+    async intervalLoadData() {
+      this.interval = setInterval(() => {
+        this.loadData();
+      }, 3000);
     },
   },
 };
