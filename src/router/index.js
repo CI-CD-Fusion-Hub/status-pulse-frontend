@@ -5,6 +5,7 @@ import SingleEndpoint from '../views/SingleEndpoint.vue';
 
 const routes = [
   { path: '/login', component: Login },
+  { path: '/', redirect: () => { return { path: `/endpoints` }; } },
   {
     path: '/endpoints',
     name: 'Endpoints',

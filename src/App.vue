@@ -13,7 +13,7 @@ export default {
 </script>
 
 <template>
-  <VTopHeader />
+  <VTopHeader v-if="!$route.path.includes('login')" />
   <main>
     <router-view />
   </main>
@@ -25,6 +25,9 @@ export default {
 main {
   position: relative;
   background-color: var(--main-bg-color);
+}
+
+header + main {
   max-width: 1600px;
   margin: 20px auto;
 }
