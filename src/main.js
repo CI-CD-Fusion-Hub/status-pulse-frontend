@@ -13,6 +13,7 @@ import {
   faCircleExclamation,
   faCircleInfo,
   faEye,
+  faFileCode,
   faFilePen,
   faFilter,
   faFlag,
@@ -103,6 +104,7 @@ library.add(faCircleExclamation);
 library.add(faCircleInfo);
 library.add(faChartColumn);
 library.add(faGlobe);
+library.add(faFileCode);
 
 axios.defaults.withCredentials = true;
 

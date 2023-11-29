@@ -2,6 +2,7 @@
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import VTextInput from '../components/Form/VTextInput.vue';
+import VTextArea from '../components/Form/VTextArea.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
 import VButtonSet from '../components/VButtonSet.vue';
 import VButton from '../components/VButton.vue';
@@ -14,6 +15,7 @@ import { useUserStore } from '../stores/user';
 
 export default {
   components: {
+    VTextArea,
     VTextInput,
     VDropdown,
     VButton,
@@ -73,6 +75,7 @@ export default {
     },
     showEditModal(data) {
       this.clearForm();
+      data.response = toString(data.response)
       Object.assign(this.formData, data);
       this.isModalVissible = true;
     },
@@ -107,6 +110,7 @@ export default {
           return;
         }
 
+        this.formData.response = JSON.parse(this.formData.response)
         const response = await this.axios({
           method: 'post',
           url: `${this.backendUrl}/endpoints`,
@@ -138,6 +142,7 @@ export default {
           return;
         }
 
+        this.formData.response = JSON.parse(this.formData.response)
         const response = await this.axios({
           method: 'put',
           url: `${this.backendUrl}/endpoints/${this.formData.id}`,
@@ -223,6 +228,7 @@ export default {
     <VTextInput v-model:data="formData.threshold" name="threshold" placeholder="Threshold in ms" :icon="['fas', 'fa-user-tag']" />
     <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" :icon="['fas', 'fa-user-tag']" />
     <VTextInput v-model:data="formData.status_code" name="status_code" placeholder="Status Code" :icon="['fas', 'fa-user-tag']" />
+    <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" :icon="['fas', 'file-code']" />
     <VButtonSet class="flex-end">
       <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="addData">
         Add
