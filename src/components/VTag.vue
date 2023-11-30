@@ -49,7 +49,7 @@ export default {
 .tag.active,
 .tag.success,
 .tag.completed,
-.tag.ok {
+.tag.healthy {
   background-color: #16ad67;
 }
 .tag.Admin {

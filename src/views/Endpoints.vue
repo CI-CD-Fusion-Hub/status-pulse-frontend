@@ -33,7 +33,8 @@ export default {
       backendUrl: import.meta.env.VITE_backendUrl,
       isLoading: true,
       isBtnLoading: false,
-      isModalVissible: false,
+      isAddModalVissible: false,
+      isEditModalVissible: false,
       interval: null,
       userStore: useUserStore(),
       endpoints: [],
@@ -41,6 +42,12 @@ export default {
       typeIcons: {
         http: ['fas', 'globe'],
       },
+      statusIcons: {
+        measuring: ['fas', 'fa-heart-pulse'],
+        healthy: ['fas', 'fa-heart'],
+        unhealthy: ['fas', 'fa-heart-circle-exclamation'],
+        degraded: ['fas', 'fa-heart-crack'],
+      }
     };
   },
   validations() {
@@ -74,17 +81,20 @@ export default {
     this.intervalLoadData();
   },
   unmounted() {
-    this.clearInterval(this.interval);
+    clearInterval(this.interval);
   },
   methods: {
     clearForm() {
       Object.keys(this.formData).forEach(key => (this.formData[key] = undefined));
     },
     showEditModal(data) {
-      this.clearForm();
       data.response = toString(data.response);
       Object.assign(this.formData, data);
-      this.isModalVissible = true;
+      this.isEditModalVissible = true;
+    },
+    showAddModal() {
+      this.clearForm()
+      this.isAddModalVissible = true;
     },
     async intervalLoadData() {
       this.interval = setInterval(() => {
@@ -121,7 +131,10 @@ export default {
           return;
         }
 
-        this.formData.response = JSON.parse(this.formData.response);
+        if (this.formData.response){
+          this.formData.response = JSON.parse(this.formData.response);
+        }
+
         const response = await this.axios({
           method: 'post',
           url: `${this.backendUrl}/endpoints`,
@@ -136,6 +149,7 @@ export default {
 
       this.isModalVissible = false;
       this.isBtnLoading = false;
+      this.clearForm();
       await this.loadData();
     },
     async updateData() {
@@ -153,7 +167,10 @@ export default {
           return;
         }
 
-        this.formData.response = JSON.parse(this.formData.response);
+        if (this.formData.response){
+          this.formData.response = JSON.parse(this.formData.response);
+        }
+
         const response = await this.axios({
           method: 'put',
           url: `${this.backendUrl}/endpoints/${this.formData.id}`,
@@ -165,10 +182,11 @@ export default {
       catch (error) {
         useNotifyStore().add('error', 'Error loading data!');
       }
-
-      await this.loadData();
+      
       this.isModalVissible = false;
       this.isBtnLoading = false;
+      this.clearForm();
+      await this.loadData();
     },
     async deleteData(id) {
       try {
@@ -205,7 +223,9 @@ export default {
       <VColumn header="Cron" value="cron" />
       <VColumn header="Status" value="status">
         <template #body="{ row }">
-          <VTag :type="row.status" :value="row.status ? row.status : 'initializing'" />
+          <span v-if="!row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons[row.status]"/></span>
+          <span v-else-if="row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons['degraded']"/></span>
+          <span v-else tooltip-text="Measuring" tooltip-position="Top"><font-awesome-icon :icon="statusIcons['measuring']"/></span>
         </template>
       </VColumn>
       <VColumn header="Actions" value="actions">
@@ -224,11 +244,11 @@ export default {
         </template>
       </VColumn>
     </VTable>
-    <VButton :icon="['fas', 'plus']" class="flex-end" @on-click="isModalVissible = true">
+    <VButton :icon="['fas', 'plus']" class="flex-end" @on-click="showAddModal">
       Add New
     </VButton>
   </div>
-  <VModal v-model:isActive="isModalVissible">
+  <VModal v-model:isActive="isAddModalVissible">
     <VDropdown
       v-model:data="formData.type" name="type" placeholder="Endpoint Type" :icon="['fas', 'flag']"
       :options="['http']"
@@ -246,8 +266,46 @@ export default {
       </VButton>
     </VButtonSet>
   </VModal>
+  <VModal v-model:isActive="isEditModalVissible">
+    <VDropdown
+      v-model:data="formData.type" name="type" placeholder="Endpoint Type" :icon="['fas', 'flag']"
+      :options="['http']"
+    />
+    <VTextInput v-model:data="formData.name" name="name" placeholder="Name" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.description" name="description" placeholder="Description" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.url" name="url" placeholder="URL" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.threshold" name="threshold" placeholder="Threshold in ms" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.status_code" name="status_code" placeholder="Status Code" :icon="['fas', 'fa-user-tag']" />
+    <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" :icon="['fas', 'file-code']" />
+    <VButtonSet class="flex-end">
+      <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="updateData">
+        Save
+      </VButton>
+    </VButtonSet>
+  </VModal>
 </template>
 
 <style>
+.fa-heart {
+  color: rgb(32, 194, 32);
+  font-size: 20px;
+}
 
+.fa-heart-pulse {
+  animation: fade 1s infinite;
+  opacity: 1;
+  color: #eeeb30;
+  font-size: 20px;
+}
+
+.fa-heart-crack {
+  color: red;
+  font-size: 20px;
+}
+
+@keyframes fade {
+  0%,100% { opacity: 0 }
+  50% { opacity: 1 }
+}
 </style>

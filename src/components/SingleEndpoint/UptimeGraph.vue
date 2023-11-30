@@ -28,15 +28,13 @@ export default {
     this.intervalLoadData();
   },
   unmounted() {
-    this.clearInterval(this.interval);
+    clearInterval(this.interval);
   },
   methods: {
     getEndpointTooltip(item) {
       if (item.status !== 'nodata') {
-        const date = new Date(item.created_at);
-        const pad = num => num < 10 ? `0${num}` : num;
         return `
-        Date: ${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}\n
+        Date: ${this.unixTimestampToFormattedString(item.hour)}\n
         Status: ${item.status}
         `;
       }
@@ -81,7 +79,7 @@ export default {
       <li v-if="endpoint?.length === 0" class="uptime_loader">
         <font-awesome-icon :icon="['fas', 'spinner']" spin />
       </li>
-      <li v-for="item in endpoint.slice(-90)" v-else :key="item" :class="`uptime_item ${item.status}`" :tooltip-text="getEndpointTooltip(item)" tooltip-position="Top" @click="showUptimeModal(item)" />
+      <li v-for="item in endpoint" v-else :key="item" :class="`uptime_item ${item.status}`" :tooltip-text="getEndpointTooltip(item)" tooltip-position="Top" @click="showUptimeModal(item)" />
     </ul>
   </div>
   <VModal v-model:isActive="isModalVissible">
@@ -146,14 +144,14 @@ export default {
   cursor: pointer;
 }
 
-.uptime_graph li.uptime_item.ok{
+.uptime_graph li.uptime_item.healthy{
   background-color: green;
 }
-.uptime_graph li.uptime_item.error_threshold_exceeded,
-.uptime_graph li.uptime_item.error_invalid_status_code,
-.uptime_graph li.uptime_item.error_parsing_incoming_body,
-.uptime_graph li.uptime_item.error_invalid_body{
+.uptime_graph li.uptime_item.degraded{
   background-color: red;
+}
+.uptime_graph li.uptime_item.unhealthy{
+  background-color: yellow;
 }
 .uptime_graph li.uptime_item.nodata{
   background-color: gray;

@@ -23,6 +23,9 @@ import {
   faGear,
   faGhost,
   faGlobe,
+  faHeartCircleExclamation,
+  faHeartCrack,
+  faHeart,
   faKey,
   faMagnifyingGlass,
   faPause,
@@ -48,6 +51,7 @@ import {
   faUserTag,
   faUsers,
   faXmark,
+  faHeartPulse,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { createPinia } from 'pinia';
@@ -105,6 +109,10 @@ library.add(faCircleInfo);
 library.add(faChartColumn);
 library.add(faGlobe);
 library.add(faFileCode);
+library.add(faHeart);
+library.add(faHeartCrack);
+library.add(faHeartPulse);
+library.add(faHeartCircleExclamation);
 
 axios.defaults.withCredentials = true;
 

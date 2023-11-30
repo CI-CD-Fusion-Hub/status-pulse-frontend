@@ -5,7 +5,7 @@ import VButtonSet from '../../components/VButtonSet.vue';
 import VButton from '../../components/VButton.vue';
 import VTag from '../../components/VTag.vue';
 import { useUserStore } from '../../stores/user';
-import { useNotifyStore } from '../stores/notifications';
+import { useNotifyStore } from '../../stores/notifications';
 
 export default {
   components: {
@@ -22,7 +22,7 @@ export default {
       isBtnLoading: false,
       isModalVissible: false,
       interval: null,
-      endpoint: {},
+      formData: {},
       userStore: useUserStore(),
     };
   },
@@ -57,7 +57,7 @@ export default {
     this.intervalLoadData();
   },
   unmounted() {
-    this.clearInterval(this.interval);
+    clearInterval(this.interval);
   },
   methods: {
     async loadData() {
@@ -68,10 +68,9 @@ export default {
           url: `${this.backendUrl}/endpoints/${this.$route.params.endpoint_id}`,
         });
 
-        this.endpoint = response.data.data;
-      }
-      catch (error) {
-        console.log('Unable to get authentication method.');
+        this.formData = response.data.data;
+      } catch (error) {
+        useNotifyStore().add('error', 'Error loading data!');
       }
 
       this.isLoading = false;
@@ -86,8 +85,8 @@ export default {
     },
     showEditModal() {
       this.clearForm();
-      this.endpoint.response = toString(this.endpoint.response);
-      Object.assign(this.formData, this.endpoint);
+      this.formData.response = toString(this.formData.response);
+      Object.assign(this.formData, this.formData);
       this.isModalVissible = true;
     },
     async updateData() {
@@ -143,39 +142,39 @@ export default {
     <ul>
       <li>
         <h3>Monitor Name</h3>
-        <div>{{ endpoint.name }}</div>
+        <div>{{ formData.name }}</div>
       </li>
       <li>
         <h3>Monitor Type</h3>
-        <div><VTag type="Admin" :value="endpoint.type" /></div>
+        <div><VTag type="Admin" :value="formData.type" /></div>
       </li>
       <li>
         <h3>Monitor Description</h3>
-        <div>{{ endpoint.description }}</div>
+        <div>{{ formData.description }}</div>
       </li>
       <li>
         <h3>Monitor URL</h3>
-        <div>{{ endpoint.url }}</div>
+        <div>{{ formData.url }}</div>
       </li>
       <li>
         <h3>Monitor Threshold</h3>
-        <div>{{ endpoint.threshold }}</div>
+        <div>{{ formData.threshold }}</div>
       </li>
       <li>
         <h3>Monitor Cron</h3>
-        <div>{{ endpoint.cron }}</div>
+        <div>{{ formData.cron }}</div>
       </li>
       <li>
         <h3>Monitor Status Code</h3>
-        <div>{{ endpoint.status_code }}</div>
+        <div>{{ formData.status_code }}</div>
       </li>
       <li>
         <h3>Monitor Current Status</h3>
-        <div><VTag :type="endpoint.status" :value="endpoint.status" /></div>
+        <div><VTag :type="formData.status" :value="formData.status" /></div>
       </li>
     </ul>
   </div>
-  <VModal v-model:isActive="isModalVissible">
+  <!-- <VModal v-model:isActive="isModalVissible">
     <VDropdown
       v-model:data="formData.type" name="type" placeholder="Endpoint Type" :icon="['fas', 'flag']"
       :options="['http']"
@@ -192,7 +191,7 @@ export default {
         Save
       </VButton>
     </VButtonSet>
-  </VModal>
+  </VModal> -->
 </template>
 
 <style>

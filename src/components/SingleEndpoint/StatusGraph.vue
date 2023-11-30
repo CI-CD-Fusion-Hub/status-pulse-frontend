@@ -45,13 +45,13 @@ export default {
       return Number.parseInt(averageResponseTime);
     },
     uptimePercentage() {
-      const upCount = this.endpoint.filter(item => item.status === 'ok').length;
+      const upCount = this.endpoint.filter(item => item.status === 'healthy').length;
       const total = this.endpoint.length;
       const uptimePercentage = (upCount / total) * 100;
       return Number.parseFloat(uptimePercentage.toFixed(2));
     },
     calculateTotalErrors() {
-      const errorCount = this.endpoint.filter(item => item.status !== 'ok').length;
+      const errorCount = this.endpoint.filter(item => item.status !== 'healthy').length;
       return errorCount;
     },
     getLastResponseTime() {
@@ -68,7 +68,7 @@ export default {
     this.intervalLoadData();
   },
   unmounted() {
-    this.clearInterval(this.interval);
+    clearInterval(this.interval);
   },
   methods: {
     async loadData() {
@@ -95,21 +95,12 @@ export default {
       }, 3000);
     },
     prepareChartData() {
-      // Sort the endpoint data by the created_at date
-      const sortedEndpoint = this.endpoint.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-
-      const labels = sortedEndpoint.map((item) => {
-        const date = new Date(item.created_at);
-
-        // Function to add leading zero if necessary
-        const pad = num => num < 10 ? `0${num}` : num;
-
-        const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-        return formattedDate;
+      const labels = this.endpoint.map((item) => {  
+        return this.unixTimestampToFormattedString(item.created_at);
       });
 
-      const data = sortedEndpoint.map(item => item.response_time);
-      const backgroundColors = sortedEndpoint.map(item => item.status === 'ok' ? 'green' : 'red');
+      const data = this.endpoint.map(item => item.response_time);
+      const backgroundColors = this.endpoint.map(item => item.status === 'healthy' ? 'green' : 'red');
 
       // Replace the entire chartData object to ensure reactivity
       this.chartData = {
