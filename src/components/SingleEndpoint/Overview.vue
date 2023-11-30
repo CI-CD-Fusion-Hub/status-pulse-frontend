@@ -1,9 +1,11 @@
 <script>
 import { useVuelidate } from '@vuelidate/core';
+import { helpers, required } from '@vuelidate/validators';
 import VButtonSet from '../../components/VButtonSet.vue';
 import VButton from '../../components/VButton.vue';
 import VTag from '../../components/VTag.vue';
 import { useUserStore } from '../../stores/user';
+import { useNotifyStore } from '../stores/notifications';
 
 export default {
   components: {
@@ -18,9 +20,34 @@ export default {
     return {
       backendUrl: import.meta.env.VITE_backendUrl,
       isBtnLoading: false,
+      isModalVissible: false,
       interval: null,
-      endpoint: [],
+      endpoint: {},
       userStore: useUserStore(),
+    };
+  },
+  validations() {
+    return {
+      formData: {
+        name: {
+          required: helpers.withMessage('Name field cannot be empty.', required),
+        },
+        url: {
+          required: helpers.withMessage('URL field cannot be empty.', required),
+        },
+        threshold: {
+          required: helpers.withMessage('Threshold field cannot be empty.', required),
+        },
+        cron: {
+          required: helpers.withMessage('Cron field cannot be empty.', required),
+        },
+        status_code: {
+          required: helpers.withMessage('Status Code field cannot be empty.', required),
+        },
+        type: {
+          required: helpers.withMessage('Type field cannot be empty.', required),
+        },
+      },
     };
   },
   async created() {
@@ -54,6 +81,46 @@ export default {
         this.loadData();
       }, 3000);
     },
+    clearForm() {
+      Object.keys(this.formData).forEach(key => (this.formData[key] = undefined));
+    },
+    showEditModal() {
+      this.clearForm();
+      this.endpoint.response = toString(this.endpoint.response);
+      Object.assign(this.formData, this.endpoint);
+      this.isModalVissible = true;
+    },
+    async updateData() {
+      try {
+        this.isBtnLoading = true;
+        const isValid = await this.v$.$validate();
+
+        if (isValid === false) {
+          this.v$.formData.$errors.forEach((e) => {
+            useNotifyStore().add('error', e.$message);
+          });
+          this.isBtnLoading = false;
+          this.isLoading = false;
+          return;
+        }
+
+        this.formData.response = JSON.parse(this.formData.response);
+        const response = await this.axios({
+          method: 'put',
+          url: `${this.backendUrl}/endpoints/${this.formData.id}`,
+          data: this.formData,
+        });
+
+        useNotifyStore().add(response.data.status, response.data.message);
+      }
+      catch (error) {
+        useNotifyStore().add('error', 'Error loading data!');
+      }
+
+      await this.loadData();
+      this.isModalVissible = false;
+      this.isBtnLoading = false;
+    },
   },
 };
 </script>
@@ -66,7 +133,7 @@ export default {
         <p>Here's more details for this monitor.</p>
       </div>
       <VButtonSet>
-        <VButton :icon="['fas', 'pen-to-square']" tooltip-text="Edit" />
+        <VButton :icon="['fas', 'pen-to-square']" tooltip-text="Edit" @on-click="showEditModal" />
         <VButton
           :icon="['fas', 'trash']" :is-loading="isBtnLoading" tooltip-text="Remove"
           @on-click="deleteData(row.id)"
@@ -108,6 +175,24 @@ export default {
       </li>
     </ul>
   </div>
+  <VModal v-model:isActive="isModalVissible">
+    <VDropdown
+      v-model:data="formData.type" name="type" placeholder="Endpoint Type" :icon="['fas', 'flag']"
+      :options="['http']"
+    />
+    <VTextInput v-model:data="formData.name" name="name" placeholder="Name" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.description" name="description" placeholder="Description" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.url" name="url" placeholder="URL" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.threshold" name="threshold" placeholder="Threshold in ms" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.status_code" name="status_code" placeholder="Status Code" :icon="['fas', 'fa-user-tag']" />
+    <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" :icon="['fas', 'file-code']" />
+    <VButtonSet class="flex-end">
+      <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="updateData">
+        Save
+      </VButton>
+    </VButtonSet>
+  </VModal>
 </template>
 
 <style>

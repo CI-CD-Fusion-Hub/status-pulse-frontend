@@ -167,7 +167,7 @@ export default {
       }
 
       await this.loadData();
-      this.isEditModalVissible = false;
+      this.isModalVissible = false;
       this.isBtnLoading = false;
     },
     async deleteData(id) {

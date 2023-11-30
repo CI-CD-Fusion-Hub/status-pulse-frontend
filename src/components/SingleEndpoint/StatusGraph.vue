@@ -95,7 +95,10 @@ export default {
       }, 3000);
     },
     prepareChartData() {
-      const labels = this.endpoint.map((item) => {
+      // Sort the endpoint data by the created_at date
+      const sortedEndpoint = this.endpoint.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+      const labels = sortedEndpoint.map((item) => {
         const date = new Date(item.created_at);
 
         // Function to add leading zero if necessary
@@ -104,8 +107,9 @@ export default {
         const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
         return formattedDate;
       });
-      const data = this.endpoint.map(item => item.response_time);
-      const backgroundColors = this.endpoint.map(item => item.status === 'ok' ? 'green' : 'red');
+
+      const data = sortedEndpoint.map(item => item.response_time);
+      const backgroundColors = sortedEndpoint.map(item => item.status === 'ok' ? 'green' : 'red');
 
       // Replace the entire chartData object to ensure reactivity
       this.chartData = {
