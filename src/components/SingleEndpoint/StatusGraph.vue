@@ -92,7 +92,7 @@ export default {
     async intervalLoadData() {
       this.interval = setInterval(() => {
         this.loadData();
-      }, 3000);
+      }, 30000);
     },
     prepareChartData() {
       const labels = this.endpoint.map((item) => {  

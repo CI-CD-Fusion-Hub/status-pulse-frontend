@@ -34,7 +34,7 @@ export default {
     getEndpointTooltip(item) {
       if (item.status !== 'nodata') {
         return `
-        Date: ${this.unixTimestampToFormattedString(item.hour)}\n
+        Date: ${this.unixTimestampToFormattedString(item.created_at)}\n
         Status: ${item.status}
         `;
       }
@@ -65,7 +65,7 @@ export default {
     async intervalLoadData() {
       this.interval = setInterval(() => {
         this.loadData();
-      }, 3000);
+      }, 30000);
     },
   },
 };

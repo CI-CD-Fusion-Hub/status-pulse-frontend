@@ -78,7 +78,7 @@ export default {
     async intervalLoadData() {
       this.interval = setInterval(() => {
         this.loadData();
-      }, 3000);
+      }, 30000);
     },
     clearForm() {
       Object.keys(this.formData).forEach(key => (this.formData[key] = undefined));

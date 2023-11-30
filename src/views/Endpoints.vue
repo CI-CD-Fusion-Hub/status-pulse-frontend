@@ -99,7 +99,7 @@ export default {
     async intervalLoadData() {
       this.interval = setInterval(() => {
         this.loadData();
-      }, 3000);
+      }, 30000);
     },
     async loadData() {
       try {
@@ -147,10 +147,10 @@ export default {
         useNotifyStore().add('error', error.message);
       }
 
+      await this.loadData();
       this.isModalVissible = false;
       this.isBtnLoading = false;
       this.clearForm();
-      await this.loadData();
     },
     async updateData() {
       try {
@@ -183,10 +183,9 @@ export default {
         useNotifyStore().add('error', 'Error loading data!');
       }
       
+      await this.loadData();
       this.isModalVissible = false;
       this.isBtnLoading = false;
-      this.clearForm();
-      await this.loadData();
     },
     async deleteData(id) {
       try {
