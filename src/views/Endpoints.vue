@@ -241,6 +241,7 @@ export default {
           });
 
         this.shareData = {};
+        this.shareLink = undefined;
         this.isShareModalVissible = false;
       }
     },
@@ -262,19 +263,19 @@ export default {
       <VColumn header="Cron" value="cron" />
       <VColumn header="Status" value="status">
         <template #body="{ row }">
-          <span v-if="!row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons[row.status]" /></span>
-          <span v-else-if="row.status?.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons.degraded" /></span>
+          <span v-if="row.status && !row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons[row.status]" /></span>
+          <span v-else-if="row.status && row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons.degraded" /></span>
           <span v-else tooltip-text="Measuring" tooltip-position="Top"><font-awesome-icon :icon="statusIcons.measuring" /></span>
         </template>
       </VColumn>
       <VColumn header="Actions" value="actions">
         <template #body="{ row }">
           <VButtonSet v-if="row">
-            <VButton
+            <VButton v-if="row.status"
               :icon="['fas', 'eye']" :link-to="{ name: 'SingleEndpoint', params: { endpoint_id: row.id } }"
               tooltip-text="View"
             />
-            <VButton :icon="['fas', 'fa-share-nodes']" tooltip-text="Share" @on-click="shareEndpoint(row.id)" />
+            <VButton v-if="row.status" :icon="['fas', 'fa-share-nodes']" tooltip-text="Share" @on-click="shareEndpoint(row.id)" />
             <VButton :icon="['fas', 'pen-to-square']" tooltip-text="Edit" @on-click="showEditModal(row)" />
             <VButton
               :icon="['fas', 'trash']" :is-loading="isBtnLoading" tooltip-text="Remove"
