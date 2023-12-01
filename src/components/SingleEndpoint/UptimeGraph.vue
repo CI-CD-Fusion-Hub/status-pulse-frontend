@@ -1,11 +1,15 @@
 <script>
 import { useVuelidate } from '@vuelidate/core';
 import VModal from '../../components/VModal.vue';
+import VTable from '../../components/VTable.vue';
+import VColumn from '../../components/VColumn.vue';
 import { useUserStore } from '../../stores/user';
 
 export default {
   components: {
     VModal,
+    VColumn,
+    VTable,
   },
   setup() {
     return { v$: useVuelidate() };
@@ -15,10 +19,20 @@ export default {
       backendUrl: import.meta.env.VITE_backendUrl,
       isBtnLoading: false,
       isModalVissible: false,
+      isUptimeTableVissible: false,
+      isUptimeTableLoading: false,
+      activeUptimeItem: null,
       interval: null,
       modalData: {},
       endpoint: [],
+      endpoint_logs: [],
       userStore: useUserStore(),
+      statusIcons: {
+        measuring: ['fas', 'fa-heart-pulse'],
+        healthy: ['fas', 'fa-heart'],
+        unhealthy: ['fas', 'fa-heart-circle-exclamation'],
+        degraded: ['fas', 'fa-heart-crack'],
+      },
     };
   },
   async created() {
@@ -29,6 +43,16 @@ export default {
   },
   unmounted() {
     clearInterval(this.interval);
+  },
+  computed: {
+    getUptimeItems(){
+      return this.endpoint.map((item, index) => {
+        if (index === this.activeUptimeItem) {
+          return { ...item, is_active: true };
+        }
+        return item;
+      })
+    }
   },
   methods: {
     getEndpointTooltip(item) {
@@ -42,9 +66,42 @@ export default {
         return `No Data`;
       }
     },
-    showUptimeModal(item) {
-      this.modalData = item;
-      this.isModalVissible = true;
+    getUTCHourFromTimestamp(unixTimestamp) {
+      const date = new Date(unixTimestamp * 1000);
+      
+      const year = date.getUTCFullYear();
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // months are 0-indexed
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      const utcHour = date.getUTCHours();
+
+      return `${year}-${month}-${day} ${utcHour}:00:00`;
+    },
+    async showUptimeTable(item, idx) {
+      console.log(idx, this.activeUptimeItem)
+      if(idx !== this.activeUptimeItem){
+        this.activeUptimeItem = idx;
+        this.isUptimeTableLoading = true;
+        this.isUptimeTableVissible = true;
+        const date_from = this.getUTCHourFromTimestamp(item.created_at)
+        const date_to = this.getUTCHourFromTimestamp(item.created_at + 3600)
+
+        try {
+          const response = await this.axios({
+            method: 'get',
+            url: `${this.backendUrl}/endpoints/${this.$route.params.endpoint_id}/uptime/logs?date_from=${date_from}&date_to=${date_to}&full=${item.status === 'healthy' ? true : false}`,
+          });
+
+          this.endpoint_logs = response.data.data;
+        }
+        catch (error) {
+          console.log('Unable to get authentication method.');
+        }
+
+        this.isUptimeTableLoading = false;
+      } else {
+        this.isUptimeTableVissible = false;
+        this.activeUptimeItem = null;
+      }
     },
     async loadData() {
       this.isLoading = true;
@@ -79,29 +136,29 @@ export default {
       <li v-if="endpoint?.length === 0" class="uptime_loader">
         <font-awesome-icon :icon="['fas', 'spinner']" spin />
       </li>
-      <li v-for="item in endpoint" v-else :key="item" :class="`uptime_item ${item.status}`" :tooltip-text="getEndpointTooltip(item)" tooltip-position="Top" @click="showUptimeModal(item)" />
+      <li v-for="(item, idx) in getUptimeItems" v-else :key="item" :class="`uptime_item ${item.status} ${item?.is_active}`" :tooltip-text="getEndpointTooltip(item)" tooltip-position="Top" @click="showUptimeTable(item, idx)" />
     </ul>
+    <div class="uptime_table" v-if="isUptimeTableVissible">
+      <VTable :table-data="endpoint_logs" :is-loading="isUptimeTableLoading" :pagination="true" :page-size="15" :is-searchable="true" :search-in-columns="[]" :show-row-index="true">
+        <!-- <VColumn header="Type" value="type">
+          <template #body="{ row }">
+            <span :tooltip-text="row.type" tooltip-position="Top"><font-awesome-icon :icon="typeIcons[row.type]" /></span>
+          </template>
+        </VColumn>
+        <VColumn header="Name" value="name" />
+        <VColumn header="Description" value="description" />
+        <VColumn header="URL" value="url" />
+        <VColumn header="Cron" value="cron" />
+        <VColumn header="Status" value="status">
+          <template #body="{ row }">
+            <span v-if="row.status && !row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons[row.status]" /></span>
+            <span v-else-if="row.status && row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons.degraded" /></span>
+            <span v-else tooltip-text="Measuring" tooltip-position="Top"><font-awesome-icon :icon="statusIcons.measuring" /></span>
+          </template>
+        </VColumn> -->
+      </VTable>
+    </div>
   </div>
-  <VModal v-model:isActive="isModalVissible">
-    <ul class="uptime_modal">
-      <li>
-        <h3>Status</h3>
-        <div>{{ modalData.status }}</div>
-      </li>
-      <li>
-        <h3>Response time</h3>
-        <div>{{ modalData.response_time }}</div>
-      </li>
-      <li>
-        <h3>Response Code</h3>
-        <pre>{{ modalData.response.status_code }}</pre>
-      </li>
-      <li>
-        <h3>Response Body</h3>
-        <pre>{{ modalData.response.body }}</pre>
-      </li>
-    </ul>
-  </VModal>
 </template>
 
 <style>
@@ -157,6 +214,11 @@ export default {
   background-color: gray;
 }
 
+.uptime_graph li.uptime_item.true {
+  outline: auto;
+  outline-color: var(--main-color);
+}
+
 .uptime_graph h2 {
   margin-bottom: 5px;
 }
@@ -176,5 +238,9 @@ export default {
   gap: 20px;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.uptime_table {
+  margin-top: 20px;
 }
 </style>
