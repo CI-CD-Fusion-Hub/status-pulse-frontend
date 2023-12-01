@@ -1,8 +1,10 @@
 <script>
 import { useNotifyStore } from '../stores/notifications';
 import { useUserStore } from '../stores/user';
+import VButton from './VButton.vue';
 
 export default {
+  components: { VButton },
   props: {},
   data() {
     return {
@@ -32,6 +34,7 @@ export default {
     </div>
     <div class="user_profile">
       {{ userInfo.email }}
+      <VButton :icon="['fas', 'arrow-right-from-bracket']" @on-click="logout" />
     </div>
   </header>
 </template>
@@ -64,5 +67,12 @@ export default {
     width: 73px;
     height: 60px;
   }
+}
+
+.top_header .user_profile {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
 }
 </style>

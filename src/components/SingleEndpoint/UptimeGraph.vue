@@ -1,6 +1,5 @@
 <script>
 import { useVuelidate } from '@vuelidate/core';
-import VModal from '../../components/VModal.vue';
 import VTable from '../../components/VTable.vue';
 import VColumn from '../../components/VColumn.vue';
 import VTag from '../../components/VTag.vue';
@@ -8,10 +7,9 @@ import { useUserStore } from '../../stores/user';
 
 export default {
   components: {
-    VModal,
     VColumn,
     VTable,
-    VTag
+    VTag,
   },
   setup() {
     return { v$: useVuelidate() };
@@ -37,6 +35,16 @@ export default {
       },
     };
   },
+  computed: {
+    getUptimeItems() {
+      return this.endpoint.map((item, index) => {
+        if (index === this.activeUptimeItem)
+          return { ...item, is_active: true };
+
+        return item;
+      });
+    },
+  },
   async created() {
     this.loadData();
   },
@@ -45,16 +53,6 @@ export default {
   },
   unmounted() {
     clearInterval(this.interval);
-  },
-  computed: {
-    getUptimeItems(){
-      return this.endpoint.map((item, index) => {
-        if (index === this.activeUptimeItem) {
-          return { ...item, is_active: true };
-        }
-        return item;
-      })
-    }
   },
   methods: {
     getEndpointTooltip(item) {
@@ -70,7 +68,7 @@ export default {
     },
     getUTCHourFromTimestamp(unixTimestamp) {
       const date = new Date(unixTimestamp * 1000);
-      
+
       const year = date.getUTCFullYear();
       const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // months are 0-indexed
       const day = String(date.getUTCDate()).padStart(2, '0');
@@ -79,18 +77,18 @@ export default {
       return `${year}-${month}-${day} ${utcHour}:00:00`;
     },
     async showUptimeTable(item, idx) {
-      console.log(idx, this.activeUptimeItem)
-      if(idx !== this.activeUptimeItem){
+      console.log(idx, this.activeUptimeItem);
+      if (idx !== this.activeUptimeItem) {
         this.activeUptimeItem = idx;
         this.isUptimeTableLoading = true;
         this.isUptimeTableVissible = true;
-        const date_from = this.getUTCHourFromTimestamp(item.created_at)
-        const date_to = this.getUTCHourFromTimestamp(item.created_at + 3600)
+        const date_from = this.getUTCHourFromTimestamp(item.created_at);
+        const date_to = this.getUTCHourFromTimestamp(item.created_at + 3600);
 
         try {
           const response = await this.axios({
             method: 'get',
-            url: `${this.backendUrl}/endpoints/${this.$route.params.endpoint_id}/uptime/logs?date_from=${date_from}&date_to=${date_to}&full=${item.status === 'healthy' ? true : false}`,
+            url: `${this.backendUrl}/endpoints/${this.$route.params.endpoint_id}/uptime/logs?date_from=${date_from}&date_to=${date_to}&full=${item.status === 'healthy'}`,
           });
 
           this.endpoint_logs = response.data.data;
@@ -100,7 +98,8 @@ export default {
         }
 
         this.isUptimeTableLoading = false;
-      } else {
+      }
+      else {
         this.isUptimeTableVissible = false;
         this.activeUptimeItem = null;
       }
@@ -140,7 +139,7 @@ export default {
       </li>
       <li v-for="(item, idx) in getUptimeItems" v-else :key="item" :class="`uptime_item ${item.status} ${item?.is_active}`" :tooltip-text="getEndpointTooltip(item)" tooltip-position="Top" @click="showUptimeTable(item, idx)" />
     </ul>
-    <div class="uptime_table" v-if="isUptimeTableVissible">
+    <div v-if="isUptimeTableVissible" class="uptime_table">
       <VTable :table-data="endpoint_logs" :is-loading="isUptimeTableLoading" :pagination="true" :page-size="15" :is-searchable="true" :search-in-columns="['status']" :show-row-index="true">
         <VColumn header="Description" value="created_at">
           <template #body="{ row }">
@@ -156,7 +155,7 @@ export default {
         <VColumn header="Response Body" value="response">
           <template #body="{ row }">
             <template v-if="row.response.body !== ''">
-            {{ row.response.body }}
+              {{ row.response.body }}
             </template>
             <VTag v-else :icon="['fas', 'ghost']" type="skipped" tooltip-text="No Body Fetched" tooltip-position="Top" />
           </template>

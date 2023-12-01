@@ -173,7 +173,7 @@ export default {
 
         if (this.formData.response)
           this.formData.response = JSON.parse(this.formData.response);
-        
+
         const response = await this.axios({
           method: 'put',
           url: `${this.backendUrl}/endpoints/${this.formData.id}`,
@@ -274,7 +274,8 @@ export default {
       <VColumn header="Actions" value="actions">
         <template #body="{ row }">
           <VButtonSet v-if="row">
-            <VButton v-if="row.status"
+            <VButton
+              v-if="row.status"
               :icon="['fas', 'eye']" :link-to="{ name: 'SingleEndpoint', params: { endpoint_id: row.id } }"
               tooltip-text="View"
             />
