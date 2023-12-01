@@ -33,13 +33,17 @@ export default {
       isBtnLoading: false,
       isAddModalVissible: false,
       isEditModalVissible: false,
+      isShareModalVissible: false,
       interval: null,
       userStore: useUserStore(),
       endpoints: [],
       formData: {},
+      shareData: {},
       typeIcons: {
         http: ['fas', 'globe'],
       },
+      shareLink: undefined,
+      shareId: undefined,
       statusIcons: {
         measuring: ['fas', 'fa-heart-pulse'],
         healthy: ['fas', 'fa-heart'],
@@ -201,6 +205,45 @@ export default {
         this.isLoading = false;
       }
     },
+    shareEndpoint(id) {
+      this.shareId = id;
+      this.isShareModalVissible = true;
+    },
+    async createShareLink() {
+      try {
+        this.isBtnLoading = true;
+        this.shareData.expiration = new Date(this.shareData.expiration).getTime() / 1000;
+
+        const response = await this.axios({
+          method: 'post',
+          url: `${this.backendUrl}/endpoints/${this.shareId}/share`,
+          data: this.shareData,
+        });
+
+        this.shareLink = `${document.location.origin}/share?token=${response.data.data}`;
+        useNotifyStore().add(response.data.status, response.data.message);
+      }
+      catch (error) {
+        useNotifyStore().add('error', error.data.message || error);
+      }
+
+      this.shareData.permissions = '';
+      this.isBtnLoading = false;
+    },
+    copyShareLink() {
+      if (this.shareLink !== '') {
+        navigator.clipboard.writeText(this.shareLink)
+          .then(() => {
+            useNotifyStore().add('success', 'Successfully copied share link.');
+          })
+          .catch((err) => {
+            useNotifyStore().add('error', err);
+          });
+
+        this.shareData = {};
+        this.isShareModalVissible = false;
+      }
+    },
   },
 };
 </script>
@@ -231,6 +274,7 @@ export default {
               :icon="['fas', 'eye']" :link-to="{ name: 'SingleEndpoint', params: { endpoint_id: row.id } }"
               tooltip-text="View"
             />
+            <VButton :icon="['fas', 'fa-share-nodes']" tooltip-text="Share" @on-click="shareEndpoint(row.id)" />
             <VButton :icon="['fas', 'pen-to-square']" tooltip-text="Edit" @on-click="showEditModal(row)" />
             <VButton
               :icon="['fas', 'trash']" :is-loading="isBtnLoading" tooltip-text="Remove"
@@ -252,9 +296,9 @@ export default {
     <VTextInput v-model:data="formData.name" name="name" placeholder="Name" :icon="['fas', 'fa-user-tag']" />
     <VTextInput v-model:data="formData.description" name="description" placeholder="Description" :icon="['fas', 'fa-user-tag']" />
     <VTextInput v-model:data="formData.url" name="url" placeholder="URL" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.threshold" name="threshold" placeholder="Threshold in ms" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" :icon="['fas', 'fa-user-tag']" />
     <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.status_code" name="status_code" placeholder="Status Code" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.status_code" type="number" name="status_code" placeholder="Status Code" :icon="['fas', 'fa-user-tag']" />
     <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" :icon="['fas', 'file-code']" />
     <VButtonSet class="flex-end">
       <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="addData">
@@ -270,15 +314,32 @@ export default {
     <VTextInput v-model:data="formData.name" name="name" placeholder="Name" :icon="['fas', 'fa-user-tag']" />
     <VTextInput v-model:data="formData.description" name="description" placeholder="Description" :icon="['fas', 'fa-user-tag']" />
     <VTextInput v-model:data="formData.url" name="url" placeholder="URL" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.threshold" name="threshold" placeholder="Threshold in ms" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" :icon="['fas', 'fa-user-tag']" />
     <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.status_code" name="status_code" placeholder="Status Code" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.status_code" type="number" name="status_code" placeholder="Status Code" :icon="['fas', 'fa-user-tag']" />
     <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" :icon="['fas', 'file-code']" />
     <VButtonSet class="flex-end">
       <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="updateData">
         Save
       </VButton>
     </VButtonSet>
+  </VModal>
+  <VModal v-model:isActive="isShareModalVissible">
+    <VDropdown
+      v-model:data="shareData.permissions" name="permissions" placeholder="Permissions" :icon="['fas', 'flag']"
+      :options="['Read', 'Update']"
+    />
+    <VTextInput v-model:data="shareData.expiration" type="datetime-local" name="expiration" placeholder="Expiration Date" :icon="['fas', 'fa-user-tag']" />
+    <div v-if="shareLink" class="shareLinkHolder">
+      <VButton :icon="['fas', 'fa-copy']" @on-click="copyShareLink" />
+      <p>{{ shareLink }}</p>
+    </div>
+    <div v-else-if="isBtnLoading" class="link_loader">
+      <font-awesome-icon :icon="['fas', 'spinner']" spin />
+    </div>
+    <VButton :icon="['fas', 'fa-share-nodes']" :is-loading="isBtnLoading" @on-click="createShareLink">
+      Create
+    </VButton>
   </VModal>
 </template>
 
@@ -298,6 +359,31 @@ export default {
 .fa-heart-crack {
   color: red;
   font-size: 20px;
+}
+
+.shareLinkHolder,
+.link_loader {
+  color: white;
+  display: flex;
+  background-color: var(--main-color-hover);
+  padding: 10px;
+  border-radius: var(--border-radius);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.shareLinkHolder {
+  justify-content: space-between;
+}
+
+.link_loader {
+  height: 126px;
+  justify-content: center;
+  align-items: center;
+}
+
+.shareLinkHolder p {
+  word-break: break-word;
 }
 
 @keyframes fade {

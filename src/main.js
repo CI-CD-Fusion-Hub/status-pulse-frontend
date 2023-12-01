@@ -12,6 +12,7 @@ import {
   faChevronRight,
   faCircleExclamation,
   faCircleInfo,
+  faCopy,
   faEye,
   faFileCode,
   faFilePen,
@@ -38,6 +39,7 @@ import {
   faQuestion,
   faRightToBracket,
   faRocket,
+  faShareNodes,
   faShieldHalved,
   faSignal,
   faSitemap,
@@ -113,6 +115,8 @@ library.add(faHeart);
 library.add(faHeartCrack);
 library.add(faHeartPulse);
 library.add(faHeartCircleExclamation);
+library.add(faShareNodes);
+library.add(faCopy);
 
 axios.defaults.withCredentials = true;
 

@@ -47,6 +47,7 @@ export default {
       placeholder=" "
       :value="data"
       @input="$emit('update:data', $event.target.value)"
+      @click="type === 'datetime-local' ? $event.target.showPicker() : null"
     >
     <label :for="name">{{ placeholder }}</label>
     <font-awesome-icon
@@ -127,5 +128,20 @@ export default {
 .input-holder input:focus + label + svg,
 .input-holder input:not(:placeholder-shown) + label + svg {
   opacity: 1;
+}
+
+.input-holder input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  background: none;
+}
+
+.input-holder input::-webkit-outer-spin-button,
+.input-holder input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.input-holder input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>
