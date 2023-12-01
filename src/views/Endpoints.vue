@@ -171,6 +171,9 @@ export default {
           return;
         }
 
+        if (this.formData.response)
+          this.formData.response = JSON.parse(this.formData.response);
+        
         const response = await this.axios({
           method: 'put',
           url: `${this.backendUrl}/endpoints/${this.formData.id}`,

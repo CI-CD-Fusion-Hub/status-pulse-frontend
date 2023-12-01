@@ -3,6 +3,7 @@ import { useVuelidate } from '@vuelidate/core';
 import VModal from '../../components/VModal.vue';
 import VTable from '../../components/VTable.vue';
 import VColumn from '../../components/VColumn.vue';
+import VTag from '../../components/VTag.vue';
 import { useUserStore } from '../../stores/user';
 
 export default {
@@ -10,6 +11,7 @@ export default {
     VModal,
     VColumn,
     VTable,
+    VTag
   },
   setup() {
     return { v$: useVuelidate() };
@@ -139,23 +141,33 @@ export default {
       <li v-for="(item, idx) in getUptimeItems" v-else :key="item" :class="`uptime_item ${item.status} ${item?.is_active}`" :tooltip-text="getEndpointTooltip(item)" tooltip-position="Top" @click="showUptimeTable(item, idx)" />
     </ul>
     <div class="uptime_table" v-if="isUptimeTableVissible">
-      <VTable :table-data="endpoint_logs" :is-loading="isUptimeTableLoading" :pagination="true" :page-size="15" :is-searchable="true" :search-in-columns="[]" :show-row-index="true">
-        <!-- <VColumn header="Type" value="type">
+      <VTable :table-data="endpoint_logs" :is-loading="isUptimeTableLoading" :pagination="true" :page-size="15" :is-searchable="true" :search-in-columns="['status']" :show-row-index="true">
+        <VColumn header="Description" value="created_at">
           <template #body="{ row }">
-            <span :tooltip-text="row.type" tooltip-position="Top"><font-awesome-icon :icon="typeIcons[row.type]" /></span>
+            {{ unixTimestampToFormattedString(row.created_at) }}
           </template>
         </VColumn>
-        <VColumn header="Name" value="name" />
-        <VColumn header="Description" value="description" />
-        <VColumn header="URL" value="url" />
-        <VColumn header="Cron" value="cron" />
+        <VColumn header="Response Time (ms)" value="response_time" />
+        <VColumn header="Response Status Code" value="response">
+          <template #body="{ row }">
+            {{ row.response.status_code }}
+          </template>
+        </VColumn>
+        <VColumn header="Response Body" value="response">
+          <template #body="{ row }">
+            <template v-if="row.response.body !== ''">
+            {{ row.response.body }}
+            </template>
+            <VTag v-else :icon="['fas', 'ghost']" type="skipped" tooltip-text="No Body Fetched" tooltip-position="Top" />
+          </template>
+        </VColumn>
         <VColumn header="Status" value="status">
           <template #body="{ row }">
             <span v-if="row.status && !row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons[row.status]" /></span>
             <span v-else-if="row.status && row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons.degraded" /></span>
             <span v-else tooltip-text="Measuring" tooltip-position="Top"><font-awesome-icon :icon="statusIcons.measuring" /></span>
           </template>
-        </VColumn> -->
+        </VColumn>
       </VTable>
     </div>
   </div>
