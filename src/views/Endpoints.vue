@@ -9,7 +9,6 @@ import VButton from '../components/VButton.vue';
 import VTable from '../components/VTable.vue';
 import VColumn from '../components/VColumn.vue';
 import VModal from '../components/VModal.vue';
-import VTag from '../components/VTag.vue';
 import { useNotifyStore } from '../stores/notifications';
 import { useUserStore } from '../stores/user';
 
@@ -22,7 +21,6 @@ export default {
     VButtonSet,
     VColumn,
     VTable,
-    VTag,
     VModal,
   },
   setup() {
@@ -47,7 +45,7 @@ export default {
         healthy: ['fas', 'fa-heart'],
         unhealthy: ['fas', 'fa-heart-circle-exclamation'],
         degraded: ['fas', 'fa-heart-crack'],
-      }
+      },
     };
   },
   validations() {
@@ -88,16 +86,15 @@ export default {
       Object.keys(this.formData).forEach(key => (this.formData[key] = undefined));
     },
     showEditModal(data) {
-      console.log(Object.keys(data.response).length)
-      if(Object.keys(data.response).length > 0){
+      console.log(Object.keys(data.response).length);
+      if (Object.keys(data.response).length > 0)
         data.response = JSON.parse(data.response);
-      }
 
       Object.assign(this.formData, data);
       this.isEditModalVissible = true;
     },
     showAddModal() {
-      this.clearForm()
+      this.clearForm();
       this.isAddModalVissible = true;
     },
     async intervalLoadData() {
@@ -135,25 +132,25 @@ export default {
           return;
         }
 
-        if (this.formData.response){
+        if (this.formData.response)
           this.formData.response = JSON.parse(this.formData.response);
-        }
 
         const response = await this.axios({
           method: 'post',
           url: `${this.backendUrl}/endpoints`,
           data: this.formData,
         });
+
+        await this.loadData();
+        useNotifyStore().add(response.data.status, response.data.message);
       }
       catch (error) {
         useNotifyStore().add('error', error.message);
-      } finally {
-        await this.loadData();
-        this.isAddModalVissible = false;
-        this.isBtnLoading = false;
-        this.clearForm();
-        useNotifyStore().add(response.data.status, response.data.message);
       }
+
+      this.isAddModalVissible = false;
+      this.isBtnLoading = false;
+      this.clearForm();
     },
     async updateData() {
       try {
@@ -175,16 +172,17 @@ export default {
           url: `${this.backendUrl}/endpoints/${this.formData.id}`,
           data: this.formData,
         });
-      }
-      catch (error) {
-        console.log(error)
-        useNotifyStore().add('error', 'Error loading data!');
-      } finally {
+
         await this.loadData();
-        this.isEditModalVissible = false;
-        this.isBtnLoading = false;
         useNotifyStore().add(response.data.status, response.data.message);
       }
+      catch (error) {
+        console.log(error);
+        useNotifyStore().add('error', 'Error loading data!');
+      }
+
+      this.isEditModalVissible = false;
+      this.isBtnLoading = false;
     },
     async deleteData(id) {
       try {
@@ -194,15 +192,14 @@ export default {
           method: 'delete',
           url: `${this.backendUrl}/endpoints/${id}`,
         });
-      }
-      catch (error) {
-        useNotifyStore().add('error', 'Error loading data!');
-      } finally {
+
         await this.loadData();
         useNotifyStore().add(response.data.status, response.data.message);
       }
-
-      
+      catch (error) {
+        useNotifyStore().add('error', 'Error loading data!');
+        this.isLoading = false;
+      }
     },
   },
 };
@@ -222,9 +219,9 @@ export default {
       <VColumn header="Cron" value="cron" />
       <VColumn header="Status" value="status">
         <template #body="{ row }">
-          <span v-if="!row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons[row.status]"/></span>
-          <span v-else-if="row.status?.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons['degraded']"/></span>
-          <span v-else tooltip-text="Measuring" tooltip-position="Top"><font-awesome-icon :icon="statusIcons['measuring']"/></span>
+          <span v-if="!row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons[row.status]" /></span>
+          <span v-else-if="row.status?.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons.degraded" /></span>
+          <span v-else tooltip-text="Measuring" tooltip-position="Top"><font-awesome-icon :icon="statusIcons.measuring" /></span>
         </template>
       </VColumn>
       <VColumn header="Actions" value="actions">

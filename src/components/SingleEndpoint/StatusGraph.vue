@@ -95,7 +95,7 @@ export default {
       }, 30000);
     },
     prepareChartData() {
-      const labels = this.endpoint.map((item) => {  
+      const labels = this.endpoint.map((item) => {
         return this.unixTimestampToFormattedString(item.created_at);
       });
 

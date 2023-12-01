@@ -23,9 +23,10 @@ import {
   faGear,
   faGhost,
   faGlobe,
+  faHeart,
   faHeartCircleExclamation,
   faHeartCrack,
-  faHeart,
+  faHeartPulse,
   faKey,
   faMagnifyingGlass,
   faPause,
@@ -51,7 +52,6 @@ import {
   faUserTag,
   faUsers,
   faXmark,
-  faHeartPulse,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { createPinia } from 'pinia';

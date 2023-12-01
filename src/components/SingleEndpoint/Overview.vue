@@ -69,7 +69,8 @@ export default {
         });
 
         this.formData = response.data.data;
-      } catch (error) {
+      }
+      catch (error) {
         useNotifyStore().add('error', 'Error loading data!');
       }
 
