@@ -88,7 +88,11 @@ export default {
       Object.keys(this.formData).forEach(key => (this.formData[key] = undefined));
     },
     showEditModal(data) {
-      data.response = toString(data.response);
+      console.log(Object.keys(data.response).length)
+      if(Object.keys(data.response).length > 0){
+        data.response = JSON.parse(data.response);
+      }
+
       Object.assign(this.formData, data);
       this.isEditModalVissible = true;
     },
@@ -140,17 +144,16 @@ export default {
           url: `${this.backendUrl}/endpoints`,
           data: this.formData,
         });
-
-        useNotifyStore().add(response.data.status, response.data.message);
       }
       catch (error) {
         useNotifyStore().add('error', error.message);
+      } finally {
+        await this.loadData();
+        this.isAddModalVissible = false;
+        this.isBtnLoading = false;
+        this.clearForm();
+        useNotifyStore().add(response.data.status, response.data.message);
       }
-
-      await this.loadData();
-      this.isModalVissible = false;
-      this.isBtnLoading = false;
-      this.clearForm();
     },
     async updateData() {
       try {
@@ -167,25 +170,21 @@ export default {
           return;
         }
 
-        if (this.formData.response){
-          this.formData.response = JSON.parse(this.formData.response);
-        }
-
         const response = await this.axios({
           method: 'put',
           url: `${this.backendUrl}/endpoints/${this.formData.id}`,
           data: this.formData,
         });
-
-        useNotifyStore().add(response.data.status, response.data.message);
       }
       catch (error) {
+        console.log(error)
         useNotifyStore().add('error', 'Error loading data!');
+      } finally {
+        await this.loadData();
+        this.isEditModalVissible = false;
+        this.isBtnLoading = false;
+        useNotifyStore().add(response.data.status, response.data.message);
       }
-      
-      await this.loadData();
-      this.isModalVissible = false;
-      this.isBtnLoading = false;
     },
     async deleteData(id) {
       try {
@@ -195,14 +194,15 @@ export default {
           method: 'delete',
           url: `${this.backendUrl}/endpoints/${id}`,
         });
-
-        useNotifyStore().add(response.data.status, response.data.message);
       }
       catch (error) {
         useNotifyStore().add('error', 'Error loading data!');
+      } finally {
+        await this.loadData();
+        useNotifyStore().add(response.data.status, response.data.message);
       }
 
-      await this.loadData();
+      
     },
   },
 };
@@ -223,7 +223,7 @@ export default {
       <VColumn header="Status" value="status">
         <template #body="{ row }">
           <span v-if="!row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons[row.status]"/></span>
-          <span v-else-if="row.status.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons['degraded']"/></span>
+          <span v-else-if="row.status?.includes('error')" :tooltip-text="row.status" tooltip-position="Top"><font-awesome-icon :icon="statusIcons['degraded']"/></span>
           <span v-else tooltip-text="Measuring" tooltip-position="Top"><font-awesome-icon :icon="statusIcons['measuring']"/></span>
         </template>
       </VColumn>
