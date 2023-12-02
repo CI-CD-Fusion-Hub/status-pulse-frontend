@@ -67,24 +67,22 @@ export default {
         return `No Data`;
       }
     },
-    getUTCHourFromTimestamp(unixTimestamp) {
+    floorTimestamp(unixTimestamp) {
       const date = new Date(unixTimestamp * 1000);
 
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed
-      const day = String(date.getDate()).padStart(2, '0');
-      const utcHour = date.getHours();
+      date.setUTCMinutes(0);
+      date.setUTCSeconds(0);
+      date.setUTCMilliseconds(0);
 
-      return `${year}-${month}-${day} ${utcHour}:00:00`;
+      return date.getTime();
     },
     async showUptimeTable(item, idx) {
-      console.log(idx, this.activeUptimeItem);
       if (idx !== this.activeUptimeItem) {
         this.activeUptimeItem = idx;
         this.isUptimeTableLoading = true;
         this.isUptimeTableVissible = true;
-        const date_from = this.getUTCHourFromTimestamp(item.created_at);
-        const date_to = this.getUTCHourFromTimestamp(item.created_at + 3600);
+        const date_from = this.floorTimestamp(item.created_at);
+        const date_to = this.floorTimestamp(item.created_at + 3600);
 
         try {
           const response = await this.axios({
