@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../views/LoginPage.vue';
 import Endpoints from '../views/Endpoints.vue';
 import SingleEndpoint from '../views/SingleEndpoint.vue';
+import Notifications from '../views/Notifications.vue';
 import Share from '../views/Share.vue';
 
 const routes = [
@@ -11,6 +12,11 @@ const routes = [
     path: '/endpoints',
     name: 'Endpoints',
     component: Endpoints,
+  },
+  {
+    path: '/notifications',
+    name: 'Notifications',
+    component: Notifications,
   },
   {
     path: '/share',

@@ -174,8 +174,9 @@ export default {
 <style>
 .uptime_graph {
   padding: 20px;
-  background-color: white;
+  background-color: var(--main-color);
   border-radius: var(--border-radius);
+  color: white;
 }
 
 .uptime_graph ul {

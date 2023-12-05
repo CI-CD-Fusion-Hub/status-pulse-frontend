@@ -15,7 +15,7 @@ export default {
     },
     icon: {
       type: Array,
-      default: () => ['fas', 'users'],
+      default: () => [],
     },
     type: {
       type: String,
@@ -85,6 +85,7 @@ export default {
   color: white;
   font-size: 16px;
   transition: height 300ms ease-in-out;
+  padding: 28px;
   width: 100%;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -94,8 +95,8 @@ export default {
 }
 
 .input-holder textarea {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 16.5px;
+  padding-bottom: 16.5px;
   cursor: text;
 }
 

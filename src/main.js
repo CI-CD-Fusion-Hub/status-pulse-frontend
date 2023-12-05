@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { faSlack, faRocketchat } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowRightFromBracket,
   faArrowsRotate,
@@ -54,6 +55,7 @@ import {
   faUserTag,
   faUsers,
   faXmark,
+  faBell,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { createPinia } from 'pinia';
@@ -117,6 +119,8 @@ library.add(faHeartPulse);
 library.add(faHeartCircleExclamation);
 library.add(faShareNodes);
 library.add(faCopy);
+library.add(faSlack);
+library.add(faBell);
 
 axios.defaults.withCredentials = true;
 

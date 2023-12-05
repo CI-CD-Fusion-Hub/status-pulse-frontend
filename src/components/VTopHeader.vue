@@ -29,44 +29,27 @@ export default {
 
 <template>
   <header class="top_header">
-    <div class="logo_container">
-      <img src="/logo.png" alt="logo">
-    </div>
+    <div class="logo_container"><img src="/logo2.png" alt="logo"></div>
     <div class="user_profile">
       {{ userInfo.email }}
-      <VButton :icon="['fas', 'arrow-right-from-bracket']" @on-click="logout" />
+      <!-- <VButton :icon="['fas', 'arrow-right-from-bracket']" @on-click="logout" /> -->
     </div>
   </header>
 </template>
 
 <style>
 .top_header {
-  padding: 5px 20px 2px 20px;
+  padding: 7px 20px;
   background-color: var(--main-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: white;
+  border-bottom: var(--border-style)
 }
 
 .top_header .logo_container img {
-  width: 40px;
-}
-
-@media only screen and (min-width: 1024px) {
-  .aside_menu {
-    width: 200px;
-    overflow-x: hidden;
-  }
-
-  .aside_menu ul li span {
-    display: inline-block;
-  }
-
-  .aside_menu .logo_container .logo_holder {
-    width: 73px;
-    height: 60px;
-  }
+  width: 26px;
 }
 
 .top_header .user_profile {

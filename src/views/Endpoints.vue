@@ -6,7 +6,7 @@ import VTextArea from '../components/Form/VTextArea.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
 import VButtonSet from '../components/VButtonSet.vue';
 import VButton from '../components/VButton.vue';
-import VTable from '../components/VTable.vue';
+import VTable from '../components/VTableNew.vue';
 import VColumn from '../components/VColumn.vue';
 import VModal from '../components/VModal.vue';
 import { useNotifyStore } from '../stores/notifications';
@@ -37,10 +37,14 @@ export default {
       interval: null,
       userStore: useUserStore(),
       endpoints: [],
+      notifications: [],
       formData: {},
       shareData: {},
       typeIcons: {
-        http: ['fas', 'globe'],
+        email: ['fas', 'at'],
+        mattermost: ['fas', 'slack'],
+        slack: ['fas', 'slack'],
+        rocketchat: ['fas', 'rocketchat'],
       },
       shareLink: undefined,
       shareId: undefined,
@@ -94,11 +98,13 @@ export default {
       if (Object.keys(data.response).length > 0)
         data.response = JSON.parse(data.response);
 
+      this.getNotifications();
       Object.assign(this.formData, data);
       this.isEditModalVissible = true;
     },
     showAddModal() {
       this.clearForm();
+      this.getNotifications();
       this.isAddModalVissible = true;
     },
     async intervalLoadData() {
@@ -107,10 +113,13 @@ export default {
       }, 30000);
     },
     async loadData() {
+      this.isLoading = true;
+      
       try {
+        console.log(this.$route.query.search)
         const response = await this.axios({
           method: 'get',
-          url: `${this.backendUrl}/endpoints`,
+          url: `${this.backendUrl}/endpoints?page=${this.$route.query.page || '1'}&search=${this.$route.query.search || ''}`,
         });
 
         this.endpoints = response.data.data;
@@ -136,7 +145,7 @@ export default {
           return;
         }
 
-        if (this.formData.response)
+        if (typeof this.formData.response === "string")
           this.formData.response = JSON.parse(this.formData.response);
 
         const response = await this.axios({
@@ -171,7 +180,7 @@ export default {
           return;
         }
 
-        if (this.formData.response)
+        if (typeof this.formData.response === "string")
           this.formData.response = JSON.parse(this.formData.response);
 
         const response = await this.axios({
@@ -248,13 +257,29 @@ export default {
         this.isShareModalVissible = false;
       }
     },
+    async getNotifications() {
+      
+      try {
+        console.log(this.$route.query.search)
+        const response = await this.axios({
+          method: 'get',
+          url: `${this.backendUrl}/notifications`,
+        });
+
+        this.notifications = response.data.data;
+      }
+      catch (error) {
+        console.log('Unable to get authentication method.');
+      }
+    },
   },
 };
 </script>
 
 <template>
   <div class="endpoints_holder">
-    <VTable :table-data="endpoints" :is-loading="isLoading" :pagination="true" :page-size="15" :is-searchable="true" :search-in-columns="['name', 'url']" :show-row-index="true">
+    <VTable :table-data="endpoints.data" :is-loading="isLoading" :pagination="true" :page-size="5" :total_pages="endpoints.pages" 
+    :is-searchable="true" :search-in-columns="['name', 'url']" :show-row-index="true" @on-page-changed="loadData" @on-search="loadData">
       <VColumn header="Type" value="type">
         <template #body="{ row }">
           <span :tooltip-text="row.type" tooltip-position="Top"><font-awesome-icon :icon="typeIcons[row.type]" /></span>
@@ -295,16 +320,19 @@ export default {
   </div>
   <VModal v-model:isActive="isAddModalVissible">
     <VDropdown
-      v-model:data="formData.type" name="type" placeholder="Endpoint Type" :icon="['fas', 'flag']"
-      :options="['http']"
+      v-model:data="formData.type" name="type" placeholder="Endpoint Type" :options="['http']"
     />
-    <VTextInput v-model:data="formData.name" name="name" placeholder="Name" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.description" name="description" placeholder="Description" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.url" name="url" placeholder="URL" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.status_code" type="number" name="status_code" placeholder="Status Code" :icon="['fas', 'fa-user-tag']" />
-    <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" :icon="['fas', 'file-code']" />
+    <VTextInput v-model:data="formData.name" name="name" placeholder="Name"/>
+    <VTextInput v-model:data="formData.description" name="description" placeholder="Description"/>
+    <VTextInput v-model:data="formData.url" name="url" placeholder="URL" />
+    <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" />
+    <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" />
+    <VTextInput v-model:data="formData.status_code" type="number" name="status_code" placeholder="Status Code" />
+    <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" />
+    <VDropdown
+      v-model:data="formData.notifications" :is-multyselect="true" option-label="name" option-value="id" name="notifications" placeholder="Notifications"
+      :options="notifications"
+    />
     <VButtonSet class="flex-end">
       <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="addData">
         Add
@@ -313,16 +341,20 @@ export default {
   </VModal>
   <VModal v-model:isActive="isEditModalVissible">
     <VDropdown
-      v-model:data="formData.type" name="type" placeholder="Endpoint Type" :icon="['fas', 'flag']"
+      v-model:data="formData.type" name="type" placeholder="Endpoint Type"
       :options="['http']"
     />
-    <VTextInput v-model:data="formData.name" name="name" placeholder="Name" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.description" name="description" placeholder="Description" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.url" name="url" placeholder="URL" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.status_code" type="number" name="status_code" placeholder="Status Code" :icon="['fas', 'fa-user-tag']" />
-    <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" :icon="['fas', 'file-code']" />
+    <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
+    <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
+    <VTextInput v-model:data="formData.url" name="url" placeholder="URL" />
+    <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" />
+    <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" />
+    <VTextInput v-model:data="formData.status_code" type="number" name="status_code" placeholder="Status Code" />
+    <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" />
+    <VDropdown
+      v-model:data="formData.notifications" :is-multyselect="true" option-label="name" option-value="id" name="notifications" placeholder="Notifications"
+      :options="notifications"
+    />
     <VButtonSet class="flex-end">
       <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="updateData">
         Save
@@ -331,10 +363,10 @@ export default {
   </VModal>
   <VModal v-model:isActive="isShareModalVissible">
     <VDropdown
-      v-model:data="shareData.permissions" name="permissions" placeholder="Permissions" :icon="['fas', 'flag']"
+      v-model:data="shareData.permissions" name="permissions" placeholder="Permissions"
       :options="['Read', 'Update']"
     />
-    <VTextInput v-model:data="shareData.expiration" type="datetime-local" name="expiration" placeholder="Expiration Date" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="shareData.expiration" type="datetime-local" name="expiration" placeholder="Expiration Date" />
     <div v-if="shareLink" class="shareLinkHolder">
       <VButton :icon="['fas', 'fa-copy']" @on-click="copyShareLink" />
       <p>{{ shareLink }}</p>
@@ -349,6 +381,9 @@ export default {
 </template>
 
 <style>
+main > div {
+  margin: 20px;
+}
 .fa-heart {
   color: rgb(32, 194, 32);
   font-size: 20px;

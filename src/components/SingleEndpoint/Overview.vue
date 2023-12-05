@@ -197,9 +197,11 @@ export default {
 
 <style>
 .endpoint_overview {
-  background-color: white;
+  background-color: var(--main-color);
   border-radius: var(--border-radius);
   margin-bottom: 20px;
+  color: white;
+  font-family: var(--main-font);
 }
 
 .endpoint_overview header,

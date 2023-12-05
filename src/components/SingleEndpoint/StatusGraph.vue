@@ -157,9 +157,11 @@ export default {
 <style>
 .status_graph {
   padding: 20px;
-  background-color: white;
+  background-color: var(--main-color);
   margin-top: 20px;
+  font-family: var(--main-font);
   border-radius: var(--border-radius);
+  color: white;
 }
 
 .status_graph h2 {
@@ -182,6 +184,8 @@ export default {
 
 .stats {
   margin-top: 20px;
+  color: white;
+  font-family: var(--main-font);
 }
 
 .stats ul{
@@ -192,7 +196,7 @@ export default {
 
 .stats ul li {
   padding: 20px;
-  background-color: white;
+  background-color: var(--main-color);
   border-radius: var(--border-radius);
   text-align: center;
 }

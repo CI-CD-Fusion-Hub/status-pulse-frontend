@@ -36,6 +36,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    total_pages: {
+      type: Number,
+      default: 1,
+    },
   },
   data() {
     return {
@@ -43,6 +47,7 @@ export default {
       slots: useSlots(),
     };
   },
+  emits: ['on-page-changed', 'on-search'],
   computed: {
     get_columns() {
       return this.slots.default().filter((obj) => {
@@ -53,17 +58,8 @@ export default {
           return false;
       });
     },
-    total_pages() {
-      return Math.round(this.filtered_items.length / this.pageSize) || 1;
-    },
     get_active_page() {
       return Number.parseInt(this.$route.query.page) || 1;
-    },
-    get_page_items() {
-      if (this.pagination)
-        return this.filtered_items.slice((this.get_active_page - 1) * this.pageSize, this.get_active_page * this.pageSize);
-
-      return this.filtered_items;
     },
     filtered_items() {
       if (this.isSearchable === true) {
@@ -92,14 +88,16 @@ export default {
     vnode(el, row) {
       return h(VRenderColumn, { ...el.props, row }, el.children);
     },
-    change_page(n) {
+    async change_page(n) {
       if (n >= 1 && n <= this.total_pages)
-        this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: n }) });
+        await this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: n }) });
+        this.$emit('on-page-changed', n);
     },
-    filterResults(e) {
-      this.$router.push({ path: this.$route.path, query: this.pagination ? { search: e, page: 1 } : { search: e } });
+    async filterResults(e) {
+      await this.$router.push({ path: this.$route.path, query: this.pagination ? { search: e, page: 1 } : { search: e } });
 
       this.search_text = e.toLowerCase();
+      this.$emit('on-search', this.search_text);
     },
   },
 };
@@ -128,12 +126,12 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr v-if="get_page_items.length === 0">
+        <tr v-if="tableData.length === 0">
           <td colspan="100" class="empty_data">
             <font-awesome-icon :icon="['fas', 'ghost']" /> No Data
           </td>
         </tr>
-        <tr v-for="(row, index) in get_page_items" :key="row">
+        <tr v-for="(row, index) in tableData" :key="row">
           <td v-if="showRowIndex" class="index_row">
             {{ (index + 1) + pageSize * (get_active_page - 1) }}
           </td>

@@ -97,7 +97,7 @@ export default {
 }
 
 .btn-holder button {
-  background-color: var(--main-color);
+  background-color: var(--second-color);
   border: none;
   color: white;
   padding: 10px 10px 7px 10px;
@@ -111,6 +111,7 @@ export default {
 }
 .btn-holder button:hover,
 .btn-holder.active button {
-  background-color: var(--main-color-hover);
+  color: var(--main-color-hover);
+  background-color: white;
 }
 </style>

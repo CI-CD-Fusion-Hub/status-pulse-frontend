@@ -1,9 +1,10 @@
 <script>
 import VTopHeader from './components/VTopHeader.vue';
+import VAsideMenu from './components/VAsideMenu.vue';
 import { useUserStore } from './stores/user';
 
 export default {
-  components: { VTopHeader },
+  components: { VTopHeader,VAsideMenu },
   created() {
     const userInfo = useUserStore();
     if (!window.location.href.includes('/login') && !window.location.href.includes('/logout'))
@@ -13,22 +14,33 @@ export default {
 </script>
 
 <template>
-  <VTopHeader v-if="!$route.path.includes('login')" />
-  <main>
+  <div class="main_container" v-if="!$route.path.includes('login')">
+    <VAsideMenu  />
+    <main>
+      <VTopHeader />
+      <router-view />
+    </main>
+  </div>
+  <div v-else class="login_container">
     <router-view />
-  </main>
-
-  <VNotification />
+  </div>
 </template>
 
 <style>
-main {
-  position: relative;
-  background-color: var(--main-bg-color);
+.main_container {
+  display: grid;
+  grid-template-columns: 200px 1fr;
 }
 
-header + main {
-  max-width: 1600px;
-  margin: 20px auto;
+.login_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
+
+main {
+  position: relative;
+}
+
 </style>

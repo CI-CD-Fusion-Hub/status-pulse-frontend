@@ -60,6 +60,7 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 10;
+  margin: 0;
 }
 
 .modal-holder > div {
@@ -86,7 +87,7 @@ export default {
   width: 30px;
   height: 30px;
   text-align: center;
-  border: solid 1px white;
+  /* border: solid 1px white; */
 }
 
 .modal-holder .input-holder[tooltip-text]::after,
@@ -96,7 +97,7 @@ export default {
   width: 80%;
 }
 
-.modal-holder .btn-set-holder button {
+/* .modal-holder .btn-set-holder button {
   border-top: solid 1px white;
   border-bottom: solid 1px white;
 }
@@ -109,7 +110,7 @@ export default {
 
 .modal-container > .btn-holder button {
   border: solid 1px white;
-}
+} */
 
 @media only screen and (max-width: 500px) {
   .modal-holder > div {

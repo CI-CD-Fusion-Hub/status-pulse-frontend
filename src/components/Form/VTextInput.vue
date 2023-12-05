@@ -15,7 +15,7 @@ export default {
     },
     icon: {
       type: Array,
-      default: () => ['fas', 'users'],
+      default: () => [],
     },
     type: {
       type: String,
@@ -59,17 +59,22 @@ export default {
 
 <style>
 .input-holder {
-  background-color: var(--main-color-hover);
-  color: white;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   position: relative;
   display: flex;
   border: solid 1px transparent;
   align-items: center;
   flex-flow: row-reverse;
-  margin-bottom: 10px;
-  min-width: 250px;
+  margin-bottom: 16px;
   justify-content: flex-end;
+  color: rgba(160, 160, 160, 0.65);
+  font-family: var(--main-font);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+  border: 1px solid rgba(103, 103, 103, 0.23);
+  background: rgba(112, 112, 112, 0.09);
 }
 
 .input-holder svg {
@@ -84,25 +89,35 @@ export default {
   position: absolute;
   left: 0;
   width: calc(100% - 33px);
-  padding-left: 33px;
+  padding-left: 28px;
+  font-size: 16px;
+  line-height: 28px;
+  font-weight: 400;
   z-index: 2;
 }
 
 .input-holder input {
-  background-color: inherit;
+  background-color: transparent;
   border: none;
   outline: none;
   color: white;
   font-size: 16px;
+  padding: 14px 28px;
+  border-radius: var(--border-radius);
   width: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: rgba(160, 160, 160, 0.65);
+  font-family: var(--main-font);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px; /* 175% */
 }
 
 .input-holder input,
 .input-holder svg,
 .input-holder label {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 14px;
+  padding-bottom: 14px;
   cursor: text;
 }
 
@@ -144,4 +159,5 @@ export default {
 .input-holder input[type=number] {
   -moz-appearance: textfield;
 }
+
 </style>

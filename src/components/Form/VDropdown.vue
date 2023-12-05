@@ -33,7 +33,7 @@ export default {
     },
     icon: {
       type: Array,
-      default: () => ['fas', 'flag'],
+      default: () => [],
     },
     isSearchable: {
       type: Boolean,
@@ -199,11 +199,12 @@ export default {
 
 <style>
 .dropdown-holder {
-  background-color: var(--main-color-hover);
+  background-color: rgb(27 32 44);
   color: white;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   position: relative;
   margin-bottom: 10px;
+  border: var(--border-style)
 }
 
 .dropdown-holder svg {
@@ -221,7 +222,7 @@ export default {
 }
 
 .dropdown-holder .drop-down-btn {
-  padding: 10px;
+  padding: 18px;
   display: flex;
   align-items: center;
   gap: 5px;
