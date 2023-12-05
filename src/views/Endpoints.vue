@@ -114,9 +114,9 @@ export default {
     },
     async loadData() {
       this.isLoading = true;
-      
+
       try {
-        console.log(this.$route.query.search)
+        console.log(this.$route.query.search);
         const response = await this.axios({
           method: 'get',
           url: `${this.backendUrl}/endpoints?page=${this.$route.query.page || '1'}&search=${this.$route.query.search || ''}`,
@@ -145,7 +145,7 @@ export default {
           return;
         }
 
-        if (typeof this.formData.response === "string")
+        if (typeof this.formData.response === 'string')
           this.formData.response = JSON.parse(this.formData.response);
 
         const response = await this.axios({
@@ -180,7 +180,7 @@ export default {
           return;
         }
 
-        if (typeof this.formData.response === "string")
+        if (typeof this.formData.response === 'string')
           this.formData.response = JSON.parse(this.formData.response);
 
         const response = await this.axios({
@@ -258,9 +258,8 @@ export default {
       }
     },
     async getNotifications() {
-      
       try {
-        console.log(this.$route.query.search)
+        console.log(this.$route.query.search);
         const response = await this.axios({
           method: 'get',
           url: `${this.backendUrl}/notifications`,
@@ -278,8 +277,10 @@ export default {
 
 <template>
   <div class="endpoints_holder">
-    <VTable :table-data="endpoints.data" :is-loading="isLoading" :pagination="true" :page-size="5" :total_pages="endpoints.pages" 
-    :is-searchable="true" :search-in-columns="['name', 'url']" :show-row-index="true" @on-page-changed="loadData" @on-search="loadData">
+    <VTable
+      :table-data="endpoints.data" :is-loading="isLoading" :pagination="true" :page-size="5" :total_pages="endpoints.pages"
+      :is-searchable="true" :search-in-columns="['name', 'url']" :show-row-index="true" @on-page-changed="loadData" @on-search="loadData"
+    >
       <VColumn header="Type" value="type">
         <template #body="{ row }">
           <span :tooltip-text="row.type" tooltip-position="Top"><font-awesome-icon :icon="typeIcons[row.type]" /></span>
@@ -322,8 +323,8 @@ export default {
     <VDropdown
       v-model:data="formData.type" name="type" placeholder="Endpoint Type" :options="['http']"
     />
-    <VTextInput v-model:data="formData.name" name="name" placeholder="Name"/>
-    <VTextInput v-model:data="formData.description" name="description" placeholder="Description"/>
+    <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
+    <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
     <VTextInput v-model:data="formData.url" name="url" placeholder="URL" />
     <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" />
     <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" />

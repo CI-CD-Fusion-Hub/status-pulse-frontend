@@ -1,10 +1,9 @@
 <script>
 import { useNotifyStore } from '../stores/notifications';
 import { useUserStore } from '../stores/user';
-import VButton from './VButton.vue';
 
 export default {
-  components: { VButton },
+  components: { },
   props: {},
   data() {
     return {
@@ -29,7 +28,9 @@ export default {
 
 <template>
   <header class="top_header">
-    <div class="logo_container"><img src="/logo2.png" alt="logo"></div>
+    <div class="logo_container">
+      <img src="/logo2.png" alt="logo">
+    </div>
     <div class="user_profile">
       {{ userInfo.email }}
       <!-- <VButton :icon="['fas', 'arrow-right-from-bracket']" @on-click="logout" /> -->

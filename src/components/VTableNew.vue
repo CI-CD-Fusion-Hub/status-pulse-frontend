@@ -36,18 +36,18 @@ export default {
       type: Array,
       default: () => [],
     },
-    total_pages: {
+    totalPages: {
       type: Number,
       default: 1,
     },
   },
+  emits: ['onPageChanged', 'onSearch'],
   data() {
     return {
       search_text: this.$route?.query.search || '',
       slots: useSlots(),
     };
   },
-  emits: ['on-page-changed', 'on-search'],
   computed: {
     get_columns() {
       return this.slots.default().filter((obj) => {
@@ -89,15 +89,15 @@ export default {
       return h(VRenderColumn, { ...el.props, row }, el.children);
     },
     async change_page(n) {
-      if (n >= 1 && n <= this.total_pages)
+      if (n >= 1 && n <= this.totalPages)
         await this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: n }) });
-        this.$emit('on-page-changed', n);
+      this.$emit('onPageChanged', n);
     },
     async filterResults(e) {
       await this.$router.push({ path: this.$route.path, query: this.pagination ? { search: e, page: 1 } : { search: e } });
 
       this.search_text = e.toLowerCase();
-      this.$emit('on-search', this.search_text);
+      this.$emit('onSearch', this.search_text);
     },
   },
 };
@@ -146,11 +146,11 @@ export default {
         </tr>
       </tbody>
     </table>
-    <nav v-if="pagination && total_pages > 1" class="pagination_holder">
+    <nav v-if="pagination && totalPages > 1" class="pagination_holder">
       <VButton :icon="['fas', 'chevron-left']" tooltip-text="Prev" @on-click="change_page(get_active_page - 1)" />
       <VButtonSet>
         <VButton
-          v-for="n in total_pages" :key="n" :is-active="get_active_page === n ? true : false"
+          v-for="n in totalPages" :key="n" :is-active="get_active_page === n ? true : false"
           @on-click="change_page(n)"
         >
           {{ n }}

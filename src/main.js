@@ -1,11 +1,12 @@
 import { createApp } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSlack, faRocketchat } from '@fortawesome/free-brands-svg-icons';
+import { faSlack } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowRightFromBracket,
   faArrowsRotate,
   faAt,
   faBan,
+  faBell,
   faChartColumn,
   faCheck,
   faChevronDown,
@@ -55,7 +56,6 @@ import {
   faUserTag,
   faUsers,
   faXmark,
-  faBell,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { createPinia } from 'pinia';

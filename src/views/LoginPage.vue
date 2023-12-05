@@ -99,7 +99,9 @@ export default {
 <template>
   <div class="login_holder">
     <div class="text_holder">
-      <div class="logo_holder"><img src="/logo2.png" alt="logo" /></div>
+      <div class="logo_holder">
+        <img src="/logo2.png" alt="logo">
+      </div>
       <h1>Sign in to <br>Status-Pulse</h1>
       <p>Check out our new font generator and level up your social </p>
       <p>Don't have an account? <a href="#" title="sign up">Sign up</a></p>
@@ -117,7 +119,7 @@ export default {
         type="password"
       />
       <div class="remember_me">
-        <label for="remember_me"><input type="checkbox" name="remember_me" id="remember_me" />Remember me</label>
+        <label for="remember_me"><input id="remember_me" type="checkbox" name="remember_me">Remember me</label>
         <div><a href="#" title="Forgot password">Forgot password</a></div>
       </div>
       <VButton

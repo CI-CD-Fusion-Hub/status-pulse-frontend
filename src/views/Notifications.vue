@@ -2,7 +2,6 @@
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, required, requiredIf } from '@vuelidate/validators';
 import VTextInput from '../components/Form/VTextInput.vue';
-import VTextArea from '../components/Form/VTextArea.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
 import VButtonSet from '../components/VButtonSet.vue';
 import VButton from '../components/VButton.vue';
@@ -14,7 +13,6 @@ import { useUserStore } from '../stores/user';
 
 export default {
   components: {
-    VTextArea,
     VTextInput,
     VDropdown,
     VButton,
@@ -42,14 +40,14 @@ export default {
         description: undefined,
         type: undefined,
         properties: {
-            SMTPHost: undefined,
-            SMTPPort: undefined,
-            SMTPFrom: undefined,
-            SMTPTo: undefined,
-            URL: undefined,
-            Channel: undefined,
-            Username: undefined
-        }
+          SMTPHost: undefined,
+          SMTPPort: undefined,
+          SMTPFrom: undefined,
+          SMTPTo: undefined,
+          URL: undefined,
+          Channel: undefined,
+          Username: undefined,
+        },
       },
       shareData: {},
       typeIcons: {
@@ -68,14 +66,14 @@ export default {
           required: helpers.withMessage('Type field cannot be empty.', required),
         },
         properties: {
-            SMTPHost: helpers.withMessage('SMTPHost field cannot be empty.', requiredIf(this.formData.type === 'email')),
-            SMTPPort: helpers.withMessage('SMTPPort field cannot be empty.', requiredIf(this.formData.type === 'email')),
-            SMTPFrom: helpers.withMessage('SMTPFrom field cannot be empty.', requiredIf(this.formData.type === 'email')),
-            SMTPTo: helpers.withMessage('SMTPTo field cannot be empty.', requiredIf(this.formData.type === 'email')),
-            URL: helpers.withMessage('URL field cannot be empty.', requiredIf(this.formData.type === 'mattermost')),
-            Channel: helpers.withMessage('Channel field cannot be empty.', requiredIf(this.formData.type === 'mattermost')),
-            Username: helpers.withMessage('Username field cannot be empty.', requiredIf(this.formData.type === 'mattermost')),
-        }
+          SMTPHost: helpers.withMessage('SMTPHost field cannot be empty.', requiredIf(this.formData.type === 'email')),
+          SMTPPort: helpers.withMessage('SMTPPort field cannot be empty.', requiredIf(this.formData.type === 'email')),
+          SMTPFrom: helpers.withMessage('SMTPFrom field cannot be empty.', requiredIf(this.formData.type === 'email')),
+          SMTPTo: helpers.withMessage('SMTPTo field cannot be empty.', requiredIf(this.formData.type === 'email')),
+          URL: helpers.withMessage('URL field cannot be empty.', requiredIf(this.formData.type === 'mattermost')),
+          Channel: helpers.withMessage('Channel field cannot be empty.', requiredIf(this.formData.type === 'mattermost')),
+          Username: helpers.withMessage('Username field cannot be empty.', requiredIf(this.formData.type === 'mattermost')),
+        },
       },
     };
   },
@@ -103,9 +101,9 @@ export default {
     },
     async loadData() {
       this.isLoading = true;
-      
+
       try {
-        console.log(this.$route.query.search)
+        console.log(this.$route.query.search);
         const response = await this.axios({
           method: 'get',
           url: `${this.backendUrl}/notifications`,
@@ -205,7 +203,7 @@ export default {
         this.isLoading = false;
       }
     },
-  }
+  },
 };
 </script>
 
@@ -221,7 +219,9 @@ export default {
       <VColumn header="Description" value="description" />
       <VColumn header="Properties" value="properties">
         <template #body="{ row }">
-          <div v-for="(value, name) in row.properties" :key="name">{{ name }}: {{ value }}</div>
+          <div v-for="(value, name) in row.properties" :key="name">
+            {{ name }}: {{ value }}
+          </div>
         </template>
       </VColumn>
       <VColumn header="Actions" value="actions">

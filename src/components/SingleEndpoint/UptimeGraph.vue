@@ -1,6 +1,5 @@
 <script>
 import { useVuelidate } from '@vuelidate/core';
-import VModal from '../../components/VModal.vue';
 import VTable from '../../components/VTable.vue';
 import VColumn from '../../components/VColumn.vue';
 import VTag from '../../components/VTag.vue';

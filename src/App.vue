@@ -4,7 +4,7 @@ import VAsideMenu from './components/VAsideMenu.vue';
 import { useUserStore } from './stores/user';
 
 export default {
-  components: { VTopHeader,VAsideMenu },
+  components: { VTopHeader, VAsideMenu },
   created() {
     const userInfo = useUserStore();
     if (!window.location.href.includes('/login') && !window.location.href.includes('/logout'))
@@ -14,8 +14,8 @@ export default {
 </script>
 
 <template>
-  <div class="main_container" v-if="!$route.path.includes('login')">
-    <VAsideMenu  />
+  <div v-if="!$route.path.includes('login')" class="main_container">
+    <VAsideMenu />
     <main>
       <VTopHeader />
       <router-view />
@@ -42,5 +42,4 @@ export default {
 main {
   position: relative;
 }
-
 </style>
