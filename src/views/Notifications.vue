@@ -241,21 +241,20 @@ export default {
     </VButton>
   </div>
   <VModal v-model:isActive="isAddModalVissible">
-    <VTextInput v-model:data="formData.name" name="name" placeholder="Name" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-model:data="formData.description" name="discription" placeholder="Discription" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
+    <VTextInput v-model:data="formData.description" name="discription" placeholder="Discription" />
     <VDropdown
-      v-model:data="formData.type" name="type" placeholder="Notification Type" :icon="['fas', 'flag']"
-      :options="['email', 'mattermost']"
+      v-model:data="formData.type" name="type" placeholder="Notification Type" :options="['email', 'mattermost']"
     />
-    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.SMTPHost" name="SMTPHost" placeholder="SMTP Host" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.SMTPPort" name="SMTPPort" placeholder="SMTP Port" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.SMTPFrom" name="SMTPFrom" placeholder="SMTP From" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.SMTPTo" name="SMTPTo" placeholder="SMTP To" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.AuthEmail" name="AuthEmail" placeholder="SMTP Auth User" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.AuthPassword" name="AuthPassword" placeholder="SMTP Auth Password" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-if="formData.type === 'mattermost'" v-model:data="formData.properties.URL" name="URL" placeholder="URL" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-if="formData.type === 'mattermost'" v-model:data="formData.properties.Channel" name="Channel" placeholder="Channel" :icon="['fas', 'fa-user-tag']" />
-    <VTextInput v-if="formData.type === 'mattermost'" v-model:data="formData.properties.Username" name="Username" placeholder="Username" :icon="['fas', 'fa-user-tag']" />
+    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.SMTPHost" name="SMTPHost" placeholder="SMTP Host" />
+    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.SMTPPort" name="SMTPPort" placeholder="SMTP Port" />
+    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.SMTPFrom" name="SMTPFrom" placeholder="SMTP From" />
+    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.SMTPTo" name="SMTPTo" placeholder="SMTP To" />
+    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.AuthEmail" name="AuthEmail" placeholder="SMTP Auth User" />
+    <VTextInput v-if="formData.type === 'email'" v-model:data="formData.properties.AuthPassword" name="AuthPassword" placeholder="SMTP Auth Password" />
+    <VTextInput v-if="formData.type === 'mattermost'" v-model:data="formData.properties.URL" name="URL" placeholder="URL" />
+    <VTextInput v-if="formData.type === 'mattermost'" v-model:data="formData.properties.Channel" name="Channel" placeholder="Channel" />
+    <VTextInput v-if="formData.type === 'mattermost'" v-model:data="formData.properties.Username" name="Username" placeholder="Username" />
     <VButtonSet class="flex-end">
       <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="addData">
         Add
