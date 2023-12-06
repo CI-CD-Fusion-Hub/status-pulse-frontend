@@ -1,14 +1,16 @@
 <script>
 import { useVuelidate } from '@vuelidate/core';
-import VOverview from '../components/SingleEndpoint/Overview.vue';
-import VStatusGraph from '../components/SingleEndpoint/StatusGraph.vue';
-import VUptimeGraph from '../components/SingleEndpoint/UptimeGraph.vue';
+import VOverview from '../components/SingleEndpoint/VOverview.vue';
+import VStatusGraph from '../components/SingleEndpoint/VStatusGraph.vue';
+import VUptimeGraph from '../components/SingleEndpoint/VUptimeGraph.vue';
+import VAlerts from '../components/SingleEndpoint/VAlerts.vue';
 
 export default {
   components: {
     VOverview,
     VStatusGraph,
     VUptimeGraph,
+    VAlerts,
   },
   setup() {
     return { v$: useVuelidate() };
@@ -26,6 +28,7 @@ export default {
   <VOverview />
   <VUptimeGraph />
   <VStatusGraph />
+  <VAlerts />
 </template>
 
 <style>

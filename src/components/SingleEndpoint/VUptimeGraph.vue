@@ -1,8 +1,8 @@
 <script>
 import { useVuelidate } from '@vuelidate/core';
-import VTable from '../../components/VTable.vue';
-import VColumn from '../../components/VColumn.vue';
-import VTag from '../../components/VTag.vue';
+import VTable from '../VTable.vue';
+import VColumn from '../VColumn.vue';
+import VTag from '../VTag.vue';
 import { useUserStore } from '../../stores/user';
 
 export default {

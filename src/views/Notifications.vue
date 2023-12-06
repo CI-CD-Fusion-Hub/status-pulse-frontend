@@ -51,8 +51,8 @@ export default {
       },
       shareData: {},
       typeIcons: {
-        email: ['fas', 'globe'],
-        mattermost: ['fas', 'globe'],
+        email: ['fas', 'fa-envelope'],
+        mattermost: ['fas', 'fa-message'],
       },
     };
   },

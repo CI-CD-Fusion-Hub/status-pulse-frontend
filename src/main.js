@@ -7,6 +7,8 @@ import {
   faAt,
   faBan,
   faBell,
+  faBellSlash,
+  faBullhorn,
   faChartColumn,
   faCheck,
   faChevronDown,
@@ -15,6 +17,7 @@ import {
   faCircleExclamation,
   faCircleInfo,
   faCopy,
+  faEnvelope,
   faEye,
   faFileCode,
   faFilePen,
@@ -32,6 +35,7 @@ import {
   faHeartPulse,
   faKey,
   faMagnifyingGlass,
+  faMessage,
   faPause,
   faPenToSquare,
   faPersonPraying,
@@ -121,6 +125,10 @@ library.add(faShareNodes);
 library.add(faCopy);
 library.add(faSlack);
 library.add(faBell);
+library.add(faMessage);
+library.add(faEnvelope);
+library.add(faBellSlash);
+library.add(faBullhorn);
 
 axios.defaults.withCredentials = true;
 
