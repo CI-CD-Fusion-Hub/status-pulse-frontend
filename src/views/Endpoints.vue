@@ -278,7 +278,7 @@ export default {
 <template>
   <div class="endpoints_holder">
     <VTable
-      :table-data="endpoints.data" :is-loading="isLoading" :pagination="true" :page-size="5" :total_pages="endpoints.pages"
+      :table-data="endpoints.data" :is-loading="isLoading" :pagination="true" :page-size="5" :total-pages="endpoints.pages"
       :is-searchable="true" :search-in-columns="['name', 'url']" :show-row-index="true" @on-page-changed="loadData" @on-search="loadData"
     >
       <VColumn header="Type" value="type">

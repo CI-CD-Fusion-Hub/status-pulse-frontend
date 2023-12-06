@@ -49,7 +49,7 @@ export default {
     };
   },
   computed: {
-    get_columns() {
+    getColumns() {
       return this.slots.default().filter((obj) => {
         if (obj.props)
           return true;
@@ -58,37 +58,15 @@ export default {
           return false;
       });
     },
-    get_active_page() {
+    getActivePage() {
       return Number.parseInt(this.$route.query.page) || 1;
-    },
-    filtered_items() {
-      if (this.isSearchable === true) {
-        return this.tableData.filter((item) => {
-          let item_match = false;
-          const search = this.search_text.toLowerCase();
-
-          this.searchInColumns.forEach((element) => {
-            if (!(element in item)) {
-              console.log('Please, select valid column name that should be used for filtering.');
-              return;
-            }
-
-            if (item[element].toLowerCase().includes(search))
-              item_match = true;
-          });
-
-          return item_match;
-        });
-      }
-
-      return this.tableData;
     },
   },
   methods: {
     vnode(el, row) {
       return h(VRenderColumn, { ...el.props, row }, el.children);
     },
-    async change_page(n) {
+    async changePage(n) {
       if (n >= 1 && n <= this.totalPages)
         await this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: n }) });
       this.$emit('onPageChanged', n);
@@ -120,7 +98,7 @@ export default {
           <th v-if="showRowIndex" class="index_row">
             #
           </th>
-          <th v-for="el in get_columns" :key="el.props.header">
+          <th v-for="el in getColumns" :key="el.props.header">
             {{ el.props.header }}
           </th>
         </tr>
@@ -133,9 +111,9 @@ export default {
         </tr>
         <tr v-for="(row, index) in tableData" :key="row">
           <td v-if="showRowIndex" class="index_row">
-            {{ (index + 1) + pageSize * (get_active_page - 1) }}
+            {{ (index + 1) + pageSize * (getActivePage - 1) }}
           </td>
-          <td v-for="el in get_columns" :key="`slot-${el.props?.header ?? ''}-${idx}`">
+          <td v-for="el in getColumns" :key="`slot-${el.props?.header ?? ''}-${idx}`">
             <template v-if="!el.children">
               {{ row[el.props.value] ?? '' }}
             </template>
@@ -147,16 +125,16 @@ export default {
       </tbody>
     </table>
     <nav v-if="pagination && totalPages > 1" class="pagination_holder">
-      <VButton :icon="['fas', 'chevron-left']" tooltip-text="Prev" @on-click="change_page(get_active_page - 1)" />
+      <VButton :icon="['fas', 'chevron-left']" tooltip-text="Prev" @on-click="changePage(getActivePage - 1)" />
       <VButtonSet>
         <VButton
-          v-for="n in totalPages" :key="n" :is-active="get_active_page === n ? true : false"
-          @on-click="change_page(n)"
+          v-for="n in totalPages" :key="n" :is-active="getActivePage === n ? true : false"
+          @on-click="changePage(n)"
         >
           {{ n }}
         </VButton>
       </VButtonSet>
-      <VButton :icon="['fas', 'chevron-right']" tooltip-text="Next" @on-click="change_page(get_active_page + 1)" />
+      <VButton :icon="['fas', 'chevron-right']" tooltip-text="Next" @on-click="changePage(getActivePage + 1)" />
     </nav>
   </div>
 </template>

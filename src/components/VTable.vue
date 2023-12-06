@@ -44,7 +44,7 @@ export default {
     };
   },
   computed: {
-    get_columns() {
+    getColumns() {
       return this.slots.default().filter((obj) => {
         if (obj.props)
           return true;
@@ -53,15 +53,15 @@ export default {
           return false;
       });
     },
-    total_pages() {
+    totalPages() {
       return Math.round(this.filtered_items.length / this.pageSize) || 1;
     },
-    get_active_page() {
+    getActivePage() {
       return Number.parseInt(this.$route.query.page) || 1;
     },
-    get_page_items() {
+    getPageItems() {
       if (this.pagination)
-        return this.filtered_items.slice((this.get_active_page - 1) * this.pageSize, this.get_active_page * this.pageSize);
+        return this.filtered_items.slice((this.getActivePage - 1) * this.pageSize, this.getActivePage * this.pageSize);
 
       return this.filtered_items;
     },
@@ -92,8 +92,8 @@ export default {
     vnode(el, row) {
       return h(VRenderColumn, { ...el.props, row }, el.children);
     },
-    change_page(n) {
-      if (n >= 1 && n <= this.total_pages)
+    changePage(n) {
+      if (n >= 1 && n <= this.totalPages)
         this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: n }) });
     },
     filterResults(e) {
@@ -122,22 +122,22 @@ export default {
           <th v-if="showRowIndex" class="index_row">
             #
           </th>
-          <th v-for="el in get_columns" :key="el.props.header">
+          <th v-for="el in getColumns" :key="el.props.header">
             {{ el.props.header }}
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-if="get_page_items.length === 0">
+        <tr v-if="getPageItems.length === 0">
           <td colspan="100" class="empty_data">
             <font-awesome-icon :icon="['fas', 'ghost']" /> No Data
           </td>
         </tr>
-        <tr v-for="(row, index) in get_page_items" :key="row">
+        <tr v-for="(row, index) in getPageItems" :key="row">
           <td v-if="showRowIndex" class="index_row">
-            {{ (index + 1) + pageSize * (get_active_page - 1) }}
+            {{ (index + 1) + pageSize * (getActivePage - 1) }}
           </td>
-          <td v-for="el in get_columns" :key="`slot-${el.props?.header ?? ''}-${idx}`">
+          <td v-for="el in getColumns" :key="`slot-${el.props?.header ?? ''}-${idx}`">
             <template v-if="!el.children">
               {{ row[el.props.value] ?? '' }}
             </template>
@@ -148,17 +148,17 @@ export default {
         </tr>
       </tbody>
     </table>
-    <nav v-if="pagination && total_pages > 1" class="pagination_holder">
-      <VButton :icon="['fas', 'chevron-left']" tooltip-text="Prev" @on-click="change_page(get_active_page - 1)" />
+    <nav v-if="pagination && totalPages > 1" class="pagination_holder">
+      <VButton :icon="['fas', 'chevron-left']" tooltip-text="Prev" @on-click="changePage(getActivePage - 1)" />
       <VButtonSet>
         <VButton
-          v-for="n in total_pages" :key="n" :is-active="get_active_page === n ? true : false"
-          @on-click="change_page(n)"
+          v-for="n in totalPages" :key="n" :is-active="getActivePage === n ? true : false"
+          @on-click="changePage(n)"
         >
           {{ n }}
         </VButton>
       </VButtonSet>
-      <VButton :icon="['fas', 'chevron-right']" tooltip-text="Next" @on-click="change_page(get_active_page + 1)" />
+      <VButton :icon="['fas', 'chevron-right']" tooltip-text="Next" @on-click="changePage(getActivePage + 1)" />
     </nav>
   </div>
 </template>

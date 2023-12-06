@@ -226,7 +226,9 @@ export default {
 
 .uptime_graph li.uptime_item.true {
   outline: auto;
-  outline-color: var(--main-color);
+  outline-color: rgb(184 74 5);
+  outline-style: solid;
+  z-index: 3;
 }
 
 .uptime_graph h2 {
