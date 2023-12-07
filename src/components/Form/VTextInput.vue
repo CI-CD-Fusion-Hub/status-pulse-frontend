@@ -88,8 +88,8 @@ export default {
 .input-holder label {
   position: absolute;
   left: 0;
-  width: calc(100% - 33px);
-  padding-left: 28px;
+  width: calc(100% - 16px);
+  padding-left: 16px;
   font-size: 16px;
   line-height: 28px;
   font-weight: 400;
@@ -102,10 +102,9 @@ export default {
   outline: none;
   color: white;
   font-size: 16px;
-  padding: 14px 28px;
+  padding: 14px 16px;
   border-radius: var(--border-radius);
   width: 100%;
-  color: rgba(160, 160, 160, 0.65);
   font-family: var(--main-font);
   font-size: 16px;
   font-style: normal;

@@ -34,10 +34,12 @@ import {
   faHeartCrack,
   faHeartPulse,
   faKey,
+  faLock,
   faMagnifyingGlass,
   faMessage,
   faPause,
   faPenToSquare,
+  faPeopleGroup,
   faPersonPraying,
   faPhone,
   faPlay,
@@ -129,6 +131,8 @@ library.add(faMessage);
 library.add(faEnvelope);
 library.add(faBellSlash);
 library.add(faBullhorn);
+library.add(faPeopleGroup);
+library.add(faLock);
 
 axios.defaults.withCredentials = true;
 

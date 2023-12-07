@@ -431,4 +431,8 @@ main > div {
   0%,100% { opacity: 0 }
   50% { opacity: 1 }
 }
+
+.endpoints_holder .input-holder label {
+  padding-left: 38px;
+}
 </style>

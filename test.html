@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop with Improved Visual Effects</title>
+    <style>
+        .drag-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drag-div {
+            width: 200px;
+            height: 50px;
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            margin: 5px;
+            user-drag: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .drag-div.dragging {
+            border: 2px dashed #3498db;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="drag-container">
+        <div class="drag-div" draggable="true">Item 1</div>
+        <div class="drag-div" draggable="true">Item 2</div>
+        <div class="drag-div" draggable="true">Item 3</div>
+        <div class="drag-div" draggable="true">Item 4</div>
+    </div>
+
+    <script>
+        const dragContainer = document.querySelector('.drag-container');
+        let draggedElement = null;
+
+        dragContainer.addEventListener('dragstart', (e) => {
+            draggedElement = e.target;
+            e.dataTransfer.setData('text/plain', e.target.innerText);
+            e.target.classList.add('dragging');
+        });
+
+        dragContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const targetElement = getDragAfterElement(dragContainer, e.clientY);
+            const isSameElement = targetElement === draggedElement;
+
+            if (!isSameElement) {
+                dragContainer.insertBefore(draggedElement, targetElement);
+            }
+        });
+
+        dragContainer.addEventListener('dragend', (e) => {
+            draggedElement.classList.remove('dragging');
+            draggedElement = null;
+        });
+
+        function getDragAfterElement(container, mouseY) {
+            const draggableElements = [...container.querySelectorAll('.drag-div:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = mouseY - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+    </script>
+</body>
+</html>

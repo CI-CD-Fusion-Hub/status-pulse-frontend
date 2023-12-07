@@ -10,17 +10,17 @@ export default {
       userInfo: useUserStore(),
       asideMenuRoutes: [
         {
+          path: '/dashboards',
+          icon: ['fas', 'gauge'],
+          label: 'Dashboards',
+          requiredAccessLevel: ['User', 'Admin'],
+        },
+        {
           path: '/endpoints',
           icon: ['fas', 'sitemap'],
           label: 'Endpoints',
           requiredAccessLevel: ['User', 'Admin'],
         },
-        // {
-        //   path: '/dashboards',
-        //   icon: ['fas', 'gauge'],
-        //   label: 'Dashboards',
-        //   requiredAccessLevel: ['User', 'Admin'],
-        // },
         {
           path: '/notifications',
           icon: ['fas', 'bell'],
@@ -101,22 +101,31 @@ export default {
   z-index: 10;
   flex-flow: column nowrap;
   display: flex;
-  width: 200px;
-  border-right: var(--border-style)
+  width: 160px;
+  padding: 0 20px;
+  gap: 10px;
+  border-right: var(--border-style);
+  list-style: none;
+}
+
+.aside_menu ul li:first-child {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
 }
 
 .aside_menu > ul > li:last-child {
   margin-top: auto;
 }
 
-.aside_menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.aside_menu > ul > li:hover:last-child {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .aside_menu ul li {
   transition: background-color 300ms;
+  border-radius: var(--border-radius);
+  overflow: hidden;
 }
 
 .aside_menu ul li:hover,
@@ -128,13 +137,14 @@ export default {
   display: none;
 }
 
-.aside_menu a {
+.aside_menu ul li a {
   text-decoration: none;
   color: #fff;
   padding: 15px;
+  font-size: 15px;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
 }
 .aside_menu svg {
   min-width: 20px;
