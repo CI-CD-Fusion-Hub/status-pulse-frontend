@@ -37,7 +37,7 @@ export default {
 
       return date.getTime();
     },
-  }
+  },
 };
 </script>
 

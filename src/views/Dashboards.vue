@@ -1,12 +1,9 @@
 <script>
 import { useVuelidate } from '@vuelidate/core';
-import { helpers, required, requiredIf } from '@vuelidate/validators';
 import VTextInput from '../components/Form/VTextInput.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
 import VButtonSet from '../components/VButtonSet.vue';
 import VButton from '../components/VButton.vue';
-import VTable from '../components/VTableNew.vue';
-import VColumn from '../components/VColumn.vue';
 import VModal from '../components/VModal.vue';
 import { useNotifyStore } from '../stores/notifications';
 import { useUserStore } from '../stores/user';
@@ -17,8 +14,6 @@ export default {
     VDropdown,
     VButton,
     VButtonSet,
-    VColumn,
-    VTable,
     VModal,
   },
   setup() {
@@ -55,15 +50,18 @@ export default {
       },
     };
   },
+  async created() {
+    await this.loadData();
+  },
   methods: {
-    async showAddModal(){
+    async showAddModal() {
       this.isAddModalVissible = true;
-      await this.getEndpoints()
+      await this.getEndpoints();
     },
-    async showEditModal(data){
+    async showEditModal(data) {
       Object.assign(this.formData, data);
       this.isEditModalVissible = true;
-      await this.getEndpoints()
+      await this.getEndpoints();
     },
     async loadData() {
       this.isLoading = true;
@@ -161,72 +159,73 @@ export default {
       this.isLoading = false;
     },
   },
-  async created() {
-    await this.loadData();
-  },
 };
 </script>
 
 <template>
-<div class="dashboards_holder">
-  <div class="search_holder">
-    <VTextInput :data="[]" name="search" placeholder="Search..."/>
-    <VButton :icon="['fas', 'fa-plus']" @on-click="showAddModal">Add</VButton>
-  </div>
-  <ul v-if="dashboards?.length > 0" class="dashboard_cards">
-    <li v-for="item in dashboards" :key="item" :class="`card ${item}`">
+  <div class="dashboards_holder">
+    <div class="search_holder">
+      <VTextInput :data="[]" name="search" placeholder="Search..." />
+      <VButton :icon="['fas', 'fa-plus']" @on-click="showAddModal">
+        Add
+      </VButton>
+    </div>
+    <ul v-if="dashboards?.length > 0" class="dashboard_cards">
+      <li v-for="item in dashboards" :key="item" :class="`card ${item}`">
         <header>
           <h2 :tooltip-text="item.scope" tooltip-position="top">
-            <font-awesome-icon v-if="item.scope === 'Private'" :icon="['fas', 'fa-lock']"/>
-            <font-awesome-icon v-else :icon="['fas', 'fa-people-group']"/>
+            <font-awesome-icon v-if="item.scope === 'Private'" :icon="['fas', 'fa-lock']" />
+            <font-awesome-icon v-else :icon="['fas', 'fa-people-group']" />
             <span>{{ item.name }}</span>
           </h2>
           <VButtonSet>
-            <VButton :icon="['fas', 'fa-eye']" tooltipText="View" :link-to="{ name: 'SingleDashboard', params: { dashboard_id: item.id } }" />
-            <VButton :icon="['fas', 'fa-edit']" tooltipText="Edit" @on-click="showEditModal(item)" />
-            <VButton :icon="['fas', 'fa-trash']" tooltipText="Delete" @on-click="deleteData(item.id)" />
+            <VButton :icon="['fas', 'fa-eye']" tooltip-text="View" :link-to="{ name: 'SingleDashboard', params: { dashboard_id: item.id } }" />
+            <VButton :icon="['fas', 'fa-edit']" tooltip-text="Edit" @on-click="showEditModal(item)" />
+            <VButton :icon="['fas', 'fa-trash']" tooltip-text="Delete" @on-click="deleteData(item.id)" />
           </VButtonSet>
         </header>
         <p>{{ item.description }}</p>
         <ul class="endpoints">
-          <li v-for="endpoint in item.endpoints" :key="endpoint"><font-awesome-icon :icon="statusIcons[endpoint.status]" :tooltip-text="endpoint.status"/><a href="#" :title="endpoint.url">{{ endpoint.url }}</a></li>
+          <li v-for="endpoint in item.endpoints" :key="endpoint">
+            <font-awesome-icon :icon="statusIcons[endpoint.status]" :tooltip-text="endpoint.status" /><a href="#" :title="endpoint.url">{{ endpoint.url }}</a>
+          </li>
         </ul>
-    </li>
-  </ul>
-  <div v-else class="loader">
-    <font-awesome-icon :icon="['fas', 'spinner']" spin />
+      </li>
+    </ul>
+    <div v-else class="loader">
+      <font-awesome-icon :icon="['fas', 'spinner']" spin />
+    </div>
   </div>
-</div>
-<VModal v-model:isActive="isAddModalVissible">
-  <VDropdown
-    v-model:data="formData.scope" name="scope" placeholder="Scope" :options="['Public', 'Private']"
-  />
-  <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
-  <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
-  <VDropdown
-    v-model:data="formData.endpoints" name="type" placeholder="Endpoints" :options="endpoints" optionLabel="name" optionValue="id" :isMultyselect="true"
-  />
-  <VButtonSet class="flex-end">
-    <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="addData">
-      Add
-    </VButton>
-  </VButtonSet>
-</VModal>
-<VModal v-model:isActive="isEditModalVissible">
-  <VDropdown
-    v-model:data="formData.scope" name="scope" placeholder="Scope" :options="['Public', 'Private']"
-  />
-  <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
-  <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
-  <VDropdown
-    v-model:data="formData.endpoints" name="type" placeholder="Endpoints" :options="endpoints" optionLabel="name" optionValue="id" :isMultyselect="true"
-  />
-  <VButtonSet class="flex-end">
-    <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="updateData">
-      Save
-    </VButton>
-  </VButtonSet>
-</VModal>
+  <VModal v-model:isActive="isAddModalVissible">
+    <VDropdown
+      v-model:data="formData.scope" name="scope" placeholder="Scope" :options="['Public', 'Private']"
+    />
+    <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
+    <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
+    <VDropdown
+      v-model:data="formData.endpoints" name="type" placeholder="Endpoints" :options="endpoints" option-label="name" option-value="id" :is-multyselect="true"
+    />
+    <VButtonSet class="flex-end">
+      <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="addData">
+        Add
+      </VButton>
+    </VButtonSet>
+  </VModal>
+  <VModal v-model:isActive="isEditModalVissible">
+    <VDropdown
+      v-model:data="formData.scope" name="scope" placeholder="Scope" :options="['Public', 'Private']"
+    />
+    <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
+    <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
+    <VDropdown
+      v-model:data="formData.endpoints" name="type" placeholder="Endpoints" :options="endpoints" option-label="name" option-value="id" :is-multyselect="true"
+    />
+    <VButtonSet class="flex-end">
+      <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="updateData">
+        Save
+      </VButton>
+    </VButtonSet>
+  </VModal>
 </template>
 
 <style>

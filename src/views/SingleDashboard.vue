@@ -1,26 +1,12 @@
-<template>
-  <div id="app">
-    <DraggableContainer @item-dropped="reorderItems">
-      <VUptimeGraph
-        class="drag-div"
-        v-for="(item, index) in dashboards"
-        :data="item"
-        :key="index"
-        :draggable="true"
-        @dragstart="dragStart(index)"
-        @dragover="dragOver"
-        @drop="drop(index)"
-        @dragend="dragEnd"
-      />
-    </DraggableContainer>
-  </div>
-</template>
-
 <script>
 import DraggableContainer from '../components/DraggableContainer.vue';
 import VUptimeGraph from '../components/VUptimeGraph.vue';
 
 export default {
+  components: {
+    DraggableContainer,
+    VUptimeGraph,
+  },
   data() {
     return {
       backendUrl: import.meta.env.VITE_backendUrl,
@@ -29,10 +15,6 @@ export default {
       itemTo: null,
       dashboards: [],
     };
-  },
-  components: {
-    DraggableContainer,
-    VUptimeGraph
   },
   async created() {
     this.loadData();
@@ -48,7 +30,7 @@ export default {
           url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}`,
         });
 
-        this.dashboards = response.data.data;
+        this.dashboards = response.data.data.endpoints;
       }
       catch (error) {
         console.log('Unable to get authentication method.');
@@ -57,25 +39,42 @@ export default {
       this.isLoading = false;
     },
     reorderItems() {
-      const movedItem = this.items.splice(this.itemFrom, 1)[0];
-      this.items.splice(this.itemTo, 0, movedItem);
+      const movedItem = this.dashboards.splice(this.itemFrom, 1)[0];
+      this.dashboards.splice(this.itemTo, 0, movedItem);
     },
     dragStart(index) {
-      console.log("FROMT: " + index)
-      this.itemFrom = index
+      console.log(`FROMT: ${index}`);
+      this.itemFrom = index;
     },
     dragOver(event) {
       event.preventDefault();
     },
     drop(index) {
-      this.itemTo = index
+      console.log(`TO: ${index}`);
+      this.itemTo = index;
     },
     dragEnd() {
-      this.reorderItems()
+      this.reorderItems();
     },
   },
 };
 </script>
+
+<template>
+  <DraggableContainer @item-dropped="reorderItems">
+    <VUptimeGraph
+      v-for="(item, index) in dashboards"
+      :key="index"
+      class="drag-div"
+      :data="item"
+      :draggable="true"
+      @dragstart="dragStart(index)"
+      @dragover="dragOver"
+      @drop="drop(index)"
+      @dragend="dragEnd"
+    />
+  </DraggableContainer>
+</template>
 
 <style>
 

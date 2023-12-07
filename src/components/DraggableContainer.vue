@@ -1,41 +1,42 @@
-<template>
-    <div class="drag-container">
-      <slot></slot>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'DraggableContainer',
-    data() {
-      return {
-        draggedIndex: null,
-      };
+<script>
+export default {
+  name: 'DraggableContainer',
+  emits: ['itemDropped'],
+  data() {
+    return {
+      draggedIndex: null,
+    };
+  },
+  methods: {
+    dragStart(index) {
+      this.draggedIndex = index;
     },
-    methods: {
-      dragStart(index) {
-        this.draggedIndex = index;
-      },
-      dragOver(event) {
-        event.preventDefault();
-      },
-      drop(index) {
-        if (this.draggedIndex !== null && this.draggedIndex !== index) {
-          this.$emit('item-dropped', { fromIndex: this.draggedIndex, toIndex: index });
-          this.draggedIndex = null;
-        }
-      },
-      dragEnd() {
+    dragOver(event) {
+      event.preventDefault();
+    },
+    drop(index) {
+      if (this.draggedIndex !== null && this.draggedIndex !== index) {
+        this.$emit('itemDropped', { fromIndex: this.draggedIndex, toIndex: index });
         this.draggedIndex = null;
-      },
+      }
     },
-  };
-  </script>
-  
+    dragEnd() {
+      this.draggedIndex = null;
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="drag-container">
+    <slot />
+  </div>
+</template>
+
   <style scoped>
   .drag-container {
     display: flex;
     flex-direction: column;
+    gap: 20px;
   }
   </style>
-  
