@@ -10,6 +10,12 @@ export default {
   components: {
     Bar,
   },
+  props: {
+    data: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       backendUrl: import.meta.env.VITE_backendUrl,
@@ -38,12 +44,6 @@ export default {
       },
     };
   },
-  props: {
-    data: {
-      type: Array,
-      default: () => [],
-    },
-  },
   computed: {
     prepareChartData() {
       const labels = this.data.logs.map((item) => {
@@ -54,7 +54,7 @@ export default {
       const backgroundColors = this.data.logs.map(item => item.status === 'healthy' ? 'green' : 'red');
 
       // Replace the entire chartData object to ensure reactivity
-      return this.chartData = {
+      return {
         labels,
         datasets: [
           {

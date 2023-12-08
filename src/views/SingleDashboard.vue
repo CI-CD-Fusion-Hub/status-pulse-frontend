@@ -5,7 +5,6 @@ import VButton from '../components/VButton.vue';
 import VModal from '../components/VModal.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
 import VTextInput from '../components/Form/VTextInput.vue';
-import ResizableGrid from '../components/test.vue';
 import VBarChart from '../components/VBarChart.vue';
 
 export default {
@@ -16,8 +15,7 @@ export default {
     VModal,
     VDropdown,
     VTextInput,
-    ResizableGrid,
-    VBarChart
+    VBarChart,
   },
   data() {
     return {
@@ -67,7 +65,7 @@ export default {
           url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/endpoints`,
           data: this.formData,
         });
-        this.formData = {}
+        this.formData = {};
       }
       catch (error) {
         console.log('Unable to update dashboard.');
@@ -131,9 +129,14 @@ export default {
     <font-awesome-icon :icon="['fas', 'spinner']" spin />
   </div>
   <DraggableContainer v-else @item-dropped="reorderItems">
-    <h1><span>Testing Drag and drop on Endpoints</span><VButton :icon="['fas', 'plus']" @on-click="showAddModal">Add</VButton></h1>
+    <h1>
+      <span>Testing Drag and drop on Endpoints</span><VButton :icon="['fas', 'plus']" @on-click="showAddModal">
+        Add
+      </VButton>
+    </h1>
     <template v-for="(item, index) in dashboards.endpoints" :key="index">
-      <VUptimeGraph v-if="item.type === 'Uptime'"
+      <VUptimeGraph
+        v-if="item.type === 'Uptime'"
         class="drag-div"
         :data="item"
         :draggable="true"
@@ -142,7 +145,8 @@ export default {
         @drop="drop(index)"
         @dragend="dragEnd"
       />
-      <VBarChart v-if="item.type === 'BarChart'"
+      <VBarChart
+        v-if="item.type === 'BarChart'"
         class="drag-div"
         :data="item"
         :draggable="true"
@@ -153,7 +157,9 @@ export default {
       />
     </template>
 
-    <div v-if="dashboards.endpoints.length === 0" class="loader"><font-awesome-icon :icon="['fas', 'ghost']" /> No Data</div>
+    <div v-if="dashboards.endpoints.length === 0" class="loader">
+      <font-awesome-icon :icon="['fas', 'ghost']" /> No Data
+    </div>
   </DraggableContainer>
   <VModal v-model:isActive="isAddModalVissible">
     <VDropdown
@@ -165,7 +171,7 @@ export default {
     <VDropdown
       v-model:data="formData.unit" name="unit" placeholder="Interval" :options="['Hours', 'Days']"
     />
-    <VTextInput v-if="formData.unit" v-model:data="formData.duration" type="number" name="duration" :placeholder="`Duration in ${this.formData.unit}`" tooltipPos="left"/>
+    <VTextInput v-if="formData.unit" v-model:data="formData.duration" type="number" name="duration" :placeholder="`Duration in ${formData.unit}`" tooltip-pos="left" />
     <VButtonSet class="flex-end">
       <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="addData">
         Add

@@ -139,7 +139,7 @@ export default {
         useNotifyStore().add('error', 'Error loading data!');
         this.isLoading = false;
       }
-    }
+    },
   },
 };
 </script>
