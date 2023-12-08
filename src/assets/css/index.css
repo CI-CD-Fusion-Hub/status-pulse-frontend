@@ -14,7 +14,7 @@
 
 @font-face { 
     font-family: 'Sora';
-    src: url('./fonts/Sora-VariableFont_wght.ttf') format('truetype');
+    src: url('/Sora-VariableFont_wght.ttf') format('truetype');
 }
 
 
@@ -83,8 +83,6 @@ p {
     height: 100%;
     text-align: center;
     background-color: var(--main-color);
-    top: 0;
-    left: 0;
     display: flex;
     align-items: center;
     align-content: center;

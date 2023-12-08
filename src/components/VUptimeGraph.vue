@@ -8,7 +8,7 @@ export default {
   },
   computed: {
     getUptimeItems() {
-      return this.endpoint.map((item, index) => {
+      return this.data.map((item, index) => {
         if (index === this.activeUptimeItem)
           return { ...item, is_active: true };
 
@@ -43,13 +43,13 @@ export default {
 
 <template>
   <div class="uptime_graph">
-    <h2><font-awesome-icon :icon="['fas', 'signal']" /> Uptime Graph</h2>
-    <p>Here the 72h uptime of this endpoint.</p>
+    <h2><font-awesome-icon :icon="['fas', 'signal']" /> {{ data.name }}</h2>
+    <p>Here is the uptime time graph for {{ data.duration }} {{ data.unit }}.</p>
     <ul>
       <li v-if="data?.length === 0" class="uptime_loader">
         <font-awesome-icon :icon="['fas', 'spinner']" spin />
       </li>
-      <li v-for="(item, idx) in data" v-else :key="item" :class="`uptime_item ${item.status} ${item?.is_active}`" :tooltip-text="getEndpointTooltip(item)" tooltip-position="Top" @click="showUptimeTable(item, idx)" />
+      <li v-for="item in data.logs" v-else :key="item" :class="`uptime_item ${item.status} ${item?.is_active}`" :tooltip-text="getEndpointTooltip(item)" tooltip-position="Top" />
     </ul>
   </div>
 </template>

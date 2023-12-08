@@ -139,25 +139,7 @@ export default {
         useNotifyStore().add('error', 'Error loading data!');
         this.isLoading = false;
       }
-    },
-    async getEndpoints() {
-      this.isLoading = true;
-
-      try {
-        console.log(this.$route.query.search);
-        const response = await this.axios({
-          method: 'get',
-          url: `${this.backendUrl}/endpoints`,
-        });
-
-        this.endpoints = response.data.data.data;
-      }
-      catch (error) {
-        console.log('Unable to get authentication method.');
-      }
-
-      this.isLoading = false;
-    },
+    }
   },
 };
 </script>
@@ -202,9 +184,6 @@ export default {
     />
     <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
     <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
-    <VDropdown
-      v-model:data="formData.endpoints" name="type" placeholder="Endpoints" :options="endpoints" option-label="name" option-value="id" :is-multyselect="true"
-    />
     <VButtonSet class="flex-end">
       <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="addData">
         Add
@@ -217,9 +196,6 @@ export default {
     />
     <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
     <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
-    <VDropdown
-      v-model:data="formData.endpoints" name="type" placeholder="Endpoints" :options="endpoints" option-label="name" option-value="id" :is-multyselect="true"
-    />
     <VButtonSet class="flex-end">
       <VButton :icon="['fas', 'plus']" :is-loading="isBtnLoading" @on-click="updateData">
         Save
@@ -319,6 +295,7 @@ export default {
   position: relative;
   margin-top: 20px;
   height: 50vh;
-  border: var(--border-style)
+  border: var(--border-style);
+  width: auto;
 }
 </style>
