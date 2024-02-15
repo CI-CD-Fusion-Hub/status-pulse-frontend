@@ -1,52 +1,132 @@
-/* Color Theme */
-:root {
-    --main-bg-color: #080D1B;
-    --main-color: rgb(19 24 37);
-    --main-font: 'Sora';
-    --main-color-hover: #080D1B;
-    --box-shadow-color: #909090;
-    --second-color: #B84A05;
-    --border-radius: 10px;
-    --gap: 15px;
-    --padding: 15px;
-    --border-style: 1px solid rgb(37 41 51);
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+/* Reset CSS */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
 }
-
-@font-face { 
-    font-family: 'Sora';
-    src: url('/Sora-VariableFont_wght.ttf') format('truetype');
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
 }
-
-
 body {
-    margin: 0;
-    background-color: var(--main-bg-color);
-    font-size: 16px;
-    font-family: var(--main-font);
-    color: var(--main-color);
-    overflow-x: hidden;
+	line-height: 1;
 }
-
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+button {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
 li,
 ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-
 a {
     text-decoration: none;
     color: inherit;
 }
-
 h1,
 h2,
 h3 {
     margin: 0;
 }
-
 p {
     margin: 0;
+}
+/* Color Theme */
+:root {
+    --main-bg-color: #010408;
+
+    --primary-color: #6157DB;
+    --primary-hover-color: #3B3587;
+    --primary-focus-color: #A09AE9;
+
+    --box-color: #0A0F16;
+    --box-bg: #0A0F16;
+    --box-border: #252F3A;
+
+    --body-text: #848F9D;
+
+    --select-bg: #252F3A;
+    --select-radius: 6px;
+    --select-default-color: #848F9D;
+    --select-hover-color: #93A1B2;
+    --select-focus-color: #A09AE9;
+    --select-error-color: #F87171;
+
+    --link-default-color: #0EA5E9;
+    --link-hover-color: #0284C7;
+
+    --green-400: #4ADE80;
+    --gray-scale-3: #E9EBED;
+
+    --main-color: rgb(19 24 37);
+    --main-font: "Inter", sans-serif;
+    --main-color-hover: #080D1B;
+    --box-shadow-color: #909090;
+    --second-color: #B84A05;
+    --border-radius: 6px;
+    --gap: 15px;
+    --padding: 15px;
+    --border-style: 1px solid rgb(37 41 51);
+}
+
+* {
+    font-family: var(--main-font);
+}
+
+body {
+    margin: 0;
+    background: var(--main-bg-color);
+    font-size: 16px;
+    font-family: var(--main-font);
+    color: var(--main-color);
+    overflow-x: hidden;
+    color: var(--body-text);
+}
+
+h1 {
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    text-align: left;
+    color: white;
 }
 
 /* Scrollbar Hack */
@@ -120,7 +200,7 @@ code {
     transform: translateX(-50%);
     border-width: 5px 6px 0 6px;
     border-style: solid;
-    border-color: var(--second-color) transparent transparent transparent;
+    border-color: #414B55 transparent transparent transparent;
     z-index: 99;
     opacity: 0;
 }
@@ -131,25 +211,24 @@ code {
     left: 50%;
     top: -6px;
     transform: translateX(-50%) translateY(-100%);
-    background: var(--second-color);
+    background: #414B55;
     text-align: center;
     color: #fff;
-    padding: 4px 2px;
+    padding: 10px 12px;
     font-size: 12px;
     min-width: 80px;
     border-radius: var(--border-radius);
     pointer-events: none;
-    padding: 4px 4px;
     z-index: 99;
     opacity: 0;
-    font-family: monospace;
+    font-family: var(--main-font);
 }
 
 [tooltip-position='left']::before {
     left: 0%;
     top: calc(50% - 2px);
     margin-left: -13px;
-    transform: rotate(270deg);
+    transform: rotate(336deg);
 }
 
 [tooltip-position='top']::before {

@@ -24,6 +24,7 @@ export default {
       isBtnLoading: false,
       userStore: useUserStore(),
       formData: {
+        name: null,
         email: null,
         password: null,
         rememberMe: false,
@@ -45,14 +46,14 @@ export default {
         isPasswordValid: {
           required: helpers.withMessage('Password field doesn\'t meet required complexity.', required),
         },
+        name: {
+          required: helpers.withMessage('Name field cannot be empty.', required),
+        },
       },
     };
   },
-  // async created() {
-  //   this.checkAuthMethod();
-  // },
   methods: {
-    async login() {
+    async register() {
       try {
         this.isBtnLoading = true;
         const isValid = await this.v$.$validate();
@@ -67,7 +68,7 @@ export default {
 
         const response = await this.axios({
           method: 'post',
-          url: `${this.backendUrl}/login`,
+          url: `${this.backendUrl}/register`,
           data: this.formData,
         });
 
@@ -86,22 +87,7 @@ export default {
       }
 
       this.isBtnLoading = false;
-    },
-    async checkAuthMethod() {
-      try {
-        const response = await this.axios({
-          method: 'get',
-          url: `${this.backendUrl}/login/method`,
-          data: this.formData,
-        });
-
-        if (!response.data.data)
-          window.location.href = `${this.backendUrl}/login`;
-      }
-      catch (error) {
-        console.log('Unable to get authentication method.');
-      }
-    },
+    }
   },
 };
 </script>
@@ -109,18 +95,24 @@ export default {
 <template>
   <div class="container">
     <div class="text-holder">
-      <h1>Login to <br>Status-Pulse</h1>
-      <p>Please enter your details.</p>
-      <p>Don't have an account?
+      <h1>Register to <br>Status-Pulse</h1>
+      <p>Start monitoring in minutes.</p>
+      <p>Already have a account?
         <VButton
         :is-loading="isBtnLoading"
         :isFullWidth="true"
         type="link-important"
-        :link-to="{ path: 'register'}"
-      >Signup</VButton>
+        :link-to="{ path: 'login'}"
+      >Login</VButton>
     </p>
     </div>
     <div class="form-holder">
+      <VTextInput
+        v-model:data="formData.email"
+        name="name"
+        label="Name"
+        placeholder="Enter name"
+      />
       <VTextInput
         v-model:data="formData.email"
         name="email"
@@ -130,14 +122,14 @@ export default {
       <VPasswordInput
         v-model:data="formData.password"
         v-model:is-valid="formData.isPasswordValid"
+        :check-length="true"
+        :check-lowercase="true"
+        :check-number="true"
+        :check-special-chars="true"
+        :check-uppercase="true"
         name="password"
         label="Password"
         placeholder="Enter password"
-      />
-      <VCheckbox
-        v-model:isChecked="formData.rememberMe"
-        name="rememberMe"
-        label="Remember me"
       />
       <VButton
         :is-loading="isBtnLoading"
@@ -145,21 +137,29 @@ export default {
         type="fill"
         @on-click="login()"
       >
-        Login
+        Register
       </VButton>
-      <VButton
+      <p>
+        By signing up, you agree to the 
+        <VButton
         :is-loading="isBtnLoading"
         :isFullWidth="false"
         type="link"
-        :link-to="{ path: 'forgotPassword'}"
-      >Forgot password</VButton>
+        @on-click="login()"
+      >Terms of Service</VButton> and <VButton
+        :is-loading="isBtnLoading"
+        :isFullWidth="false"
+        type="link"
+        @on-click="login()"
+      >Privacy Policy</VButton>.
+      </p>
     </div>
   </div>
 </template>
 
 <style scoped>
 .container {
-  width: 65%;
+  max-width: 65%;
   padding: 72px 4%;
   background-color: var(--box-bg);
   border-radius: 16px;
@@ -186,8 +186,8 @@ export default {
   gap: 16px;
 }
 
-.container .form-holder .btn-holder {
-  margin-top: 36px;
+.container .form-holder > .btn-holder {
+  margin: 36px 0;
 }
 
 .container .text-holder {
@@ -204,6 +204,7 @@ export default {
   font-weight: 400;
   line-height: 20px;
   letter-spacing: 0em;
+  line-height: 14px;
 }
 
 .container .text-holder p:first-child {

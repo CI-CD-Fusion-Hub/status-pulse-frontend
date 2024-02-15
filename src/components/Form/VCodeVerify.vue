@@ -13,6 +13,10 @@ export default {
       type: String,
       default: '',
     },
+    length: {
+        type: Number,
+        default: 6
+    },
     data: {
       type: String,
       default: '',
@@ -35,35 +39,53 @@ export default {
     },
   },
   emits: ['update:data'],
+  data() {
+    return {
+      code: "",
+    };
+  },
+  methods: {
+    setValue(target, idx, e){
+        if(e.length > 1 && e.length !== this.length) {
+            e = e.substring(0, 1)
+            target.value = e;
+        }
+
+        this.code = this.code.substring(0, idx - 1) + e + this.code.substring(idx)
+        
+        if (this.code.length > this.length) {
+            this.code = this.code.substring(0, this.length);
+        }
+
+        this.$emit('update:data', this.code)
+    }
+  }
 };
 </script>
 
 <template>
   <div class="input-holder">
-    <label class="outside-label" :for="name">{{ label }}</label>
-    <div class="input-field">
+    <div class="input-field" v-for="n in this.length" :key="n">
       <input
-        :id="name"
+        :id="name + n"
         :type="type"
-        :name="name"
+        :name="name + n"
         placeholder=" "
-        :value="data"
-        @input="$emit('update:data', $event.target.value)"
+        :maxlength="n === 1 ? this.length : 1"
+        :value="code[n - 1]"
+        @input="setValue($event.target, n, $event.target.value)"
       >
-      <label class="inside-label" :for="name">{{ label }}</label>
+      <label class="inside-label" :for="name + n">{{ label }}</label>
     </div>
-    <!-- <div class="input-error">Helper Text</div> -->
+    
   </div>
 </template>
 
 <style scoped>
-.input-holder .outside-label {
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  color: #E9EBED;
-  display: block;
-  margin-bottom: 6px;
+.input-holder {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 .input-holder .input-field {
@@ -77,12 +99,13 @@ export default {
   font-weight: 400;
   line-height: 20px;
   width: 100%;
+  text-align: center    ;
 }
 
 .input-holder .input-field input {
   background: transparent;
   border: solid 1px transparent;
-  padding: 11px 16px;
+  padding: 11px 5%;
   background-color: var(--select-bg);
   border-radius: var(--select-radius);
   transition: all 300ms ease-in-out;
@@ -101,7 +124,6 @@ export default {
 
 .input-holder .input-field label {
   position: absolute;
-  left: 17px;
   top: 13px;
   cursor: text;
   color: var(--select-default-color);

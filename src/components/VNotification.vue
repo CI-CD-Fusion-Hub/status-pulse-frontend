@@ -48,7 +48,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 /* Add styles for notifications */
 .notifications {
   position: fixed;

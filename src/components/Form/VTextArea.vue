@@ -9,6 +9,10 @@ export default {
       type: String,
       default: '',
     },
+    label: {
+      type: String,
+      default: '',
+    },
     data: {
       type: String,
       default: '',
@@ -28,6 +32,10 @@ export default {
     tooltipPos: {
       type: String,
       default: 'Left',
+    },
+    description: {
+      type: String,
+      default: '',
     },
   },
   emits: ['update:data'],
@@ -55,58 +63,86 @@ export default {
 </script>
 
 <template>
-  <div
-    class="input-holder"
-    :tooltip-text="tooltipText"
-    :tooltip-position="tooltipPos"
-  >
-    <textarea
-      :id="name"
-      :name="name"
-      placeholder=" "
-      @input="$emit('update:data', $event.target.value)"
-    />
-    <label :for="name">{{ placeholder }}</label>
-    <font-awesome-icon
-      v-if="icon"
-      :icon="icon"
-    />
+  <div class="text-area-holder">
+    <label v-if="label !== ''" class="outside-label" :for="name">{{ label }}</label>
+    <div
+      class="text-area-field"
+      :tooltip-text="tooltipText"
+      :tooltip-position="tooltipPos"
+    >
+      <textarea
+        :id="name"
+        :name="name"
+        placeholder=" "
+        @input="$emit('update:data', $event.target.value)"
+      />
+      <label class="inside-label" :for="name">{{ placeholder }}</label>
+      <font-awesome-icon
+        v-if="icon"
+        :icon="icon"
+      />
+    </div>
+    <p>{{ description }}</p>
   </div>
 </template>
 
-<style>
-.input-holder textarea {
-  background-color: transparent;
-  resize: none;
-  height: 23px;
+<style scoped>
+.text-area-holder .outside-label {
   color: white;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 133.333% */
+  letter-spacing: 0.12px;
+  display: block;
+}
+
+.text-area-field {
+  position: relative;
+  background: rgba(112, 112, 112, 0.11);
+  display: flex;
+  border-radius: 6px;
+}
+
+.text-area-field textarea {
+  padding: 9px 24px;
+  background: transparent;
   border: none;
+  max-height: 50vh;
   outline: none;
   color: white;
-  font-size: 16px;
-  transition: height 300ms ease-in-out;
-  padding: 28px;
-  width: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
-.input-holder textarea:focus-within {
-  height: 300px;
-}
-
-.input-holder textarea {
-  padding-top: 16.5px;
-  padding-bottom: 16.5px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
   cursor: text;
+  position: relative;
+  width: 100%;
+  resize: none;
 }
 
-.input-holder textarea:focus + label,
-.input-holder textarea:not(:placeholder-shown) + label  {
+.text-area-field .inside-label {
+  position: absolute;
+  color: rgba(160, 160, 160, 0.65);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 171.429% */
+  left: 0;
+  top: 0;
+  padding: 9.5px 24px;
+  width: calc(100% - 48px);
+  height: 100%;
+}
+
+.text-area-field textarea:focus + label,
+.text-area-field textarea:not(:placeholder-shown) + label  {
   display: none;
 }
 
-.input-holder textarea:focus + label + svg,
-.input-holder textarea:not(:placeholder-shown) + label + svg {
+.text-area-field textarea:focus + label + svg,
+.text-area-field textarea:not(:placeholder-shown) + label + svg {
   opacity: 1;
 }
 </style>

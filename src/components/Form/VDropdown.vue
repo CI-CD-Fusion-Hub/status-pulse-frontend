@@ -11,6 +11,10 @@ export default {
       default: () => [],
       required: true,
     },
+    label: {
+      type: String,
+      default: '',
+    },
     optionLabel: {
       type: String,
       default: null,
@@ -50,6 +54,10 @@ export default {
     tooltipPos: {
       type: String,
       default: 'Left',
+    },
+    description: {
+      type: String,
+      default: '',
     },
   },
   emits: ['update:data'],
@@ -116,113 +124,140 @@ export default {
 </script>
 
 <template>
-  <div
-    class="dropdown-holder"
-    :tooltip-text="tooltipText"
-    :tooltip-position="tooltipPos"
-  >
-    <a
-      href="javascript:;"
-      :class="`drop-down-btn is-multyselect-${isMultyselect}`"
-      @click="toggleDropdown"
+  <div class="dropdown-holder">
+    <label v-if="label !== ''" class="outside-label" :for="name">{{ label }}</label>
+    <div
+      class="dropdown-field"
+      :tooltip-text="tooltipText"
+      :tooltip-position="tooltipPos"
     >
-      <font-awesome-icon
-        v-if="icon"
-        :icon="icon"
-      />
-      <template v-if="Array.isArray(dropdownPlaceholder)">
-        <div
-          v-for="item in dropdownPlaceholder"
-          :key="item"
-          class="dropdown-tag"
-        >
-          <span v-if="optionLabel">{{ item[optionLabel] || getPlaceHolder(item) }}</span>
-          <span v-else>{{ item }}</span>
-          <font-awesome-icon
-            :icon="['fas', 'xmark']"
-            @click.stop="removeValue(item)"
-          />
-        </div>
-        <span v-if="dropdownPlaceholder.length === 0">{{ placeholder }}</span>
-      </template>
-      <span v-else-if="data?.length > 0">{{ data }}</span>
-      <span v-else>{{ dropdownPlaceholder }}</span>
-      <font-awesome-icon
-        :icon="['fas', 'chevron-down']"
-        :class="`is-dropdown-open-${isOpen}`"
-      />
-    </a>
-    <div :class="`is-visible-${isOpen}`">
-      <div
-        v-if="isSearchable && options.length !== 0"
-        class="input-holder"
+      <a
+        href="javascript:;"
+        :class="`drop-down-btn is-multyselect-${isMultyselect}`"
+        @click="toggleDropdown"
       >
-        <input
-          :id="name"
-          type="text"
-          placeholder=""
-          @input="searchValue = $event.target.value"
-        >
-        <label :for="name">Search</label>
-        <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
-      </div>
-      <ul>
-        <li v-if="filterResults.length === 0">
-          <div class="no-data">
-            <font-awesome-icon :icon="['fas', 'ghost']" />No Data
+        <font-awesome-icon
+          v-if="icon"
+          :icon="icon"
+        />
+        <template v-if="Array.isArray(dropdownPlaceholder)">
+          <div
+            v-for="item in dropdownPlaceholder"
+            :key="item"
+            class="dropdown-tag"
+          >
+            <span v-if="optionLabel">{{ item[optionLabel] || getPlaceHolder(item) }}</span>
+            <span v-else>{{ item }}</span>
+            <font-awesome-icon
+              :icon="['fas', 'xmark']"
+              @click.stop="removeValue(item)"
+            />
           </div>
-        </li>
-        <li
-          v-for="item in filterResults"
-          :key="item"
+          <span v-if="dropdownPlaceholder.length === 0">{{ placeholder }}</span>
+        </template>
+        <span v-else-if="data?.length > 0">{{ data }}</span>
+        <span v-else>{{ dropdownPlaceholder }}</span>
+        <font-awesome-icon
+          :icon="['fas', 'chevron-down']"
+          :class="`is-dropdown-open-${isOpen}`"
+        />
+      </a>
+      <div :class="`is-visible-${isOpen}`">
+        <div
+          v-if="isSearchable && options.length !== 0"
+          class="input-holder"
         >
-          <a
-            v-if="optionValue && optionLabel"
-            href="javascript:;"
-            @click="selectValue(item)"
-          >{{ item[optionLabel] }}</a>
-          <a
-            v-else
-            href="javascript:;"
-            @click="selectValue(item)"
-          >{{ item }}</a>
-        </li>
-      </ul>
+          <input
+            :id="name"
+            type="text"
+            placeholder=""
+            @input="searchValue = $event.target.value"
+          >
+          <label :for="name">Search</label>
+          <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
+        </div>
+        <ul>
+          <li v-if="filterResults.length === 0">
+            <div class="no-data">
+              <font-awesome-icon :icon="['fas', 'ghost']" />No Data
+            </div>
+          </li>
+          <li
+            v-for="item in filterResults"
+            :key="item"
+          >
+            <a
+              v-if="optionValue && optionLabel"
+              href="javascript:;"
+              @click="selectValue(item)"
+            >{{ item[optionLabel] }}</a>
+            <a
+              v-else
+              href="javascript:;"
+              @click="selectValue(item)"
+            >{{ item }}</a>
+          </li>
+        </ul>
+      </div>
+      <input
+        type="hidden"
+        :name="name"
+        :value="data"
+      >
     </div>
-    <input
-      type="hidden"
-      :name="name"
-      :value="data"
-    >
+    <p>{{ description }}</p>
   </div>
 </template>
 
-<style>
-.dropdown-holder {
-  background-color: rgb(27 32 44);
+<style scoped>
+.dropdown-holder .outside-label {
   color: white;
-  border-radius: var(--border-radius);
-  position: relative;
-  margin-bottom: 10px;
-  border: var(--border-style)
-}
-
-.dropdown-holder svg {
-  font-size: 13px
-}
-
-.dropdown-holder a {
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 133.333% */
+  letter-spacing: 0.12px;
   display: block;
 }
 
-.dropdown-holder > div > ul {
+.dropdown-holder p {
+  color: rgba(210, 210, 210, 0.45);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 171.429% */
+  letter-spacing: -0.14px;
+}
+
+.dropdown-field {
+  border-radius: 6px;
+  background: rgba(112, 112, 112, 0.11);
+  position: relative;
+  margin-bottom: 10px;
+  color: rgba(160, 160, 160, 0.65);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 171.429% */
+}
+
+.dropdown-field svg {
+  font-size: 13px
+}
+
+.dropdown-field a {
+  display: block;
+}
+
+.dropdown-field > div > ul {
   transition: max-height 150ms ease-in-out;
   overflow-y: auto;
   border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
 
-.dropdown-holder .drop-down-btn {
-  padding: 18px;
+.dropdown-field .drop-down-btn {
+  padding: 9.5px 24px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -232,19 +267,19 @@ export default {
   max-height: 200px;
 }
 
-.dropdown-holder .drop-down-btn.is-multyselect-true {
+.dropdown-field .drop-down-btn.is-multyselect-true {
   overflow-y: auto;
 }
 
-.dropdown-holder .drop-down-btn svg:first-child {
+.dropdown-field .drop-down-btn svg:first-child {
   padding-left: 5px;
 }
 
-.dropdown-holder .drop-down-btn svg:last-child {
+.dropdown-field .drop-down-btn svg:last-child {
   margin-left: auto;
 }
 
-.dropdown-holder ul a {
+.dropdown-field ul a {
   background-color: var(--main-color-hover);
   padding: 6px 15px;
   transition: background-color 300ms ease-in-out;
@@ -252,28 +287,28 @@ export default {
   gap: 5px;
   align-content: center;
 }
-.dropdown-holder ul a:hover,
-.dropdown-holder ul li.active a {
+.dropdown-field ul a:hover,
+.dropdown-field ul li.active a {
   background-color: var(--main-color);
 }
 
-.dropdown-holder div.is-visible-true ul{
+.dropdown-field div.is-visible-true ul{
   max-height: 200px;
   border: solid 2px var(--main-color-hover);
 }
-.dropdown-holder div.is-visible-false ul {
+.dropdown-field div.is-visible-false ul {
   max-height: 0;
 }
 
-.dropdown-holder .is-dropdown-open-false {
+.dropdown-field .is-dropdown-open-false {
   transform: rotateZ(0deg);
   transition: transform 150ms ease-in-out;
 }
-.dropdown-holder .is-dropdown-open-true {
+.dropdown-field .is-dropdown-open-true {
   transform: rotateZ(-90deg);
 }
 
-.dropdown-holder .input-holder {
+.dropdown-field .input-holder {
   margin-bottom: 0;
   display: none;
   border-bottom: solid 2px var(--main-color);
@@ -281,25 +316,25 @@ export default {
   gap: 10px;
 }
 
-.dropdown-holder .input-holder label {
+.dropdown-field .input-holder label {
   padding-left: 33px;
 }
 
-.dropdown-holder div.is-visible-true .input-holder {
+.dropdown-field div.is-visible-true .input-holder {
   display: flex;
 }
 
-.dropdown-holder div .input-holder input {
+.dropdown-field div .input-holder input {
   padding: 6px 0;
   width: 100%;
 }
 
-.dropdown-holder div .input-holder input,
-.dropdown-holder div .input-holder label {
+.dropdown-field div .input-holder input,
+.dropdown-field div .input-holder label {
   font-size: 13px;
 }
 
-.dropdown-holder .no-data {
+.dropdown-field .no-data {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -307,7 +342,7 @@ export default {
   padding: 10px 15px;
 }
 
-.dropdown-holder .dropdown-tag {
+.dropdown-field .dropdown-tag {
   padding: 5px 10px;
   background-color: gray;
   border-radius: var(--border-radius);
@@ -316,7 +351,7 @@ export default {
   gap: 10px;
 }
 
-.dropdown-holder .dropdown-tag svg {
+.dropdown-field .dropdown-tag svg {
   width: 10px;
   height: 10px;
   padding: 5px 5px;
@@ -325,7 +360,7 @@ export default {
   transition: background-color 300ms ease-in-out;
 }
 
-.dropdown-holder .dropdown-tag svg:hover {
+.dropdown-field .dropdown-tag svg:hover {
   background-color: red;
 }
 </style>
