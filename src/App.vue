@@ -4,7 +4,7 @@ import VNotification from './components/VNotification.vue';
 import { useUserStore } from './stores/user';
 
 export default {
-  components: { VAsideMenu,VNotification },
+  components: { VAsideMenu, VNotification },
   data() {
     return {
       asideMenuRoutes: [
@@ -25,9 +25,9 @@ export default {
           icon: 'bx bx-bell',
           label: 'Notify Channels',
           requiredAccessLevel: ['User', 'Admin'],
-        }
+        },
       ],
-    }
+    };
   },
   created() {
     const userInfo = useUserStore();
@@ -39,7 +39,7 @@ export default {
 
 <template>
   <div v-if="!$route.path.includes('login') && !$route.path.includes('register') && !$route.path.includes('forgotPassword') && !$route.path.includes('verifyCode')" class="main_container">
-    <VAsideMenu :menu-items="asideMenuRoutes"/>
+    <VAsideMenu :menu-items="asideMenuRoutes" />
     <main>
       <router-view />
     </main>

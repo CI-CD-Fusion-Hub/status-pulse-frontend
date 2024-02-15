@@ -19,29 +19,30 @@ export default {
     },
     isValid: {
       type: Boolean,
-      default: false
+      default: false,
     },
     checkUppercase: {
       type: Boolean,
-      default: false
+      default: false,
     },
     checkLowercase: {
       type: Boolean,
-      default: false
+      default: false,
     },
     checkNumber: {
       type: Boolean,
-      default: false
+      default: false,
     },
     checkSpecialChars: {
       type: Boolean,
-      default: false
+      default: false,
     },
     checkLength: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
+  emits: ['update:data', 'update:isValid'],
   data() {
     return {
       isUppercaseValid: false,
@@ -52,7 +53,6 @@ export default {
       isInputValid: false,
     };
   },
-  emits: ['update:data','update:isValid'],
   methods: {
     hasUpperCase(str) {
       return /[A-Z]/.test(str);
@@ -69,20 +69,37 @@ export default {
     isGreaterThanSeven(str) {
       return str.length > 7;
     },
-    validate(value){
-      let validator = []
-      this.checkUppercase ? validator.push(this.isUppercaseValid = this.hasUpperCase(value)): null
-      this.checkLowercase ? validator.push(this.isLowercaseValid = this.hasLowerCase(value)) : null
-      this.checkNumber ? validator.push(this.isNumberValid = this.hasNumber(value)) : null
-      this.checkSpecialChars ? validator.push(this.isSpecialCharValid = this.hasSpecialChar(value)) : null
-      this.checkLength ? validator.push(this.isLengthValid = this.isGreaterThanSeven(value)) : null
-      
-      this.isInputValid = !validator.includes(false)
-      
-      this.$emit('update:isValid', this.isInputValid)
-      this.$emit('update:data', value)
-    }
-  }
+    validate(value) {
+      const validator = [];
+
+      if (this.checkUppercase)
+        this.isUppercaseValid = this.hasUpperCase(value);
+      if (this.checkLowercase)
+        this.isLowercaseValid = this.hasLowerCase(value);
+      if (this.checkNumber)
+        this.isNumberValid = this.hasNumber(value);
+      if (this.checkSpecialChars)
+        this.isSpecialCharValid = this.hasSpecialChar(value);
+      if (this.checkLength)
+        this.isLengthValid = this.isGreaterThanSeven(value);
+
+      // Push the validity checks into the validator array
+      validator.push(
+        this.isUppercaseValid,
+        this.isLowercaseValid,
+        this.isNumberValid,
+        this.isSpecialCharValid,
+        this.isLengthValid,
+      );
+
+      // Check if any of the validations failed
+      this.isInputValid = !validator.includes(false);
+
+      // Emit events
+      this.$emit('update:isValid', this.isInputValid);
+      this.$emit('update:data', value);
+    },
+  },
 };
 </script>
 
@@ -103,11 +120,21 @@ export default {
     <!-- <div v-if="" class="input-error">Helper Text</div> -->
     <div v-if="data !== null && data !== ''" class="input-validator">
       <ul>
-        <li v-if="checkUppercase" :class="isUppercaseValid ? 'valid' : ''"><i :class="isUppercaseValid ? 'bx bxs-check-circle' : 'bx bx-circle'"></i>Uppercase letter</li>
-        <li v-if="checkLowercase" :class="isLowercaseValid ? 'valid' : ''"><i :class="isLowercaseValid ? 'bx bxs-check-circle' : 'bx bx-circle'"></i>Lowercase letter</li>
-        <li v-if="checkNumber" :class="isNumberValid ? 'valid' : ''"><i :class="isNumberValid ? 'bx bxs-check-circle' : 'bx bx-circle'"></i>Number</li>
-        <li v-if="checkSpecialChars" :class="isSpecialCharValid ? 'valid' : ''"><i :class="isSpecialCharValid ? 'bx bxs-check-circle' : 'bx bx-circle'"></i>Special character (e.g. !?&lt;>@#$%)</li>
-        <li v-if="checkLength" :class="isLengthValid ? 'valid' : ''"><i :class="isLengthValid ? 'bx bxs-check-circle' : 'bx bx-circle'"></i>> 7 characters</li>
+        <li v-if="checkUppercase" :class="isUppercaseValid ? 'valid' : ''">
+          <i :class="isUppercaseValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />Uppercase letter
+        </li>
+        <li v-if="checkLowercase" :class="isLowercaseValid ? 'valid' : ''">
+          <i :class="isLowercaseValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />Lowercase letter
+        </li>
+        <li v-if="checkNumber" :class="isNumberValid ? 'valid' : ''">
+          <i :class="isNumberValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />Number
+        </li>
+        <li v-if="checkSpecialChars" :class="isSpecialCharValid ? 'valid' : ''">
+          <i :class="isSpecialCharValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />Special character (e.g. !?&lt;>@#$%)
+        </li>
+        <li v-if="checkLength" :class="isLengthValid ? 'valid' : ''">
+          <i :class="isLengthValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />> 7 characters
+        </li>
       </ul>
     </div>
   </div>

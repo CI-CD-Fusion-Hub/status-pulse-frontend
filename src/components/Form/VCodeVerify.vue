@@ -14,8 +14,8 @@ export default {
       default: '',
     },
     length: {
-        type: Number,
-        default: 6
+      type: Number,
+      default: 6,
     },
     data: {
       type: String,
@@ -41,43 +41,41 @@ export default {
   emits: ['update:data'],
   data() {
     return {
-      code: "",
+      code: '',
     };
   },
   methods: {
-    setValue(target, idx, e){
-        if(e.length > 1 && e.length !== this.length) {
-            e = e.substring(0, 1)
-            target.value = e;
-        }
+    setValue(target, idx, e) {
+      if (e.length > 1 && e.length !== this.length) {
+        e = e.substring(0, 1);
+        target.value = e;
+      }
 
-        this.code = this.code.substring(0, idx - 1) + e + this.code.substring(idx)
-        
-        if (this.code.length > this.length) {
-            this.code = this.code.substring(0, this.length);
-        }
+      this.code = this.code.substring(0, idx - 1) + e + this.code.substring(idx);
 
-        this.$emit('update:data', this.code)
-    }
-  }
+      if (this.code.length > this.length)
+        this.code = this.code.substring(0, this.length);
+
+      this.$emit('update:data', this.code);
+    },
+  },
 };
 </script>
 
 <template>
   <div class="input-holder">
-    <div class="input-field" v-for="n in this.length" :key="n">
+    <div v-for="n in length" :key="n" class="input-field">
       <input
         :id="name + n"
         :type="type"
         :name="name + n"
         placeholder=" "
-        :maxlength="n === 1 ? this.length : 1"
+        :maxlength="n === 1 ? length : 1"
         :value="code[n - 1]"
         @input="setValue($event.target, n, $event.target.value)"
       >
       <label class="inside-label" :for="name + n">{{ label }}</label>
     </div>
-    
   </div>
 </template>
 

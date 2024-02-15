@@ -8,7 +8,7 @@ export default {
     return { v$: useVuelidate() };
   },
   data() {
-    return {}
+    return {};
   },
   async created() {},
   methods: {
@@ -17,6 +17,7 @@ export default {
 </script>
 
 <template>
+  <div />
 </template>
 
 <style scoped>

@@ -15,7 +15,7 @@ const routes = [
     path: '/endpoints',
     name: 'Endpoints',
     component: Endpoints,
-  }
+  },
 ];
 
 const router = createRouter({

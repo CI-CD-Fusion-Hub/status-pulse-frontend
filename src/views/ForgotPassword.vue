@@ -2,8 +2,6 @@
 import { useVuelidate } from '@vuelidate/core';
 import { email, helpers, required } from '@vuelidate/validators';
 import VTextInput from '../components/Form/VTextInput.vue';
-import VPasswordInput from '../components/Form/VPasswordInput.vue';
-import VCheckbox from '../components/Form/VCheckbox.vue';
 import VButton from '../components/VButton.vue';
 import { useNotifyStore } from '../stores/notifications';
 import { useUserStore } from '../stores/user';
@@ -11,8 +9,6 @@ import { useUserStore } from '../stores/user';
 export default {
   components: {
     VTextInput,
-    VPasswordInput,
-    VCheckbox,
     VButton,
   },
   setup() {
@@ -26,7 +22,7 @@ export default {
       formData: {
         email: null,
       },
-      
+
     };
   },
   validations() {
@@ -35,7 +31,7 @@ export default {
         email: {
           required: helpers.withMessage('Email field cannot be empty.', required),
           email: helpers.withMessage('Email field is not a valid email address.', email),
-        }
+        },
       },
     };
   },
@@ -74,7 +70,7 @@ export default {
       }
 
       this.isBtnLoading = false;
-    }
+    },
   },
 };
 </script>
@@ -94,7 +90,7 @@ export default {
       />
       <VButton
         :is-loading="isBtnLoading"
-        :isFullWidth="true"
+        :is-full-width="true"
         type="fill"
         @on-click="resetPassword()"
       >
@@ -102,12 +98,14 @@ export default {
       </VButton>
       <p>
         Remember your password ? <VButton
-        :is-loading="isBtnLoading"
-        :isFullWidth="false"
-        type="link-important"
-        :link-to="{ path: 'login'}"
-        @on-click="login()"
-      >Login</VButton>
+          :is-loading="isBtnLoading"
+          :is-full-width="false"
+          type="link-important"
+          :link-to="{ path: 'login' }"
+          @on-click="login()"
+        >
+          Login
+        </VButton>
       </p>
     </div>
   </div>
@@ -169,5 +167,4 @@ export default {
   line-height: 32px;
   letter-spacing: 0em;
 }
-
 </style>

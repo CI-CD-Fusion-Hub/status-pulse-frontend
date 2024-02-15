@@ -69,7 +69,7 @@ export default {
       v-else
       @click="onClick"
     >
-      <i v-if="isLoading" class='bx bx-loader-alt bx-spin' ></i>
+      <i v-if="isLoading" class="bx bx-loader-alt bx-spin" />
       <template v-else>
         <span v-if="$slots.default"><slot /></span>
       </template>
@@ -118,7 +118,7 @@ export default {
   background-color: var(--primary-color);
   border: none;
   color: white;
-  
+
 }
 .btn-holder[type="fill"] button:hover,
 .btn-holder.active[type="fill"] button {
@@ -163,5 +163,4 @@ export default {
 .btn-holder[type="link-important"] button:hover{
   color: var(--link-hover-color);
 }
-
 </style>

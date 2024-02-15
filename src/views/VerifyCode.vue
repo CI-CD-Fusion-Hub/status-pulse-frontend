@@ -20,9 +20,9 @@ export default {
       isBtnLoading: false,
       userStore: useUserStore(),
       formData: {
-        data: null
+        data: null,
       },
-      
+
     };
   },
   validations() {
@@ -31,7 +31,7 @@ export default {
         email: {
           required: helpers.withMessage('Email field cannot be empty.', required),
           email: helpers.withMessage('Email field is not a valid email address.', email),
-        }
+        },
       },
     };
   },
@@ -70,7 +70,7 @@ export default {
       }
 
       this.isBtnLoading = false;
-    }
+    },
   },
 };
 </script>
@@ -91,7 +91,7 @@ export default {
       />
       <VButton
         :is-loading="isBtnLoading"
-        :isFullWidth="true"
+        :is-full-width="true"
         type="fill"
         @on-click="resetPassword()"
       >
@@ -99,12 +99,14 @@ export default {
       </VButton>
       <p>
         Didn’t receive code? <VButton
-        :is-loading="isBtnLoading"
-        :isFullWidth="false"
-        type="link-important"
-        :link-to="{ path: 'login'}"
-        @on-click="login()"
-      >Resend</VButton>
+          :is-loading="isBtnLoading"
+          :is-full-width="false"
+          type="link-important"
+          :link-to="{ path: 'login' }"
+          @on-click="login()"
+        >
+          Resend
+        </VButton>
       </p>
     </div>
   </div>
@@ -166,5 +168,4 @@ export default {
   line-height: 32px;
   letter-spacing: 0em;
 }
-
 </style>

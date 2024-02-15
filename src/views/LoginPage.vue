@@ -29,7 +29,7 @@ export default {
         rememberMe: false,
         isPasswordValid: false,
       },
-      
+
     };
   },
   validations() {
@@ -111,14 +111,17 @@ export default {
     <div class="text-holder">
       <h1>Login to <br>Status-Pulse</h1>
       <p>Please enter your details.</p>
-      <p>Don't have an account?
+      <p>
+        Don't have an account?
         <VButton
-        :is-loading="isBtnLoading"
-        :isFullWidth="true"
-        type="link-important"
-        :link-to="{ path: 'register'}"
-      >Signup</VButton>
-    </p>
+          :is-loading="isBtnLoading"
+          :is-full-width="true"
+          type="link-important"
+          :link-to="{ path: 'register' }"
+        >
+          Signup
+        </VButton>
+      </p>
     </div>
     <div class="form-holder">
       <VTextInput
@@ -141,7 +144,7 @@ export default {
       />
       <VButton
         :is-loading="isBtnLoading"
-        :isFullWidth="true"
+        :is-full-width="true"
         type="fill"
         @on-click="login()"
       >
@@ -149,10 +152,12 @@ export default {
       </VButton>
       <VButton
         :is-loading="isBtnLoading"
-        :isFullWidth="false"
+        :is-full-width="false"
         type="link"
-        :link-to="{ path: 'forgotPassword'}"
-      >Forgot password</VButton>
+        :link-to="{ path: 'forgotPassword' }"
+      >
+        Forgot password
+      </VButton>
     </div>
   </div>
 </template>

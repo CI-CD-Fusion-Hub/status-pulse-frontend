@@ -1,21 +1,20 @@
 <script>
 import { useNotifyStore } from '../stores/notifications';
 import { useUserStore } from '../stores/user';
-import VButton from './VButton.vue';
 
 export default {
-  components: { VButton },
+  components: {},
   props: {
     menuItems: {
       type: Array,
-      default: [],
-    }
+      default: () => [],
+    },
   },
   data() {
     return {
       backendUrl: import.meta.env.VITE_backendUrl,
       userInfo: useUserStore(),
-      isCollapsed: true
+      isCollapsed: true,
     };
   },
   methods: {
@@ -30,65 +29,68 @@ export default {
       }
     },
     toggleMenu() {
-      this.isCollapsed = !this.isCollapsed
-    }
+      this.isCollapsed = !this.isCollapsed;
+    },
   },
 };
 </script>
 
 <template>
-  <aside :class="'aside-menu is-collapsed-' + isCollapsed">
+  <aside :class="`aside-menu is-collapsed-${isCollapsed}`">
     <ul>
       <li class="logo-holder">
         <router-link
-            to="/"
-          >
+          to="/"
+        >
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_748_422)">
-            <rect width="32" height="32" rx="6" fill="white"/>
-            <ellipse cx="16.5" cy="15" rx="27.5" ry="27" fill="#6157DB"/>
-            <path d="M0.211892 21.0261L-13 42H35V5L16.6111 24.998C15.0264 26.7213 12.307 26.7213 10.7223 24.998L6.54077 20.4506C4.75675 18.5105 1.61668 18.796 0.211892 21.0261Z" fill="black" fill-opacity="0.3"/>
-            <path d="M17.4917 7.41205L32 -8H-29V28L-1.88889 -0.800001L5.84159 7.41206C9.00019 10.7674 14.3331 10.7674 17.4917 7.41205Z" fill="white" fill-opacity="0.6"/>
+              <rect width="32" height="32" rx="6" fill="white" />
+              <ellipse cx="16.5" cy="15" rx="27.5" ry="27" fill="#6157DB" />
+              <path d="M0.211892 21.0261L-13 42H35V5L16.6111 24.998C15.0264 26.7213 12.307 26.7213 10.7223 24.998L6.54077 20.4506C4.75675 18.5105 1.61668 18.796 0.211892 21.0261Z" fill="black" fill-opacity="0.3" />
+              <path d="M17.4917 7.41205L32 -8H-29V28L-1.88889 -0.800001L5.84159 7.41206C9.00019 10.7674 14.3331 10.7674 17.4917 7.41205Z" fill="white" fill-opacity="0.6" />
             </g>
             <defs>
-            <clipPath id="clip0_748_422">
-            <rect width="32" height="32" rx="6" fill="white"/>
-            </clipPath>
+              <clipPath id="clip0_748_422">
+                <rect width="32" height="32" rx="6" fill="white" />
+              </clipPath>
             </defs>
           </svg>
           <span v-if="!isCollapsed">StatusPulse</span>
         </router-link>
       </li>
       <template v-for="route in menuItems">
-        <li v-if="route.requiredAccessLevel.includes(userInfo.accessLevel)" v-bind:tooltip-text="isCollapsed ? route.label : null" v-bind:tooltip-position="isCollapsed ? 'right' : null" :key="route">
+        <li v-if="route.requiredAccessLevel.includes(userInfo.accessLevel)" :key="route" :tooltip-text="isCollapsed ? route.label : null" :tooltip-position="isCollapsed ? 'right' : null">
           <router-link
             :to="route.path"
             :class="{ active: $route.path.startsWith(route.path) }"
-          ><i :class='route.icon'></i>
+          >
+            <i :class="route.icon" />
             <span v-if="!isCollapsed">{{ route.label }}</span>
           </router-link>
         </li>
       </template>
       <li class="footer">
         <div class="links">
-          <a href="https://www.external-url.com" target="_blank" rel="noopener noreferrer" class="github" v-bind:tooltip-text="isCollapsed ? 'Check GitHub' : null" v-bind:tooltip-position="isCollapsed ? 'right' : null">
+          <a href="https://www.external-url.com" target="_blank" rel="noopener noreferrer" class="github" :tooltip-text="isCollapsed ? 'Check GitHub' : null" :tooltip-position="isCollapsed ? 'right' : null">
             <span v-if="!isCollapsed">GitHub</span>
-            <i v-if="isCollapsed" class='bx bxl-github'></i>
-            <i v-else class='bx bx-link-external'></i>
+            <i v-if="isCollapsed" class="bx bxl-github" />
+            <i v-else class="bx bx-link-external" />
           </a>
-          <a href="https://www.external-url.com" target="_blank" rel="noopener noreferrer" class="github" v-bind:tooltip-text="isCollapsed ? 'Check GitLab' : null" v-bind:tooltip-position="isCollapsed ? 'right' : null">
+          <a href="https://www.external-url.com" target="_blank" rel="noopener noreferrer" class="github" :tooltip-text="isCollapsed ? 'Check GitLab' : null" :tooltip-position="isCollapsed ? 'right' : null">
             <span v-if="!isCollapsed">GitLab</span>
-            <i v-if="isCollapsed" class='bx bxl-gitlab'></i>
-            <i v-else class='bx bx-link-external'></i>
+            <i v-if="isCollapsed" class="bx bxl-gitlab" />
+            <i v-else class="bx bx-link-external" />
           </a>
         </div>
-        <p v-if="!isCollapsed">© 2024  StatusPulse - Beta</p>
+        <p v-if="!isCollapsed">
+          © 2024  StatusPulse - Beta
+        </p>
       </li>
       <li class="menu-btn">
         <span v-if="!isCollapsed">Hide Menu</span>
-        <button @click="toggleMenu" v-bind:tooltip-text="isCollapsed ? 'Show Menu' : null" v-bind:tooltip-position="isCollapsed ? 'right' : null">
-          <span v-if="!isCollapsed" class="menu-collapse"><i class='bx bx-chevron-left'></i></span>
-          <span v-else class="menu-collapse"><i class='bx bx-chevron-right'></i></span>
+        <button :tooltip-text="isCollapsed ? 'Show Menu' : null" :tooltip-position="isCollapsed ? 'right' : null" @click="toggleMenu">
+          <span v-if="!isCollapsed" class="menu-collapse"><i class="bx bx-chevron-left" /></span>
+          <span v-else class="menu-collapse"><i class="bx bx-chevron-right" /></span>
         </button>
       </li>
     </ul>
@@ -193,7 +195,7 @@ export default {
   gap: 10px;
   display: flex;
   align-items: center;
-  transition: color 300ms ease-in-out;  
+  transition: color 300ms ease-in-out;
 }
 
 .aside-menu.is-collapsed-false li.footer a:hover{

@@ -20,8 +20,8 @@ export default {
 
 <template>
   <div class="input-checkbox">
-    <input type="checkbox" :id="name" :name="name" :checked="isChecked" @change="$emit('update:isChecked', $event.target.checked)" />
-    <label :for="name"><span class='checkbox-icon' :checked="isChecked"><i v-if="isChecked" class='bx bx-check'></i></span><span>{{ label }}</span></label>
+    <input :id="name" type="checkbox" :name="name" :checked="isChecked" @change="$emit('update:isChecked', $event.target.checked)">
+    <label :for="name"><span class="checkbox-icon" :checked="isChecked"><i v-if="isChecked" class="bx bx-check" /></span><span>{{ label }}</span></label>
   </div>
 </template>
 

@@ -3,7 +3,6 @@ import { useVuelidate } from '@vuelidate/core';
 import { email, helpers, required } from '@vuelidate/validators';
 import VTextInput from '../components/Form/VTextInput.vue';
 import VPasswordInput from '../components/Form/VPasswordInput.vue';
-import VCheckbox from '../components/Form/VCheckbox.vue';
 import VButton from '../components/VButton.vue';
 import { useNotifyStore } from '../stores/notifications';
 import { useUserStore } from '../stores/user';
@@ -12,7 +11,6 @@ export default {
   components: {
     VTextInput,
     VPasswordInput,
-    VCheckbox,
     VButton,
   },
   setup() {
@@ -30,7 +28,7 @@ export default {
         rememberMe: false,
         isPasswordValid: false,
       },
-      
+
     };
   },
   validations() {
@@ -87,7 +85,7 @@ export default {
       }
 
       this.isBtnLoading = false;
-    }
+    },
   },
 };
 </script>
@@ -97,14 +95,17 @@ export default {
     <div class="text-holder">
       <h1>Register to <br>Status-Pulse</h1>
       <p>Start monitoring in minutes.</p>
-      <p>Already have a account?
+      <p>
+        Already have a account?
         <VButton
-        :is-loading="isBtnLoading"
-        :isFullWidth="true"
-        type="link-important"
-        :link-to="{ path: 'login'}"
-      >Login</VButton>
-    </p>
+          :is-loading="isBtnLoading"
+          :is-full-width="true"
+          type="link-important"
+          :link-to="{ path: 'login' }"
+        >
+          Login
+        </VButton>
+      </p>
     </div>
     <div class="form-holder">
       <VTextInput
@@ -133,25 +134,29 @@ export default {
       />
       <VButton
         :is-loading="isBtnLoading"
-        :isFullWidth="true"
+        :is-full-width="true"
         type="fill"
         @on-click="login()"
       >
         Register
       </VButton>
       <p>
-        By signing up, you agree to the 
+        By signing up, you agree to the
         <VButton
-        :is-loading="isBtnLoading"
-        :isFullWidth="false"
-        type="link"
-        @on-click="login()"
-      >Terms of Service</VButton> and <VButton
-        :is-loading="isBtnLoading"
-        :isFullWidth="false"
-        type="link"
-        @on-click="login()"
-      >Privacy Policy</VButton>.
+          :is-loading="isBtnLoading"
+          :is-full-width="false"
+          type="link"
+          @on-click="login()"
+        >
+          Terms of Service
+        </VButton> and <VButton
+          :is-loading="isBtnLoading"
+          :is-full-width="false"
+          type="link"
+          @on-click="login()"
+        >
+          Privacy Policy
+        </VButton>.
       </p>
     </div>
   </div>

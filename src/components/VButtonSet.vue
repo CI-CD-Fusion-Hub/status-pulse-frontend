@@ -1,19 +1,19 @@
 <script>
-import VButton from "../components/VButton.vue";
+import VButton from '../components/VButton.vue';
 
 export default {
-  components: {VButton},
-  data () {
+  components: { VButton },
+  data() {
     return {
       isMenuVissible: false,
-    }
+    };
   },
-}
+};
 </script>
 
 <template>
   <div class="btn-set-holder">
-    <VButton :icon="['fas', 'ellipsis-vertical']" @on-click="isMenuVissible=!isMenuVissible" />
+    <VButton :icon="['fas', 'ellipsis-vertical']" @on-click="isMenuVissible = !isMenuVissible" />
     <div v-if="isMenuVissible" class="btn-set-menu">
       <slot />
     </div>
