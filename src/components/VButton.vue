@@ -6,8 +6,8 @@ export default {
       default: '',
     },
     icon: {
-      type: Array,
-      default: () => [],
+      type: String,
+      default: '',
     },
     data: {
       type: String,
@@ -45,6 +45,10 @@ export default {
       type: String,
       default: 'Top',
     },
+    align: {
+      type: String,
+      default: 'right',
+    },
   },
   emits: ['onClick'],
   methods: {
@@ -71,6 +75,7 @@ export default {
     >
       <i v-if="isLoading" class="bx bx-loader-alt bx-spin" />
       <template v-else>
+        <i v-if="icon !== ''" :class="icon" />
         <span v-if="$slots.default"><slot /></span>
       </template>
     </button>
@@ -78,6 +83,10 @@ export default {
 </template>
 
 <style>
+.btn-holder[type="simple"] {
+  color: white;
+}
+
 .btn-holder[type="link"],
 .btn-holder[type="link-important"] {
   display: inline-block;

@@ -1,10 +1,11 @@
 <script>
 import VAsideMenu from './components/VAsideMenu.vue';
+import VTopHeader from './components/VTopHeader.vue';
 import VNotification from './components/VNotification.vue';
 import { useUserStore } from './stores/user';
 
 export default {
-  components: { VAsideMenu, VNotification },
+  components: { VAsideMenu, VNotification, VTopHeader },
   data() {
     return {
       asideMenuRoutes: [
@@ -41,7 +42,10 @@ export default {
   <div v-if="!$route.path.includes('login') && !$route.path.includes('register') && !$route.path.includes('forgotPassword') && !$route.path.includes('verifyCode')" class="main_container">
     <VAsideMenu :menu-items="asideMenuRoutes" />
     <main>
-      <router-view />
+      <VTopHeader />
+      <div>
+        <router-view />
+      </div>
     </main>
   </div>
   <div v-else class="login_container">
@@ -52,8 +56,7 @@ export default {
 
 <style>
 .main_container {
-  display: grid;
-  grid-template-columns: 250px 1fr;
+  background-color: var(--box-bg);
 }
 
 .login_container {
@@ -63,7 +66,29 @@ export default {
   min-height: 100vh;
 }
 
+.aside-menu[is-collapsed="false"] + main {
+  margin-left: 280px;
+}
+.aside-menu[is-collapsed="true"] + main {
+  margin-left: 80px;
+}
+
 main {
   position: relative;
+  transition: margin-left 200ms ease-in-out;
+  display: flex;
+  flex-flow: column;
+  align-items: stretch;
+  height: 100vh;
+}
+
+main > div {
+  padding: 40px;
+  border-top-left-radius: 8px;
+  background-color: var(--main-bg-color);
+  height: 100%;
+  overflow-y: scroll;
+  position: relative;
+  z-index: 1;
 }
 </style>

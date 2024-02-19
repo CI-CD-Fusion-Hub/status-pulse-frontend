@@ -3,7 +3,7 @@ import { useNotifyStore } from '../stores/notifications';
 import { useUserStore } from '../stores/user';
 
 export default {
-  components: {},
+  components: { },
   props: {
     menuItems: {
       type: Array,
@@ -36,7 +36,7 @@ export default {
 </script>
 
 <template>
-  <aside :class="`aside-menu is-collapsed-${isCollapsed}`">
+  <aside class="aside-menu" :is-collapsed="isCollapsed">
     <ul>
       <li class="logo-holder">
         <router-link
@@ -104,14 +104,15 @@ export default {
   height: 100vh;
   display: flex;
   transition: width 100ms ease-in-out;
+  z-index: 3;
 }
 
-.aside-menu.is-collapsed-true {
+.aside-menu[is-collapsed="true"] {
   width: 80px;
   align-content: center;
 }
 
-.aside-menu.is-collapsed-false {
+.aside-menu[is-collapsed="false"] {
   width: 280px;
   align-content: left;
   overflow: hidden;
@@ -124,7 +125,7 @@ export default {
   gap: 10px;
 }
 
-.aside-menu.is-collapsed-true li {
+.aside-menu[is-collapsed="true"] li {
   margin: 0 20px;
   align-items: center;
 }
@@ -136,14 +137,14 @@ export default {
   color: #848F9D;
 }
 
-.aside-menu.is-collapsed-true .links {
+.aside-menu[is-collapsed="true"] .links {
   display: flex;
   flex-flow: column;
   gap: 10px;
 }
 
 .aside-menu li > a,
-.aside-menu.is-collapsed-true li:not(:first-child) .links a {
+.aside-menu[is-collapsed="true"] li:not(:first-child) .links a {
   transform: border-box;
   text-align: center;
   border-radius: 4px;
@@ -153,20 +154,20 @@ export default {
   gap: 12px;
 }
 
-.aside-menu.is-collapsed-false li{
+.aside-menu[is-collapsed="false"] li{
   margin: 0 16px;
 }
 
 .aside-menu li:not(:first-child) > a:hover,
 .aside-menu li:not(:first-child) > a.active,
-.aside-menu.is-collapsed-true .links a:hover{
+.aside-menu[is-collapsed="true"] .links a:hover{
   background-color: #141C24;
   color: white;
 }
 
 .aside-menu li > a i,
 .aside-menu li > button i,
-.aside-menu.is-collapsed-true .links i {
+.aside-menu[is-collapsed="true"] .links i {
   font-size: 24px;
 }
 
@@ -183,7 +184,7 @@ export default {
   margin-top: auto;
 }
 
-.aside-menu.is-collapsed-false li.footer .links {
+.aside-menu[is-collapsed="false"] li.footer .links {
   display: flex;
   justify-content: flex-start;
   flex-flow: row;
@@ -191,26 +192,26 @@ export default {
   margin-bottom: 16px;
 }
 
-.aside-menu.is-collapsed-false li.footer .links a {
+.aside-menu[is-collapsed="false"] li.footer .links a {
   gap: 10px;
   display: flex;
   align-items: center;
   transition: color 300ms ease-in-out;
 }
 
-.aside-menu.is-collapsed-false li.footer a:hover{
+.aside-menu[is-collapsed="false"] li.footer a:hover{
   color: white;
 }
 
-.aside-menu.is-collapsed-false li.footer a:hover span{
+.aside-menu[is-collapsed="false"] li.footer a:hover span{
   text-decoration: underline;
 }
 
-.aside-menu.is-collapsed-false li.footer i {
+.aside-menu[is-collapsed="false"] li.footer i {
   font-size: 20px;
 }
 
-.aside-menu.is-collapsed-false li.footer p {
+.aside-menu[is-collapsed="false"] li.footer p {
   font-size: 12px;
 }
 
@@ -225,7 +226,7 @@ export default {
   justify-content: space-between;
 }
 
-.aside-menu.is-collapsed-true li.menu-btn {
+.aside-menu[is-collapsed="true"] li.menu-btn {
   padding: 8px 0 0 0;
   justify-content: center;
 }
@@ -239,10 +240,10 @@ export default {
   cursor: pointer;
 }
 
-.aside-menu.is-collapsed-true .menu-collapse {
+.aside-menu[is-collapsed="true"] .menu-collapse {
   justify-content: flex-end;
 }
-.aside-menu.is-collapsed-false .menu-collapse {
+.aside-menu[is-collapsed="false"] .menu-collapse {
   justify-content: flex-start;
 }
 </style>

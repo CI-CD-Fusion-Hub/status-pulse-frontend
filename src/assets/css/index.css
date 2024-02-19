@@ -62,7 +62,8 @@ a {
 }
 h1,
 h2,
-h3 {
+h3,
+h4 {
     margin: 0;
 }
 p {
@@ -79,6 +80,7 @@ p {
     --box-color: #0A0F16;
     --box-bg: #0A0F16;
     --box-border: #252F3A;
+    --box-radius: 4px;
 
     --body-text: #848F9D;
 
@@ -92,8 +94,12 @@ p {
     --link-default-color: #0EA5E9;
     --link-hover-color: #0284C7;
 
+    --green-300: #86EFAC;
     --green-400: #4ADE80;
+    --green-500: #22C55E;
+    --green-950: #07211C;
     --gray-scale-3: #E9EBED;
+    --gray-scale-6: #414B55;
 
     --main-color: rgb(19 24 37);
     --main-font: "Inter", sans-serif;
@@ -120,13 +126,47 @@ body {
     color: var(--body-text);
 }
 
+h1,h2,h3,h4,h5,h6 {
+    color: white;
+}
+
 h1 {
     font-size: 40px;
     font-weight: 500;
     line-height: 48px;
     letter-spacing: -0.02em;
-    text-align: left;
     color: white;
+}
+h3 {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 32px;
+    letter-spacing: -0.01em;
+}
+h4 {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 36px;
+    letter-spacing: -0.01em;
+}
+h5 {
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 32px;
+    letter-spacing: 0em;
+}
+h6 {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0em;
+}
+
+p {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: -0.01em;
 }
 
 /* Scrollbar Hack */
@@ -150,33 +190,13 @@ h1 {
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: var(--border-radius);
     border-radius: var(--border-radius);
-    background: var(--second-color);
+    background: var(--primary-color);
 }
 
 ::-webkit-scrollbar-thumb:window-inactive {
-    background: var(--second-color)
+    background: var(--primary-color)
 }
 
-.loader {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    background-color: var(--main-color);
-    display: flex;
-    align-items: center;
-    align-content: center;
-    text-align: center;
-    justify-content: space-evenly;
-    font-size: 20px;
-    color: white;
-    z-index: 9;
-    border-radius: var(--border-radius);
-}
-
-code {
-    scroll-behavior: smooth;
-}
 
 /* Tooltip */
 [tooltip-text] {

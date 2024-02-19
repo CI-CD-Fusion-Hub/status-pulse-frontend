@@ -10,8 +10,8 @@ export default {
     return {
       all_notifications: useNotifyStore().notifications,
       status_icon: {
-        error: ['fas', 'xmark'],
-        success: ['fas', 'check'],
+        error: 'bx bxs-error-circle',
+        success: 'bx bxs-check-circle',
       },
     };
   },
@@ -32,14 +32,15 @@ export default {
       <div
         v-for="(notification, index) in all_notifications"
         :key="index"
-        :class="`notification ${notification.status}`"
+        class="notification"
+        :type="notification.status"
       >
-        <font-awesome-icon :icon="status_icon[notification.status]" />
+        <i :class="status_icon[notification.status]"></i>
         <div>
           {{ notification.message }}
         </div>
         <VButton
-          :icon="['fas', 'xmark']"
+          icon="bx bx-x"
           class="btn-notification"
           @on-click="remove_notification(index)"
         />
@@ -57,7 +58,6 @@ export default {
   z-index: 10;
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
 .notification {
@@ -67,7 +67,7 @@ export default {
   z-index: 9999;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 8px;
   font-size: 15px;
   line-height: 17px;
   position: relative;
@@ -96,12 +96,15 @@ export default {
   font-size: 20px;
 }
 
-.notification.success {
+.notification[type="success"] {
   background-color: #4caf50;
   color: #fff;
+  background: linear-gradient(0deg, #052E16, #052E16),linear-gradient(0deg, #07211C, #07211C);
+  border: 1px solid #052E16;
+  color: var(--green-300)
 }
 
-.notification.error {
+.notification[type="error"] {
   background-color: #f44336;
   color: #fff;
 }

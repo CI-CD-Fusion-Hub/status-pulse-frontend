@@ -82,7 +82,7 @@ export default {
         useNotifyStore().add(response.data.status, response.data.message);
       }
       catch (error) {
-        useNotifyStore().add('error', error.data.message || 'Error loading data!');
+        useNotifyStore().add('error', error.data?.message || 'Internal Server Error.');
       }
 
       this.isBtnLoading = false;

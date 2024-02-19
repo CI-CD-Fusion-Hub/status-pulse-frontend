@@ -40,7 +40,7 @@ export default {
 
 <template>
   <div class="input-holder">
-    <label class="outside-label" :for="name">{{ label }}</label>
+    <label v-if="label !== ''" class="outside-label" :for="name">{{ label }}</label>
     <div class="input-field">
       <input
         :id="name"
@@ -50,7 +50,8 @@ export default {
         :value="data"
         @input="$emit('update:data', $event.target.value)"
       >
-      <label class="inside-label" :for="name">{{ label }}</label>
+      <label class="inside-label" :for="name">{{ placeholder }}</label>
+      <!-- <i class='bx bx-search'></i> -->
     </div>
     <!-- <div class="input-error">Helper Text</div> -->
   </div>
@@ -101,10 +102,14 @@ export default {
 
 .input-holder .input-field label {
   position: absolute;
-  left: 17px;
-  top: 13px;
   cursor: text;
+  width: calc(100% - 34px);
   color: var(--select-default-color);
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 17px;
 }
 
 .input-holder .input-field input:focus + label,
