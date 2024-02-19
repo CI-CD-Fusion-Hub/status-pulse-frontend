@@ -213,14 +213,11 @@ p {
 }
 
 [tooltip-text]::before {
-    content: "";
+    content: url("data:image/svg+xml,%3Csvg width='7' height='8' viewBox='0 0 7 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 8L7 0L0.788855 3.10557C0.0518064 3.4741 0.0518053 4.5259 0.788854 4.89443L7 8Z' fill='%23414B55'/%3E%3C/svg%3E");
     position: absolute;
     top: -7px;
     left: 50%;
     transform: translateX(-50%);
-    border-width: 5px 6px 0 6px;
-    border-style: solid;
-    border-color: #414B55 transparent transparent transparent;
     z-index: 99;
     opacity: 0;
 }
@@ -235,13 +232,16 @@ p {
     text-align: center;
     color: #fff;
     padding: 10px 12px;
-    font-size: 12px;
-    min-width: 80px;
-    border-radius: var(--border-radius);
+    min-width: 100px;
+    border-radius: 2px;
     pointer-events: none;
     z-index: 99;
     opacity: 0;
     font-family: var(--main-font);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0em;
 }
 
 [tooltip-position='left']::before {
@@ -262,10 +262,9 @@ p {
 }
 
 [tooltip-position='right']::before {
-    left: 100%;
-    top: calc(50% - 2px);
+    left: 146%;
+    top: calc(50% - 9px);
     margin-left: 0;
-    transform: rotate(90deg);
 }
 
 [tooltip-position='left']::after {
@@ -287,7 +286,7 @@ p {
 }
 
 [tooltip-position='right']::after {
-    left: 100%;
+    left: 132%;
     top: 50%;
     margin-left: 8px;
     transform: translateX(0%) translateY(-50%);

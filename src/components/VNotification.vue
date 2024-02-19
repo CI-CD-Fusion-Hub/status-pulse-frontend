@@ -35,7 +35,7 @@ export default {
         class="notification"
         :type="notification.status"
       >
-        <i :class="status_icon[notification.status]"></i>
+        <i :class="status_icon[notification.status]" />
         <div>
           {{ notification.message }}
         </div>

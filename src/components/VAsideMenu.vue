@@ -122,7 +122,7 @@ export default {
   width: 100%;
   display: flex;
   flex-flow: column;
-  gap: 10px;
+  gap: 4px;
 }
 
 .aside-menu[is-collapsed="true"] li {
@@ -140,7 +140,7 @@ export default {
 .aside-menu[is-collapsed="true"] .links {
   display: flex;
   flex-flow: column;
-  gap: 10px;
+  gap: 4px;
 }
 
 .aside-menu li > a,
@@ -208,7 +208,7 @@ export default {
 }
 
 .aside-menu[is-collapsed="false"] li.footer i {
-  font-size: 20px;
+  font-size: 16.5px;
 }
 
 .aside-menu[is-collapsed="false"] li.footer p {
@@ -217,8 +217,8 @@ export default {
 
 .aside-menu li.menu-btn {
   border-top: solid 1px #252F3A;
-  padding: 8px 0 0 8px;
-  margin: 16px 16px 8px 16px;
+  padding-top: 16px;
+  margin: 6px 16px 16px 16px;
   display: flex;
   align-content: space-between;
   align-items: center;
@@ -226,8 +226,15 @@ export default {
   justify-content: space-between;
 }
 
+.aside-menu li.menu-btn > span {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0em;
+}
+
 .aside-menu[is-collapsed="true"] li.menu-btn {
-  padding: 8px 0 0 0;
+  padding: 16px 0 0 0;
   justify-content: center;
 }
 
