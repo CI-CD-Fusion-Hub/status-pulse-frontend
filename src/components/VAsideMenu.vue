@@ -239,11 +239,11 @@ export default {
 }
 
 .aside-menu .menu-collapse {
-  border: solid 1px #848F9D;
+  border: solid 2px var(--body-text);
   width: 32px;
   border-radius: 4px;
   display: flex;
-  color: #848F9D;
+  color: var(--body-text);
   cursor: pointer;
 }
 
