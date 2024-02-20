@@ -49,7 +49,7 @@ export default {
   </div>
 </template>
 
-<style scoped>
+<style>
 /* Add styles for notifications */
 .notifications {
   position: fixed;
@@ -58,9 +58,10 @@ export default {
   z-index: 10;
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
-.notification {
+.notifications .notification {
   padding: 15px;
   border-radius: var(--border-radius);
   max-width: 300px;
@@ -74,29 +75,16 @@ export default {
   font-family: monospace;
 }
 
-.notification .btn-notification {
-  position: absolute;
-  top: -14px;
-  right: -10px;
-  border-radius: 50%;
-  font-size: 13px;
+.notifications .notification .btn-notification i {
+  font-size: 17px;
+  color: white;
 }
 
-.notification button {
-  border-radius: 50%;
-  font-size: 13px;
-  padding: 0px;
-  width: 27px;
-  height: 27px;
-  gap: 0;
-  display: block;
+.notifications .notification > i {
+  font-size: 22px;
 }
 
-.notification > svg {
-  font-size: 20px;
-}
-
-.notification[type="success"] {
+.notifications .notification[type="success"] {
   background-color: #4caf50;
   color: #fff;
   background: linear-gradient(0deg, #052E16, #052E16),linear-gradient(0deg, #07211C, #07211C);
@@ -104,8 +92,9 @@ export default {
   color: var(--green-300)
 }
 
-.notification[type="error"] {
-  background-color: #f44336;
-  color: #fff;
+.notifications .notification[type="error"] {
+  background: linear-gradient(0deg, #260806, #260806),linear-gradient(0deg, #772323, #772323);
+  border: 1px solid #772323;
+  color: #F25454;
 }
 </style>

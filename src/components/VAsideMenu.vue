@@ -218,7 +218,7 @@ export default {
 .aside-menu li.menu-btn {
   border-top: solid 1px #252F3A;
   padding-top: 16px;
-  margin: 6px 16px 16px 16px;
+  margin: 12px 16px 16px 16px;
   display: flex;
   align-content: space-between;
   align-items: center;
