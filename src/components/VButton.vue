@@ -66,6 +66,7 @@ export default {
       :to="linkTo"
     >
       <button @click="onClick">
+        <i v-if="icon !== ''" :class="icon" />
         <span v-if="$slots.default"><slot /></span>
       </button>
     </router-link>
@@ -83,8 +84,27 @@ export default {
 </template>
 
 <style>
+.btn-holder {
+  display: flex;
+}
+.btn-holder.flex-end {
+  justify-content: flex-end;
+}
+.btn-holder.flex-start {
+  justify-content: flex-start;
+}
+.btn-holder.space-between {
+  justify-content: space-between;
+}
+
 .btn-holder[type="simple"] {
   color: white;
+}
+
+.btn-holder[type="basic"] button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .btn-holder[type="link"],

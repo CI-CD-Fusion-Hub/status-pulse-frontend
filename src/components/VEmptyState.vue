@@ -15,11 +15,8 @@ export default {
       type: String,
       default: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
     },
-    func: {
-      type: Function,
-      default: null,
-    },
   },
+  emits: ['onClick'],
   data() {
     return {
       all_notifications: useNotifyStore().notifications,
@@ -30,40 +27,40 @@ export default {
     };
   },
   methods: {
-    remove_notification(index) {
-      this.all_notifications.splice(index, 1);
+    onClick() {
+      this.$emit('onClick');
     },
   },
 };
 </script>
 
 <template>
-  <div class="emptyState">
+  <div class="empty-state">
     <h1>{{ heading }}</h1>
     <p>{{ text }}</p>
-    <VButton type="fill" @on-click="func(index)">
+    <VButton type="fill" @on-click="onClick()">
       Add New
     </VButton>
   </div>
 </template>
 
 <style scoped>
-.emptyState {
-    width: 50%;
-    max-width: 524px;
-    margin: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: center;
-    flex-flow: column;
-    align-items: center;
-    gap: 20px;
+.empty-state {
+  width: 50%;
+  max-width: 524px;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+  align-items: center;
+  gap: 20px;
 }
 
-.emptyState > .btn-holder {
-    margin-top: 12px;
+.empty-state > .btn-holder {
+  margin-top: 12px;
 }
 </style>

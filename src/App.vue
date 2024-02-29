@@ -73,7 +73,7 @@ export default {
   margin-left: 80px;
 }
 
-main {
+.main_container > main {
   position: relative;
   transition: margin-left 200ms ease-in-out;
   display: flex;
@@ -82,7 +82,7 @@ main {
   height: 100vh;
 }
 
-main > div {
+.main_container > main > div {
   padding: 40px;
   border-top-left-radius: 8px;
   background-color: var(--main-bg-color);

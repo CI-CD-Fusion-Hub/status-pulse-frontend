@@ -69,6 +69,7 @@ h4 {
 p {
     margin: 0;
 }
+
 /* Color Theme */
 :root {
     --main-bg-color: #010408;
@@ -98,8 +99,17 @@ p {
     --green-400: #4ADE80;
     --green-500: #22C55E;
     --green-950: #07211C;
+
+    --gray-color-1: #E5E7EB;
     --gray-scale-3: #E9EBED;
+    --gray-scale-5: #848F9D;
     --gray-scale-6: #414B55;
+
+    --red-500: #EF4444;
+
+
+    --context-menu-bg: #141C24;
+    --context-menu-border: #252F3A;
 
     --main-color: rgb(19 24 37);
     --main-font: "Inter", sans-serif;

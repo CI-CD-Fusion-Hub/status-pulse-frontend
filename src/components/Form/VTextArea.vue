@@ -63,10 +63,10 @@ export default {
 </script>
 
 <template>
-  <div class="text-area-holder">
+  <div class="text-holder">
     <label v-if="label !== ''" class="outside-label" :for="name">{{ label }}</label>
     <div
-      class="text-area-field"
+      class="text-field"
       :tooltip-text="tooltipText"
       :tooltip-position="tooltipPos"
     >
@@ -74,75 +74,86 @@ export default {
         :id="name"
         :name="name"
         placeholder=" "
+        :value="data"
         @input="$emit('update:data', $event.target.value)"
       />
       <label class="inside-label" :for="name">{{ placeholder }}</label>
-      <font-awesome-icon
-        v-if="icon"
-        :icon="icon"
-      />
     </div>
     <p>{{ description }}</p>
   </div>
 </template>
 
 <style scoped>
-.text-area-holder .outside-label {
-  color: white;
-  margin-bottom: 8px;
+.text-holder .outside-label {
   font-size: 12px;
-  font-style: normal;
   font-weight: 500;
-  line-height: 16px; /* 133.333% */
-  letter-spacing: 0.12px;
+  line-height: 16px;
+  color: #E9EBED;
   display: block;
+  margin-bottom: 6px;
 }
 
-.text-area-field {
+.text-holder .text-field {
   position: relative;
-  background: rgba(112, 112, 112, 0.11);
   display: flex;
-  border-radius: 6px;
 }
 
-.text-area-field textarea {
-  padding: 9px 24px;
+.text-holder .text-field textarea,
+.text-holder .text-field label {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  width: 100%;
+}
+
+.text-holder .text-field textarea {
   background: transparent;
-  border: none;
-  max-height: 50vh;
+  border: solid 1px transparent;
+  padding: 11px 16px;
+  background-color: var(--select-bg);
+  border-radius: var(--select-radius);
+  transition: all 300ms ease-in-out;
   outline: none;
   color: white;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px;
-  cursor: text;
-  position: relative;
-  width: 100%;
+  min-height: 114px;
   resize: none;
 }
 
-.text-area-field .inside-label {
-  position: absolute;
-  color: rgba(160, 160, 160, 0.65);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px; /* 171.429% */
-  left: 0;
-  top: 0;
-  padding: 9.5px 24px;
-  width: calc(100% - 48px);
-  height: 100%;
+.text-holder .text-field textarea:hover {
+  border-color: var(--select-hover-color);
 }
 
-.text-area-field textarea:focus + label,
-.text-area-field textarea:not(:placeholder-shown) + label  {
+.text-holder .text-field textarea:focus{
+  border-color: var(--select-focus-color);
+  background-color: transparent;
+}
+
+.text-holder .text-field label {
+  position: absolute;
+  cursor: text;
+  width: calc(100% - 34px);
+  color: var(--select-default-color);
+  height: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 17px;
+}
+
+.text-holder .text-field textarea:focus + label,
+.text-holder .text-field textarea:not(:placeholder-shown) + label  {
   display: none;
 }
 
-.text-area-field textarea:focus + label + svg,
-.text-area-field textarea:not(:placeholder-shown) + label + svg {
+.text-holder .text-field textarea:focus + label + svg,
+.text-holder .text-field textarea:not(:placeholder-shown) + label + svg {
   opacity: 1;
+}
+
+.text-holder .text-error {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  margin-top: 4px;
+  color: var(--select-error-color)
 }
 </style>

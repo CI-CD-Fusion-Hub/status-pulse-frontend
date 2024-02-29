@@ -36,8 +36,8 @@ export default {
       default: () => [],
     },
     icon: {
-      type: Array,
-      default: () => [],
+      type: String,
+      default: '',
     },
     isSearchable: {
       type: Boolean,
@@ -136,9 +136,9 @@ export default {
         :class="`drop-down-btn is-multyselect-${isMultyselect}`"
         @click="toggleDropdown"
       >
-        <font-awesome-icon
-          v-if="icon"
-          :icon="icon"
+        <i
+          v-if="icon !== ''"
+          :class="icon"
         />
         <template v-if="Array.isArray(dropdownPlaceholder)">
           <div
@@ -148,21 +148,18 @@ export default {
           >
             <span v-if="optionLabel">{{ item[optionLabel] || getPlaceHolder(item) }}</span>
             <span v-else>{{ item }}</span>
-            <font-awesome-icon
-              :icon="['fas', 'xmark']"
-              @click.stop="removeValue(item)"
-            />
+            <i class="bx bx-x" @click.stop="removeValue(item)" />
           </div>
           <span v-if="dropdownPlaceholder.length === 0">{{ placeholder }}</span>
         </template>
         <span v-else-if="data?.length > 0">{{ data }}</span>
         <span v-else>{{ dropdownPlaceholder }}</span>
-        <font-awesome-icon
-          :icon="['fas', 'chevron-down']"
-          :class="`is-dropdown-open-${isOpen}`"
+        <i
+          class="bx bx-chevron-down"
+          :is-open="isOpen"
         />
       </a>
-      <div :class="`is-visible-${isOpen}`">
+      <div class="dropdown-menu" :is-vissible="isOpen">
         <div
           v-if="isSearchable && options.length !== 0"
           class="input-holder"
@@ -177,7 +174,7 @@ export default {
           <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
         </div>
         <ul>
-          <li v-if="filterResults.length === 0">
+          <li v-if="filterResults.length === 0" class="dropdown-menu-item">
             <div class="no-data">
               <font-awesome-icon :icon="['fas', 'ghost']" />No Data
             </div>
@@ -185,17 +182,18 @@ export default {
           <li
             v-for="item in filterResults"
             :key="item"
+            class="dropdown-menu-item"
           >
             <a
               v-if="optionValue && optionLabel"
               href="javascript:;"
               @click="selectValue(item)"
-            >{{ item[optionLabel] }}</a>
+            >{{ item[optionLabel] }}<i v-if="dropdownPlaceholder === item" class="bx bx-check" /></a>
             <a
               v-else
               href="javascript:;"
               @click="selectValue(item)"
-            >{{ item }}</a>
+            >{{ item }}<i v-if="dropdownPlaceholder === item" class="bx bx-check" /></a>
           </li>
         </ul>
       </div>
@@ -211,156 +209,99 @@ export default {
 
 <style scoped>
 .dropdown-holder .outside-label {
-  color: white;
-  margin-bottom: 8px;
   font-size: 12px;
-  font-style: normal;
   font-weight: 500;
-  line-height: 16px; /* 133.333% */
-  letter-spacing: 0.12px;
+  line-height: 16px;
+  color: #E9EBED;
   display: block;
+  margin-bottom: 6px;
 }
 
-.dropdown-holder p {
-  color: rgba(210, 210, 210, 0.45);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px; /* 171.429% */
-  letter-spacing: -0.14px;
-}
-
-.dropdown-field {
-  border-radius: 6px;
-  background: rgba(112, 112, 112, 0.11);
+.dropdown-holder .dropdown-field {
   position: relative;
-  margin-bottom: 10px;
-  color: rgba(160, 160, 160, 0.65);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px; /* 171.429% */
+  display: flex;
+  flex-flow: column;
+  gap: 8px;
 }
 
-.dropdown-field svg {
-  font-size: 13px
-}
-
-.dropdown-field a {
-  display: block;
-}
-
-.dropdown-field > div > ul {
-  transition: max-height 150ms ease-in-out;
-  overflow-y: auto;
-  border-radius: 0 0 var(--border-radius) var(--border-radius);
-}
-
-.dropdown-field .drop-down-btn {
-  padding: 9.5px 24px;
+.dropdown-holder .dropdown-field > a {
   display: flex;
   align-items: center;
-  gap: 5px;
-  position: relative;
-  z-index: 2;
-  flex-wrap: wrap;
-  max-height: 200px;
 }
 
-.dropdown-field .drop-down-btn.is-multyselect-true {
-  overflow-y: auto;
-}
-
-.dropdown-field .drop-down-btn svg:first-child {
-  padding-left: 5px;
-}
-
-.dropdown-field .drop-down-btn svg:last-child {
+.dropdown-holder .dropdown-field > a i:last-child {
   margin-left: auto;
+  font-size: 20px;
+  transition: transform 100ms ease-in-out;
 }
 
-.dropdown-field ul a {
-  background-color: var(--main-color-hover);
-  padding: 6px 15px;
-  transition: background-color 300ms ease-in-out;
-  display: flex;
-  gap: 5px;
-  align-content: center;
-}
-.dropdown-field ul a:hover,
-.dropdown-field ul li.active a {
-  background-color: var(--main-color);
+.dropdown-holder .dropdown-field > a i[is-open="true"]:last-child {
+  transform: rotate(-90deg);
 }
 
-.dropdown-field div.is-visible-true ul{
-  max-height: 200px;
-  border: solid 2px var(--main-color-hover);
-}
-.dropdown-field div.is-visible-false ul {
-  max-height: 0;
-}
-
-.dropdown-field .is-dropdown-open-false {
-  transform: rotateZ(0deg);
-  transition: transform 150ms ease-in-out;
-}
-.dropdown-field .is-dropdown-open-true {
-  transform: rotateZ(-90deg);
+.dropdown-holder .dropdown-field .drop-down-btn {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  background: transparent;
+  border: solid 1px transparent;
+  padding: 11px 16px;
+  background-color: var(--select-bg);
+  border-radius: var(--select-radius);
+  transition: all 300ms ease-in-out;
+  color: white;
 }
 
-.dropdown-field .input-holder {
-  margin-bottom: 0;
+.dropdown-holder .dropdown-field .drop-down-btn:hover {
+  border-color: var(--select-hover-color);
+}
+
+.dropdown-holder .dropdown-field .drop-down-btn:focus {
+  border-color: transparent;
+}
+
+.dropdown-holder .dropdown-menu {
   display: none;
-  border-bottom: solid 2px var(--main-color);
-  border-radius: 0;
-  gap: 10px;
+  padding: 16px 0;
+  border-radius: 6px;
+  border: 1px;
+  background-color: var(--context-menu-bg);
+  border: solid 1px var(--context-menu-border)
 }
 
-.dropdown-field .input-holder label {
-  padding-left: 33px;
-}
-
-.dropdown-field div.is-visible-true .input-holder {
+.dropdown-holder .dropdown-menu[is-vissible="true"] {
   display: flex;
+  gap: 8px;
 }
 
-.dropdown-field div .input-holder input {
-  padding: 6px 0;
+.dropdown-holder .dropdown-menu ul {
   width: 100%;
 }
 
-.dropdown-field div .input-holder input,
-.dropdown-field div .input-holder label {
-  font-size: 13px;
-}
-
-.dropdown-field .no-data {
+.dropdown-holder .dropdown-menu .dropdown-menu-item {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 15px;
+  justify-content: flex-start;
+  flex-flow: column;
+  width: 100%;
+}
+.dropdown-holder .dropdown-menu .dropdown-menu-item:hover {
+  background-color: var(--gray-scale-6);
 }
 
-.dropdown-field .dropdown-tag {
-  padding: 5px 10px;
-  background-color: gray;
-  border-radius: var(--border-radius);
+.dropdown-holder .dropdown-menu .dropdown-menu-item a {
+  padding: 8px 24px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0em;
+  color: white;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
 }
 
-.dropdown-field .dropdown-tag svg {
-  width: 10px;
-  height: 10px;
-  padding: 5px 5px;
-  border-radius: 50%;
-  background-color: var(--main-color);
-  transition: background-color 300ms ease-in-out;
-}
-
-.dropdown-field .dropdown-tag svg:hover {
-  background-color: red;
+.dropdown-holder .dropdown-menu .dropdown-menu-item .bx-check {
+  color: var(--green-500);
+  font-size: 20px;
 }
 </style>
