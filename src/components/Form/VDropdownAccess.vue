@@ -97,7 +97,7 @@ export default {
             <a
               href="javascript:;"
               @click="selectValue(val)"
-            >{{ key }}<i v-if="data === key" class="bx bx-check" /></a>
+            >{{ key }}<i v-if="data === val" class="bx bx-check" /></a>
           </li>
         </ul>
       </div>
