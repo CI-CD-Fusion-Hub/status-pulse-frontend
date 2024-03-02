@@ -1,13 +1,13 @@
 <script>
 import { useVuelidate } from '@vuelidate/core';
-import { GridLayout, GridItem } from 'grid-layout-plus'
+import { GridLayout } from 'grid-layout-plus';
 import { useNotifyStore } from '../stores/notifications';
 import VLoader from '../components/VLoader.vue';
 import VButton from '../components/VButton.vue';
 import VModal from '../components/VModal.vue';
 import VTextInput from '../components/Form/VTextInput.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
-import VDashItem from '../components/Dashboard/VDashItem.vue'
+import VDashItem from '../components/Dashboard/VDashItem.vue';
 
 export default {
   components: {
@@ -16,7 +16,6 @@ export default {
     VDropdown,
     VModal,
     GridLayout,
-    GridItem,
     VLoader,
     VDashItem,
   },
@@ -26,7 +25,7 @@ export default {
   data() {
     return {
       backendUrl: import.meta.env.VITE_backendUrl,
-      data: {endpoints: []},
+      data: { endpoints: [] },
       endpoints: [],
       formData: {},
       isLoading: true,
@@ -50,19 +49,19 @@ export default {
       this.isEditModalVissible = false;
     },
     getWidgetPos() {
-      const posX = this.data?.endpoints?.length > 0 ? (this.data.endpoints.length * 2) % (this.gridColums) : 0
-      const posY = this.data?.endpoints?.length > 0 ? this.data.endpoints.length + (this.gridColums) : 0
-      const posI = this.data?.endpoints?.length > 0 ? this.data.endpoints.length : 0
+      const posX = this.data?.endpoints?.length > 0 ? (this.data.endpoints.length * 2) % (this.gridColums) : 0;
+      const posY = this.data?.endpoints?.length > 0 ? this.data.endpoints.length + (this.gridColums) : 0;
+      const posI = this.data?.endpoints?.length > 0 ? this.data.endpoints.length : 0;
 
       const position = {
         x: posX,
         y: posY,
         w: this.gridColums,
         h: 1,
-        i: posI
-      }
+        i: posI,
+      };
 
-      return position
+      return position;
     },
     async loadData() {
       try {
@@ -85,8 +84,8 @@ export default {
         this.formData.endpoints = [this.formData.endpoints];
         this.formData = {
           ...this.formData,
-          ...this.getWidgetPos()
-        }
+          ...this.getWidgetPos(),
+        };
 
         const response = await this.axios({
           method: 'post',
@@ -154,10 +153,10 @@ export default {
       <VButton type="fill" @on-click="showAddModal">
         Add New
       </VButton>
-      <VButton type="fill" v-if="isEditMode === false" @on-click="isEditMode = !isEditMode">
+      <VButton v-if="isEditMode === false" type="fill" @on-click="isEditMode = !isEditMode">
         Edit
       </VButton>
-      <VButton type="fill" v-else @on-click="updateOrder()">
+      <VButton v-else type="fill" @on-click="updateOrder()">
         Save
       </VButton>
     </div>

@@ -3,6 +3,7 @@ import { useVuelidate } from '@vuelidate/core';
 import EmptyState from '../components/VEmptyState.vue';
 import VLoader from '../components/VLoader.vue';
 import VTable from '../components/Table/VTable.vue';
+
 // import VTableColumn from '../components/Table/VTableColumn.vue';
 
 export default {
