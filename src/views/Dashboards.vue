@@ -272,9 +272,9 @@ header > div {
 }
 
 .dashboards-holder {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(90%, 1fr));
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90%, 1fr));
+  gap: 20px;
 }
 
 @media only screen and (min-width: 768px) {

@@ -89,7 +89,7 @@ export default {
     },
     selectValue(item) {
       const selectedValue = this.optionLabel && this.optionValue ? item[this.optionValue] : item;
-      const selectedLabel = item;
+      const selectedLabel = this.optionLabel && this.optionValue ? item[this.optionLabel] : item;
 
       if (this.isMultyselect) {
         this.value.push(selectedValue);
@@ -176,7 +176,7 @@ export default {
         <ul>
           <li v-if="filterResults.length === 0" class="dropdown-menu-item">
             <div class="no-data">
-              <font-awesome-icon :icon="['fas', 'ghost']" />No Data
+              <i class="bx bxs-ghost" />No Data
             </div>
           </li>
           <li
@@ -188,7 +188,7 @@ export default {
               v-if="optionValue && optionLabel"
               href="javascript:;"
               @click="selectValue(item)"
-            >{{ item[optionLabel] }}<i v-if="dropdownPlaceholder === item" class="bx bx-check" /></a>
+            >{{ item[optionLabel] }}<i v-if="dropdownPlaceholder === item[optionLabel]" class="bx bx-check" /></a>
             <a
               v-else
               href="javascript:;"
@@ -266,7 +266,9 @@ export default {
   border-radius: 6px;
   border: 1px;
   background-color: var(--context-menu-bg);
-  border: solid 1px var(--context-menu-border)
+  border: solid 1px var(--context-menu-border);
+  max-height: 215px;
+  overflow-y: scroll;
 }
 
 .dropdown-holder .dropdown-menu[is-vissible="true"] {
@@ -276,6 +278,14 @@ export default {
 
 .dropdown-holder .dropdown-menu ul {
   width: 100%;
+
+}
+
+.dropdown-holder .dropdown-menu .dropdown-menu-item .no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
 }
 
 .dropdown-holder .dropdown-menu .dropdown-menu-item {
@@ -284,7 +294,7 @@ export default {
   flex-flow: column;
   width: 100%;
 }
-.dropdown-holder .dropdown-menu .dropdown-menu-item:hover {
+.dropdown-holder .dropdown-menu .dropdown-menu-item:hover a{
   background-color: var(--gray-scale-6);
 }
 

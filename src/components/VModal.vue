@@ -96,6 +96,7 @@ export default {
     display: flex;
     justify-content: flex-end;
     background-color: var(--main-bg-color);
+    z-index: 10;
 }
 
 .modal-holder .modal-container {

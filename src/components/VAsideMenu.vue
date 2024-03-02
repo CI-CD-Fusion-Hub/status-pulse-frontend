@@ -76,9 +76,9 @@ export default {
             <i v-if="isCollapsed" class="bx bxl-github" />
             <i v-else class="bx bx-link-external" />
           </a>
-          <a href="https://www.external-url.com" target="_blank" rel="noopener noreferrer" class="github" :tooltip-text="isCollapsed ? 'Check GitLab' : null" :tooltip-position="isCollapsed ? 'right' : null">
-            <span v-if="!isCollapsed">GitLab</span>
-            <i v-if="isCollapsed" class="bx bxl-gitlab" />
+          <a href="https://www.external-url.com" target="_blank" rel="noopener noreferrer" class="github" :tooltip-text="isCollapsed ? 'Check Discord' : null" :tooltip-position="isCollapsed ? 'right' : null">
+            <span v-if="!isCollapsed">Discord</span>
+            <i v-if="isCollapsed" class="bx bxl-discord-alt" />
             <i v-else class="bx bx-link-external" />
           </a>
         </div>

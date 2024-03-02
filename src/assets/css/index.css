@@ -104,9 +104,11 @@ p {
     --gray-scale-3: #E9EBED;
     --gray-scale-5: #848F9D;
     --gray-scale-6: #414B55;
+    --gray-color-9: #141C24;
 
     --red-500: #EF4444;
 
+    --bar-chart-bg: #141C24;
 
     --context-menu-bg: #141C24;
     --context-menu-border: #252F3A;

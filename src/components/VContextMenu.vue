@@ -33,6 +33,7 @@ export default {
 .btn-set-holder > .btn-holder {
   justify-content: flex-end;
   display: flex;
+  margin-bottom: 4px;
 }
 
 .btn-set-holder > .btn-holder:hover button,
