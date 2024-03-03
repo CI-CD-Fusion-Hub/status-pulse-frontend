@@ -90,5 +90,6 @@ export default {
   overflow-y: scroll;
   position: relative;
   z-index: 1;
+  overflow-x: hidden;
 }
 </style>

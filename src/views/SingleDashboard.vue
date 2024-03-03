@@ -7,17 +7,19 @@ import VButton from '../components/VButton.vue';
 import VModal from '../components/VModal.vue';
 import VTextInput from '../components/Form/VTextInput.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
-import VDashItem from '../components/Dashboard/VDashItem.vue';
+import VUptime from '../components/Dashboard/VUpTime.vue';
+import VContextMenu from '../components/VContextMenu.vue';
 
 export default {
   components: {
     VTextInput,
     VButton,
+    VContextMenu,
     VDropdown,
     VModal,
     GridLayout,
     VLoader,
-    VDashItem,
+    VUptime,
   },
   setup() {
     return { v$: useVuelidate() };
@@ -30,6 +32,7 @@ export default {
       formData: {},
       isLoading: true,
       isAddModalVissible: false,
+      isEditModalVissible: false,
       isEditMode: false,
       gridColums: 12,
       gridMinHeight: 200,
@@ -42,6 +45,11 @@ export default {
     async showAddModal() {
       this.isAddModalVissible = true;
       await this.getEndpoints();
+    },
+    async showEditModal(item) {
+      this.isEditModalVissible = true;
+      this.formData = item;
+      console.log(item);
     },
     async closeModal() {
       this.formData = {};
@@ -121,6 +129,24 @@ export default {
         useNotifyStore().add('error', error.message);
       }
     },
+    async updateData() {
+      try {
+        this.isLoading = true;
+
+        const response = await this.axios({
+          method: 'put',
+          url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/endpoints`,
+          data: this.formData,
+        });
+
+        this.isEditMode = false;
+        this.isLoading = false;
+        useNotifyStore().add(response.data.status, response.data.message);
+      }
+      catch (error) {
+        useNotifyStore().add('error', error.message);
+      }
+    },
     async getEndpoints() {
       try {
         const response = await this.axios({
@@ -178,13 +204,25 @@ export default {
       responsive
     >
       <template #item="{ item }">
-        <VDashItem :data="item" />
+        <VContextMenu>
+          <VButton icon="bx bx-edit-alt" @on-click="showEditModal(item)">
+            Edit
+          </VButton>
+          <VButton icon="bx bxs-trash" @on-click="onDelete(item.id)">
+            Delete
+          </VButton>
+        </VContextMenu>
+        <VUptime :data="item" />
       </template>
     </GridLayout>
   </template>
   <VModal v-model:isActive="isAddModalVissible" header="Add Widget" button-label="Add Widget" @on-send="addData" @on-close="closeModal">
     <VDropdown v-model:data="formData.type" name="Type" placeholder="Select Type" :options="['Uptime', 'BarChart']" />
     <VDropdown v-model:data="formData.endpoints" name="Endpoint" placeholder="Select Endpoint" :options="endpoints" option-label="name" option-value="id" />
+    <VDropdown v-model:data="formData.unit" name="unit" placeholder="Interval" :options="['Hours', 'Days']" />
+    <VTextInput v-if="formData.unit" v-model:data="formData.duration" type="number" name="duration" :placeholder="`Duration in ${formData.unit}`" tooltip-pos="left" />
+  </VModal>
+  <VModal v-model:isActive="isEditModalVissible" type="edit" header="Edit Widget" button-label="Save" @on-send="updateData" @on-close="closeModal" @on-delete="console.log('deleted')">
     <VDropdown v-model:data="formData.unit" name="unit" placeholder="Interval" :options="['Hours', 'Days']" />
     <VTextInput v-if="formData.unit" v-model:data="formData.duration" type="number" name="duration" :placeholder="`Duration in ${formData.unit}`" tooltip-pos="left" />
   </VModal>
@@ -238,5 +276,11 @@ export default {
   display: flex;
   background-color: var(--box-bg);
   border-radius: var(--border-radius);
+}
+
+.vgl-item .btn-set-holder {
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 </style>
