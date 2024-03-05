@@ -288,6 +288,12 @@ header > div {
     }
 }
 
+.dashboards-holder .btn-set-holder {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
 .dashboard {
     padding: 40px;
     background-color: var(--box-bg);
@@ -296,6 +302,7 @@ header > div {
     grid-template: 1fr;
     display: flex;
     flex-flow: column;
+    position: relative;
 }
 
 .dashboard h5 {

@@ -283,4 +283,8 @@ export default {
   top: 20px;
   right: 20px;
 }
+
+.vgl-item .btn-set-holder > .btn-holder button {
+  transform: rotate(90deg);
+}
 </style>

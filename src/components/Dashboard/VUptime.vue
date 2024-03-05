@@ -6,6 +6,12 @@ export default {
       default: () => [],
     },
   },
+  data() {
+    return {
+      backendUrl: import.meta.env.VITE_backendUrl,
+      widgetData: [],
+    };
+  },
   computed: {
     getUptimeItems() {
       return this.data.map((item, index) => {
@@ -16,7 +22,24 @@ export default {
       });
     },
   },
+  async created() {
+    this.loadData();
+  },
   methods: {
+    async loadData() {
+      try {
+        const response = await this.axios({
+          method: 'get',
+          url: `${this.backendUrl}/endpoints/${this.data.id}/widget?unit=${this.data.unit}&duration=${this.data.duration}&type=${this.data.type}`,
+        });
+
+        this.widgetData = response.data.data;
+        this.isLoading = false;
+      }
+      catch (error) {
+        console.log('Unable to get authentication method.');
+      }
+    },
     getEndpointTooltip(item) {
       if (item.status !== 'nodata') {
         return `
@@ -42,20 +65,20 @@ export default {
 </script>
 
 <template>
-  <div class="uptime_graph">
+  <div class="uptime-graph">
     <h5>{{ data.name }}</h5>
     <p>Here is the uptime time graph for {{ data.duration }} {{ data.unit }}.</p>
     <ul>
-      <li v-if="data?.length === 0" class="uptime_loader">
-        <font-awesome-icon :icon="['fas', 'spinner']" spin />
+      <li v-if="widgetData?.length === 0" class="uptime-loader">
+        <i class="bx bx-loader-circle bx-spin bx-rotate-90" />
       </li>
-      <li v-for="item in data.logs" v-else :key="item" :class="`uptime_item ${item.status} ${item?.is_active}`" :tooltip-text="getEndpointTooltip(item)" tooltip-position="Top" />
+      <li v-for="item in widgetData" v-else :key="item" :class="`uptime-item ${item.status} ${item?.is_active}`" :tooltip-text="getEndpointTooltip(item)" tooltip-position="Top" />
     </ul>
   </div>
 </template>
 
 <style>
-.uptime_graph {
+.uptime-graph {
     width: 100%;
     height: 100%;
     color: white;
@@ -63,7 +86,7 @@ export default {
     flex-flow: column;
 }
 
-.uptime_graph ul {
+.uptime-graph ul {
   display: flex;
   height: 100%;
   gap: 4px;
@@ -72,63 +95,63 @@ export default {
   flex-wrap: nowrap;
 }
 
-.uptime_graph .uptime_loader {
+.uptime-graph .uptime-loader {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--main-color);
+  background-color: var(--bar-chart-bg);
   color: white;
   gap: 10px;
-  border-radius: var(--border-radius);
+  border-radius: 6px;
 }
 
-.uptime_graph ul li:first-child {
-  border-radius: var(--border-radius) 0 0 var(--border-radius);
+.uptime-graph ul li:first-child {
+  border-radius: 6 0 0 6;
 }
-.uptime_graph ul li:last-child{
-  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+.uptime-graph ul li:last-child{
+  border-radius: 0 6 6 0;
 }
 
-.uptime_graph ul li {
+.uptime-graph ul li {
   border-radius: 0;
   padding: 0;
   width: -webkit-fill-available;
   cursor: pointer;
 }
 
-.uptime_graph li.uptime_item.healthy{
+.uptime-graph li.uptime-item.healthy{
   background-color: var(--green-500);
 }
-.uptime_graph li.uptime_item.degraded{
+.uptime-graph li.uptime-item.degraded{
   background-color: var(--red-500);
 }
-.uptime_graph li.uptime_item.unhealthy{
+.uptime-graph li.uptime-item.unhealthy{
   background-color: yellow;
 }
-.uptime_graph li.uptime_item.nodata{
+.uptime-graph li.uptime-item.nodata{
   background-color: var(--bar-chart-bg);
 }
 
-.uptime_graph li.uptime_item.true {
+.uptime-graph li.uptime-item.true {
   outline: auto;
   outline-color: rgb(184 74 5);
   outline-style: solid;
   z-index: 3;
 }
 
-.uptime_graph h5 {
+.uptime-graph h5 {
   margin-bottom: 8px;
 }
-.uptime_graph p {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 24px;
-    letter-spacing: -0.01em;
-    color: var(--body-text);
+.uptime-graph p {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  color: var(--body-text);
   margin-bottom: 32px;
 }
 
-.uptime_graph [tooltip-text]::after {
+.uptime-graph [tooltip-text]::after {
   min-width: 150px;
 }
 

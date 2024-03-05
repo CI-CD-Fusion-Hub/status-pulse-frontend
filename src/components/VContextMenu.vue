@@ -59,13 +59,13 @@ export default {
 
 .btn-set-holder .btn-set-menu {
   display: flex;
-  width: 252px;
+  width: 200px;
   right: 0;
   padding: 16px 0;
   flex-direction: column;
   align-items: stretch;
   gap: 4px;
-  z-index: 2;
+  z-index: 9;
   position: absolute;
   border-radius: 6px;
   border: 1px solid var(--context-menu-border);
