@@ -235,7 +235,7 @@ export default {
           </VButton>
         </VContextMenu>
         <VUptime v-if="item.type === 'Uptime'" :data="item" />
-        <VLineChart v-else-if="item.type === 'LineChart'" :data="item"  />
+        <VLineChart v-else-if="item.type === 'LineChart'" :data="item" />
       </template>
     </GridLayout>
   </template>

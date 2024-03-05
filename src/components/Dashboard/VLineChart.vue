@@ -1,7 +1,10 @@
 <script>
-import ApexCharts from 'apexcharts'
+import { VueEcharts } from 'vue3-echarts';
 
 export default {
+  components: {
+    VueEcharts,
+  },
   props: {
     data: {
       type: Array,
@@ -12,24 +15,27 @@ export default {
     return {
       backendUrl: import.meta.env.VITE_backendUrl,
       widgetData: [],
-      options: {
-            chart: {
-                type: 'line'
-            },
-            series: [{
-                name: 'sales',
-                data: [30,40,35,50,49,60,70,91,125]
-            }],
-            xaxis: {
-                categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
-            }
-        } 
+      option: {
+        xAxis: {
+          type: 'category',
+          data: [],
+        },
+        yAxis: {
+          type: 'value',
+        },
+        series: [
+          {
+            data: [],
+            type: 'line',
+            smooth: true,
+          },
+        ],
+      },
     };
   },
   computed: {},
   async created() {
     this.loadData();
-    
   },
   methods: {
     async loadData() {
@@ -40,21 +46,17 @@ export default {
         });
 
         this.widgetData = response.data.data;
+
+        for (const item of this.widgetData) {
+          this.option.xAxis.data.push(this.unixTimestampToFormattedString(item.created_at));
+          this.option.series[0].data.push(item.response_time);
+        }
+
         this.isLoading = false;
       }
       catch (error) {
+        console.log(error);
         console.log('Unable to get authentication method.');
-      }
-    },
-    getEndpointTooltip(item) {
-      if (item.status !== 'nodata') {
-        return `
-        Date: ${this.unixTimestampToFormattedString(item.created_at)}\n
-        Status: ${item.status}
-        `;
-      }
-      else {
-        return `No Data`;
       }
     },
     floorTimestamp(unixTimestamp) {
@@ -73,16 +75,23 @@ export default {
 <template>
   <div class="line-chart">
     <h5>{{ data.name }}</h5>
-    <p>Here is the uptime time graph for {{ data.duration }} {{ data.unit }}.</p>
-    <div>
-        <i class="bx bx-loader-circle bx-spin bx-rotate-90" />
-    </div>
-    <div id="chart">
-        <apexchart type="area" height="350" :options="options"></apexchart>
+    <p>Here is the response time graph for {{ data.duration }} {{ data.unit }}.</p>
+    <div class="chart-holder">
+      <VueEcharts :option="option" style="height: 100%" />
     </div>
   </div>
 </template>
 
 <style>
+.line-chart {
+    width: 100%;
+    height: 100%;
+    color: white;
+    display: flex;
+    flex-flow: column;
+}
 
+.line-chart .chart-holder {
+    height: 100%;
+}
 </style>
