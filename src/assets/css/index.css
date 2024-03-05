@@ -263,8 +263,10 @@ p {
     transform: rotate(336deg);
 }
 
-[tooltip-position='top']::before {
-    left: 50%;
+[tooltip-position='Top']::before {
+    left: calc(50% - 5px);
+    top: -11px;
+    transform: rotate(270deg);
 }
 
 [tooltip-position='bottom']::before {

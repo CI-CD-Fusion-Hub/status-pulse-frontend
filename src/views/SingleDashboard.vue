@@ -7,7 +7,7 @@ import VButton from '../components/VButton.vue';
 import VModal from '../components/VModal.vue';
 import VTextInput from '../components/Form/VTextInput.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
-import VUptime from '../components/Dashboard/VUpTime.vue';
+import VUptimeChart from '../components/Dashboard/VUptimeChart.vue';
 import VLineChart from '../components/Dashboard/VLineChart.vue';
 import VContextMenu from '../components/VContextMenu.vue';
 
@@ -20,7 +20,7 @@ export default {
     VModal,
     GridLayout,
     VLoader,
-    VUptime,
+    VUptimeChart,
     VLineChart,
   },
   setup() {
@@ -234,7 +234,7 @@ export default {
             Delete
           </VButton>
         </VContextMenu>
-        <VUptime v-if="item.type === 'Uptime'" :data="item" />
+        <VUptimeChart v-if="item.type === 'Uptime'" :data="item" />
         <VLineChart v-else-if="item.type === 'LineChart'" :data="item" />
       </template>
     </GridLayout>

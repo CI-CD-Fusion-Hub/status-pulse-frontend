@@ -12,16 +12,7 @@ export default {
       widgetData: [],
     };
   },
-  computed: {
-    getUptimeItems() {
-      return this.data.map((item, index) => {
-        if (index === this.activeUptimeItem)
-          return { ...item, is_active: true };
-
-        return item;
-      });
-    },
-  },
+  computed: {},
   async created() {
     this.loadData();
   },
