@@ -8,6 +8,7 @@ import VModal from '../components/VModal.vue';
 import VTextInput from '../components/Form/VTextInput.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
 import VUptime from '../components/Dashboard/VUpTime.vue';
+import VLineChart from '../components/Dashboard/VLineChart.vue';
 import VContextMenu from '../components/VContextMenu.vue';
 
 export default {
@@ -20,6 +21,7 @@ export default {
     GridLayout,
     VLoader,
     VUptime,
+    VLineChart,
   },
   setup() {
     return { v$: useVuelidate() };
@@ -97,12 +99,32 @@ export default {
 
         const response = await this.axios({
           method: 'post',
-          url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/endpoints`,
+          url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/widgets`,
           data: this.formData,
         });
 
         await this.loadData();
         this.closeModal();
+        useNotifyStore().add(response.data.status, response.data.message);
+      }
+      catch (error) {
+        useNotifyStore().add('error', error.message);
+      }
+
+      this.isBtnLoading = false;
+    },
+    async updateData() {
+      try {
+        this.isLoading = true;
+
+        const response = await this.axios({
+          method: 'put',
+          url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/widgets`,
+          data: this.formData,
+        });
+
+        this.closeModal();
+        await this.loadData();
         useNotifyStore().add(response.data.status, response.data.message);
       }
       catch (error) {
@@ -117,26 +139,8 @@ export default {
 
         const response = await this.axios({
           method: 'put',
-          url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/endpoints`,
+          url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/layout`,
           data: this.data.endpoints,
-        });
-
-        this.isEditMode = false;
-        this.isLoading = false;
-        useNotifyStore().add(response.data.status, response.data.message);
-      }
-      catch (error) {
-        useNotifyStore().add('error', error.message);
-      }
-    },
-    async updateData() {
-      try {
-        this.isLoading = true;
-
-        const response = await this.axios({
-          method: 'put',
-          url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/endpoints`,
-          data: this.formData,
         });
 
         this.isEditMode = false;
@@ -161,6 +165,24 @@ export default {
       }
 
       this.isLoading = false;
+    },
+    async deleteData(id) {
+      try {
+        this.isLoading = true;
+
+        const response = await this.axios({
+          method: 'delete',
+          url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/widgets/${id}`,
+        });
+
+        await this.loadData();
+        this.closeModal();
+        useNotifyStore().add(response.data.status, response.data.message);
+      }
+      catch (error) {
+        useNotifyStore().add('error', 'Error loading data!');
+        this.isLoading = false;
+      }
     },
   },
 };
@@ -208,21 +230,22 @@ export default {
           <VButton icon="bx bx-edit-alt" @on-click="showEditModal(item)">
             Edit
           </VButton>
-          <VButton icon="bx bxs-trash" @on-click="onDelete(item.id)">
+          <VButton icon="bx bxs-trash" @on-click="deleteData(item.i)">
             Delete
           </VButton>
         </VContextMenu>
-        <VUptime :data="item" />
+        <VUptime v-if="item.type === 'Uptime'" :data="item" />
+        <VLineChart v-else-if="item.type === 'LineChart'" :data="item"  />
       </template>
     </GridLayout>
   </template>
   <VModal v-model:isActive="isAddModalVissible" header="Add Widget" button-label="Add Widget" @on-send="addData" @on-close="closeModal">
-    <VDropdown v-model:data="formData.type" name="Type" placeholder="Select Type" :options="['Uptime', 'BarChart']" />
+    <VDropdown v-model:data="formData.type" name="Type" placeholder="Select Type" :options="['Uptime', 'LineChart']" />
     <VDropdown v-model:data="formData.endpoints" name="Endpoint" placeholder="Select Endpoint" :options="endpoints" option-label="name" option-value="id" />
     <VDropdown v-model:data="formData.unit" name="unit" placeholder="Interval" :options="['Hours', 'Days']" />
     <VTextInput v-if="formData.unit" v-model:data="formData.duration" type="number" name="duration" :placeholder="`Duration in ${formData.unit}`" tooltip-pos="left" />
   </VModal>
-  <VModal v-model:isActive="isEditModalVissible" type="edit" header="Edit Widget" button-label="Save" @on-send="updateData" @on-close="closeModal" @on-delete="console.log('deleted')">
+  <VModal v-model:isActive="isEditModalVissible" type="edit" header="Edit Widget" button-label="Save" @on-send="updateData" @on-close="closeModal" @on-delete="deleteData(formData.i)">
     <VDropdown v-model:data="formData.unit" name="unit" placeholder="Interval" :options="['Hours', 'Days']" />
     <VTextInput v-if="formData.unit" v-model:data="formData.duration" type="number" name="duration" :placeholder="`Duration in ${formData.unit}`" tooltip-pos="left" />
   </VModal>
