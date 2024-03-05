@@ -77,7 +77,7 @@ export default {
     <h5>{{ data.name }}</h5>
     <p>Here is the response time graph for {{ data.duration }} {{ data.unit }}.</p>
     <div class="chart-holder">
-      <VueEcharts :option="option" style="height: 100%" />
+      <VueEcharts :option="option" style="height: 100%;width: 100%;" />
     </div>
   </div>
 </template>
