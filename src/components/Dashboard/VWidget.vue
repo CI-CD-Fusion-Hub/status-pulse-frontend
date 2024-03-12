@@ -22,9 +22,9 @@ export default {
     };
   },
   computed: {},
-  async created() {
+  async mounted() {
     await this.loadData();
-    this.reloadData();
+    await this.reloadData();
   },
   beforeUnmount() {
     clearInterval(this.interval);
@@ -34,7 +34,7 @@ export default {
       try {
         const response = await this.axios({
           method: 'get',
-          url: `${this.backendUrl}/endpoints/${this.data.id}/widget?unit=${this.data.unit}&duration=${this.data.duration}&type=${this.data.type}`,
+          url: `${this.backendUrl}/endpoints/${this.data.id}/widget?unit=${this.data.unit}&duration=${this.data.duration}&type=${this.data.type}&rand=${new Date().getTime()}-${this.data.i}`,
         });
 
         this.widgetData = response.data.data;
@@ -46,8 +46,15 @@ export default {
     },
     async reloadData() {
       this.interval = setInterval(() => {
-        this.isLoading = true;
-        this.loadData();
+        (async () => {
+          try {
+            this.isLoading = true;
+            await this.loadData();
+          }
+          catch (error) {
+            console.log('Error occurred while reloading data:', error);
+          }
+        })();
       }, 60000);
     },
     onEdit() {
@@ -63,7 +70,7 @@ export default {
 <template>
   <div class="widget-holder">
     <h5>{{ data.name }}</h5>
-    <p>Here is the uptime time graph for {{ data.duration }} {{ data.unit }}.</p>
+    <p>Here is the time graph for {{ data.duration }} {{ data.unit }}.</p>
 
     <div v-if="isLoading" class="loader">
       <i class="bx bx-loader-circle bx-spin bx-rotate-90" />
