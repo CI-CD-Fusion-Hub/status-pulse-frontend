@@ -260,15 +260,15 @@ export default {
 
 <style scoped>
 header {
-    margin-bottom: 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 header > div {
-    display: flex;
-    gap: 24px;
+  display: flex;
+  gap: 24px;
 }
 
 .dashboards-holder {
@@ -303,6 +303,10 @@ header > div {
     display: flex;
     flex-flow: column;
     position: relative;
+}
+
+.dashboard:only-child {
+  max-width: 33.3%;
 }
 
 .dashboard h5 {

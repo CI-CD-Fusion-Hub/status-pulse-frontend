@@ -171,6 +171,7 @@ export default {
   margin: auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  max-width: 800px;
 }
 
 .container > div {

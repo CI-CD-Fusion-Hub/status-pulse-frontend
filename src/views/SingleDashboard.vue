@@ -7,21 +7,17 @@ import VButton from '../components/VButton.vue';
 import VModal from '../components/VModal.vue';
 import VTextInput from '../components/Form/VTextInput.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
-import VUptimeChart from '../components/Dashboard/VUptimeChart.vue';
-import VLineChart from '../components/Dashboard/VLineChart.vue';
-import VContextMenu from '../components/VContextMenu.vue';
+import VWidget from '../components/Dashboard/VWidget.vue';
 
 export default {
   components: {
     VTextInput,
     VButton,
-    VContextMenu,
     VDropdown,
     VModal,
     GridLayout,
     VLoader,
-    VUptimeChart,
-    VLineChart,
+    VWidget,
   },
   setup() {
     return { v$: useVuelidate() };
@@ -96,6 +92,7 @@ export default {
           ...this.formData,
           ...this.getWidgetPos(),
         };
+        this.formData.h = this.formData.type === 'LineChart' ? 2 : 1;
 
         const response = await this.axios({
           method: 'post',
@@ -123,8 +120,8 @@ export default {
           data: this.formData,
         });
 
-        this.closeModal();
         await this.loadData();
+        this.closeModal();
         useNotifyStore().add(response.data.status, response.data.message);
       }
       catch (error) {
@@ -226,16 +223,7 @@ export default {
       responsive
     >
       <template #item="{ item }">
-        <VContextMenu>
-          <VButton icon="bx bx-edit-alt" @on-click="showEditModal(item)">
-            Edit
-          </VButton>
-          <VButton icon="bx bxs-trash" @on-click="deleteData(item.i)">
-            Delete
-          </VButton>
-        </VContextMenu>
-        <VUptimeChart v-if="item.type === 'Uptime'" :data="item" />
-        <VLineChart v-else-if="item.type === 'LineChart'" :data="item" />
+        <VWidget :data="item" @on-edit="showEditModal(item)" @on-delete="deleteData(item.i)" />
       </template>
     </GridLayout>
   </template>
@@ -299,15 +287,5 @@ export default {
   display: flex;
   background-color: var(--box-bg);
   border-radius: var(--border-radius);
-}
-
-.vgl-item .btn-set-holder {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-}
-
-.vgl-item .btn-set-holder > .btn-holder button {
-  transform: rotate(90deg);
 }
 </style>
