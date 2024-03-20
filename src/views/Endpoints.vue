@@ -132,7 +132,7 @@ export default {
 <template>
   <VLoader v-if="isLoading" />
   <template v-else>
-    <EmptyState v-if="endpoints.data.data.length === 0" heading="No Endpoints" />
+    <EmptyState v-if="endpoints.data.length === 0" heading="No Endpoints"  @on-click="showAddModal" />
     <template v-else>
       <header>
         <h4>Dashboard</h4>
@@ -186,23 +186,23 @@ export default {
           </template>
         </VColumn>
       </VTable>
-      <VModal v-model:isActive="isAddModalVissible" header="Creat new dashboard" button-label="Add dashboard" @on-send="addData" @on-close="closeModal">
-        <VDropdown
-          v-model:data="formData.type" name="type" placeholder="Endpoint Type" :options="['http']"
-        />
-        <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
-        <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
-        <VTextInput v-model:data="formData.url" name="url" placeholder="URL" />
-        <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" />
-        <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" />
-        <VTextInput v-model:data="formData.status_code" type="number" name="status_code" placeholder="Status Code" />
-        <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" />
-        <VDropdown
-          v-model:data="formData.notifications" :is-multyselect="true" option-label="name" option-value="id" name="notifications" placeholder="Notifications"
-          :options="notifications"
-        />
-      </VModal>
     </template>
+    <VModal v-model:isActive="isAddModalVissible" header="Creat new dashboard" button-label="Add dashboard" @on-send="addData" @on-close="closeModal">
+      <VDropdown
+        v-model:data="formData.type" name="type" placeholder="Endpoint Type" :options="['http']"
+      />
+      <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
+      <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
+      <VTextInput v-model:data="formData.url" name="url" placeholder="URL" />
+      <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" />
+      <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" />
+      <VTextInput v-model:data="formData.status_code" type="number" name="status_code" placeholder="Status Code" />
+      <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" />
+      <VDropdown
+        v-model:data="formData.notifications" :is-multyselect="true" option-label="name" option-value="id" name="notifications" placeholder="Notifications"
+        :options="notifications"
+      />
+    </VModal>
   </template>
 </template>
 
