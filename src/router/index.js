@@ -4,6 +4,7 @@ import Register from '../views/RegisterPage.vue';
 import ForgotPassword from '../views/ForgotPassword.vue';
 import VerifyCode from '../views/VerifyCode.vue';
 import Endpoints from '../views/Endpoints.vue';
+import SingleEndpoint from '../views/SingleEndpoint.vue';
 import Dashboards from '../views/Dashboards.vue';
 import SingleDashboard from '../views/SingleDashboard.vue';
 
@@ -17,6 +18,11 @@ const routes = [
     path: '/endpoints',
     name: 'Endpoints',
     component: Endpoints,
+  },
+  {
+    path: '/endpoints/:endpoint_id',
+    name: 'SingleEndpoint',
+    component: SingleEndpoint,
   },
   {
     path: '/dashboards',

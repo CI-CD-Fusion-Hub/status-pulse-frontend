@@ -84,10 +84,10 @@ export default {
 <template>
   <div>
     <div v-if="isSearchable" class="table_search">
-      <VTextInput
+      <!-- <VTextInput
         name="table_search" placeholder="Search" :icon="['fas', 'magnifying-glass']" :data="search_text"
         @keyup.enter="filterResults($event.target.value)"
-      />
+      /> -->
     </div>
     <table>
       <div v-if="isLoading" class="loader">
