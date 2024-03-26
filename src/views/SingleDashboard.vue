@@ -239,47 +239,48 @@ export default {
   </VModal>
 </template>
 
-<style scoped>
+<style>
 .add-widget-header {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .add-widget-header > div {
-    display: flex;
-    gap: 24px;
+  display: flex;
+  gap: 24px;
 }
 
 .add-widget-container {
-    height: 384px;
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--box-bg);
-    margin-top: 24px;
+  height: 384px;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--box-bg);
+  margin-top: 24px;
+  border-radius: 8px;
 }
 
 .add-widget-container h3 {
-    color: var(--gray-scale-3);
-    margin: 24px 0 16px 0;
+  color: var(--gray-scale-3);
+  margin: 24px 0 16px 0;
 }
 
 .add-widget-container .btn-holder button {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--gray-color-9);
-    font-size: 24px;
-    color: white;
-    border-radius: 50%;
-    overflow: hidden;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--gray-color-9);
+  font-size: 24px;
+  color: white;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .add-widget-container .btn-holder button i {
-    font-size: 24px;
+  font-size: 24px;
 }
 
 .vgl-layout {
