@@ -187,7 +187,7 @@ export default {
 <template>
   <VLoader v-if="isLoading" />
   <template v-else>
-    <VEmptyState v-if="data.length === 0" heading="No Dashboards" @on-click="showAddModal" />
+    <VEmptyState v-if="data.length === 0" heading="Create your dashboard" text="Start by creating your first dashboard to visualize data, track metrics, and stay organized." buttonText="Create dashboard" @on-click="showAddModal" />
     <template v-else>
       <header>
         <h4>Dashboard</h4>
@@ -208,8 +208,8 @@ export default {
             <VButton icon="bx bx-show" :link-to="{ name: 'SingleDashboard', params: { dashboard_id: item.id } }">
               View
             </VButton>
-            <VButton icon="bx bx-edit-alt" @on-click="showEditModal(item)">
-              Edit
+            <VButton icon="bx bxs-share-alt" @on-click="shareDashboard(item)">
+              Share
             </VButton>
             <VButton icon="bx bxs-trash" @on-click="deleteData(item.id)">
               Delete

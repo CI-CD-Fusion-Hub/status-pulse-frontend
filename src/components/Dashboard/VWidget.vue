@@ -8,8 +8,8 @@ export default {
   components: { VContextMenu, VButton, VUptimeChart, VBarChart },
   props: {
     data: {
-      type: Array,
-      default: () => [],
+      type: Object,
+      default: () => {},
     },
   },
   emits: ['onEdit', 'onDelete'],

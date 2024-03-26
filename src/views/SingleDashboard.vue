@@ -1,6 +1,6 @@
 <script>
 import { useVuelidate } from '@vuelidate/core';
-import { GridLayout } from 'grid-layout-plus';
+import { GridLayout, GridItem } from 'grid-layout-plus';
 import { useNotifyStore } from '../stores/notifications';
 import VLoader from '../components/VLoader.vue';
 import VButton from '../components/VButton.vue';
@@ -16,6 +16,7 @@ export default {
     VDropdown,
     VModal,
     GridLayout,
+    GridItem,
     VLoader,
     VWidget,
   },
@@ -31,7 +32,6 @@ export default {
       isLoading: true,
       isAddModalVissible: false,
       isEditModalVissible: false,
-      isEditMode: false,
       gridColums: 12,
       gridMinHeight: 200,
     };
@@ -132,8 +132,6 @@ export default {
     },
     async updateOrder() {
       try {
-        this.isLoading = true;
-
         const response = await this.axios({
           method: 'put',
           url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/layout`,
@@ -142,7 +140,6 @@ export default {
 
         this.isEditMode = false;
         this.isLoading = false;
-        useNotifyStore().add(response.data.status, response.data.message);
       }
       catch (error) {
         useNotifyStore().add('error', error.message);
@@ -198,12 +195,6 @@ export default {
       <VButton type="fill" @on-click="showAddModal">
         Add New
       </VButton>
-      <VButton v-if="isEditMode === false" type="fill" @on-click="isEditMode = !isEditMode">
-        Edit
-      </VButton>
-      <VButton v-else type="fill" @on-click="updateOrder()">
-        Save
-      </VButton>
     </div>
   </header>
   <div v-if="data.endpoints.length === 0" class="add-widget-container">
@@ -216,15 +207,24 @@ export default {
       v-model:layout="data.endpoints"
       :col-num="gridColums"
       :row-height="gridMinHeight"
-      :is-draggable="isEditMode"
-      :is-resizable="isEditMode"
       :vertical-compact="true"
       :is-bounded="true"
+      :margin="[24, 24]"
       responsive
     >
-      <template #item="{ item }">
+      <GridItem
+        v-for="item in data.endpoints"
+        :key="item.i"
+        :x="item.x"
+        :y="item.y"
+        :w="item.w"
+        :h="item.h"
+        :i="item.i"
+        @resized="updateOrder"
+        @moved="updateOrder"
+      >
         <VWidget :data="item" @on-edit="showEditModal(item)" @on-delete="deleteData(item.i)" />
-      </template>
+      </GridItem>
     </GridLayout>
   </template>
   <VModal v-model:isActive="isAddModalVissible" header="Add Widget" button-label="Add Widget" @on-send="addData" @on-close="closeModal">
@@ -239,11 +239,10 @@ export default {
   </VModal>
 </template>
 
-<style>
+<style scoped>
 .add-widget-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 40px;
 }
 
 .add-widget-header > div {
@@ -258,6 +257,7 @@ export default {
     justify-content: center;
     align-items: center;
     background-color: var(--box-bg);
+    margin-top: 24px;
 }
 
 .add-widget-container h3 {
@@ -282,10 +282,24 @@ export default {
     font-size: 24px;
 }
 
+.vgl-layout {
+  width: calc(100% + 48px);
+  margin-left: -24px;
+}
+
 .vgl-item {
   padding: 20px;
   display: flex;
   background-color: var(--box-bg);
   border-radius: var(--border-radius);
 }
+
+.vgl-item__resizer {
+  display: none;
+}
+
+.vgl-item:hover .vgl-item__resizer {
+  display: inherit;
+}
+
 </style>

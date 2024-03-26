@@ -15,6 +15,10 @@ export default {
       type: String,
       default: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
     },
+    buttonText: {
+      type: String,
+      default: 'Add new',
+    },
   },
   emits: ['onClick'],
   data() {
@@ -36,10 +40,10 @@ export default {
 
 <template>
   <div class="empty-state">
-    <h1>{{ heading }}</h1>
+    <h3>{{ heading }}</h3>
     <p>{{ text }}</p>
     <VButton type="fill" @on-click="onClick()">
-      Add New
+      {{ buttonText }}
     </VButton>
   </div>
 </template>
@@ -58,6 +62,7 @@ export default {
   flex-flow: column;
   align-items: center;
   gap: 20px;
+  text-align: center;
 }
 
 .empty-state > .btn-holder {
