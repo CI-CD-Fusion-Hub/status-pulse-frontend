@@ -187,7 +187,7 @@ export default {
 <template>
   <VLoader v-if="isLoading" />
   <template v-else>
-    <VEmptyState v-if="data.length === 0" heading="Create your dashboard" text="Start by creating your first dashboard to visualize data, track metrics, and stay organized." buttonText="Create dashboard" @on-click="showAddModal" />
+    <VEmptyState v-if="data.length === 0" heading="Create your dashboard" text="Start by creating your first dashboard to visualize data, track metrics, and stay organized." button-text="Create dashboard" @on-click="showAddModal" />
     <template v-else>
       <header>
         <h4>Dashboard</h4>

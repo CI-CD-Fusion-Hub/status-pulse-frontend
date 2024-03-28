@@ -132,7 +132,7 @@ export default {
 <template>
   <VLoader v-if="isLoading" />
   <template v-else>
-    <EmptyState v-if="endpoints.data.length === 0" heading="No Endpoints"  @on-click="showAddModal" />
+    <EmptyState v-if="endpoints.data.length === 0" heading="No Endpoints" @on-click="showAddModal" />
     <template v-else>
       <header>
         <h4>Dashboard</h4>

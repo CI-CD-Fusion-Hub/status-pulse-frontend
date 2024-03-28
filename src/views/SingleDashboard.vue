@@ -1,6 +1,6 @@
 <script>
 import { useVuelidate } from '@vuelidate/core';
-import { GridLayout, GridItem } from 'grid-layout-plus';
+import { GridItem, GridLayout } from 'grid-layout-plus';
 import { useNotifyStore } from '../stores/notifications';
 import VLoader from '../components/VLoader.vue';
 import VButton from '../components/VButton.vue';
@@ -132,7 +132,7 @@ export default {
     },
     async updateOrder() {
       try {
-        const response = await this.axios({
+        await this.axios({
           method: 'put',
           url: `${this.backendUrl}/dashboards/${this.$route.params.dashboard_id}/layout`,
           data: this.data.endpoints,
@@ -283,9 +283,12 @@ export default {
   font-size: 24px;
 }
 
-.vgl-layout {
+div.vgl-layout {
   width: calc(100% + 48px);
   margin-left: -24px;
+  --vgl-placeholder-bg: var(--green-500);
+  --vgl-placeholder-opacity: 40%;
+  --vgl-item-resizing-opacity: 80%;
 }
 
 .vgl-item {
@@ -302,5 +305,4 @@ export default {
 .vgl-item:hover .vgl-item__resizer {
   display: inherit;
 }
-
 </style>
