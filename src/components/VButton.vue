@@ -118,6 +118,8 @@ export default {
   flex-flow: row-reverse;
 }
 
+.btn-holder[type="fill"][full-width="true"] a,
+.btn-holder[type="outline"][full-width="true"] a,
 .btn-holder[type="fill"][full-width="true"] button,
 .btn-holder[type="outline"][full-width="true"] button{
   width: 100%;

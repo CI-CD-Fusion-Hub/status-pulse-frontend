@@ -26,14 +26,14 @@ export default {
 </template>
 
 <style scoped>
-.badge {
-  display: flex;
-  align-items: center;
+.badge[color="healthy"] {
+  color: var(--green-500);
+  border-color: var(--green-500);
   text-transform: capitalize;
 }
-
-.badge[color="healthy"] {
-  color: var(--green-500)
+.badge[color="degrageted"] {
+  color: var(--red-500);
+  border-color: var(--red-500);
 }
 
 .badge[type="status"] {
@@ -42,9 +42,18 @@ export default {
   line-height: 24px;
   letter-spacing: 0.001em;
   gap: 8px;
+  display: flex;
+  align-items: center;
+  text-transform: capitalize;
 }
 
 .badge[type="status"] i {
   font-size: 12px;
+}
+
+.badge[type="outline"] {
+  padding: 4px 16px 4px 16px;
+  border-radius: 36px;
+  border: solid 1px;
 }
 </style>

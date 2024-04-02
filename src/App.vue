@@ -80,6 +80,7 @@ export default {
   flex-flow: column;
   align-items: stretch;
   height: 100vh;
+  z-index: 4;
 }
 
 .main_container > main > div {

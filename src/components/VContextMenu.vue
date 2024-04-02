@@ -36,8 +36,7 @@ export default {
   margin-bottom: 4px;
 }
 
-.btn-set-holder > .btn-holder:hover button,
-.btn-set-holder > .btn-holder[active='true'] button {
+.btn-set-holder > .btn-holder:hover button {
  background-color: #17212B;
 
 }

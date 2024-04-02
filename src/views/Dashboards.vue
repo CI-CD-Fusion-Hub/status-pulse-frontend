@@ -51,6 +51,7 @@ export default {
       isLoading: true,
       isAddModalVissible: false,
       isEditModalVissible: false,
+      isEndpointsModalVissible: false,
     };
   },
   async created() {
@@ -62,6 +63,11 @@ export default {
     },
     async showEditModal(item) {
       this.isEditModalVissible = true;
+
+      this.formData = item;
+    },
+    async showEndpointsModal(item) {
+      this.isEndpointsModalVissible = true;
 
       this.formData = item;
     },
@@ -189,7 +195,7 @@ export default {
   <template v-else>
     <VEmptyState v-if="data.length === 0" heading="Create your dashboard" text="Start by creating your first dashboard to visualize data, track metrics, and stay organized." button-text="Create dashboard" @on-click="showAddModal" />
     <template v-else>
-      <header>
+      <header class="viewHeader">
         <h4>Dashboard</h4>
         <div>
           <VTextInput
@@ -205,10 +211,10 @@ export default {
       <ul class="dashboards-holder">
         <li v-for="item in data" :key="item" class="dashboard">
           <VContextMenu>
-            <VButton icon="bx bx-show" :link-to="{ name: 'SingleDashboard', params: { dashboard_id: item.id } }">
-              View
+            <VButton icon="bx bx-edit-alt" @on-click="showEditModal(item)">
+              Edit
             </VButton>
-            <VButton icon="bx bxs-share-alt" @on-click="shareDashboard(item)">
+            <VButton icon="bx bx-share" @on-click="shareDashboard(item)">
               Share
             </VButton>
             <VButton icon="bx bxs-trash" @on-click="deleteData(item.id)">
@@ -218,20 +224,10 @@ export default {
           <h5>{{ item.name }}</h5>
           <p>{{ item.description }}</p>
           <div class="connected-endpoints">
-            <h6>Connected ( {{ item.endpoints.length }} ) Endpoints</h6>
-            <ul>
-              <li v-for="endpoint in item.endpoints" :key="endpoint">
-                <VBadge type="status" :color="endpoint.status">
-                  {{ endpoint.status }}
-                </VBadge>
-                <span>{{ endpoint.url }}</span>
-              </li>
-              <li v-if="item.endpoints.length === 0" class="empty-endpoint">
-                <i class="bx bxs-ghost" />
-                <span>No Endpoints</span>
-              </li>
-            </ul>
+            <div v-if="item.endpoints.length === 0" class="empty"><i class='bx bxs-ghost'></i>No Endpoints connected</div>
+            <VButton v-else type="outline" full-width="true" @on-click="showEndpointsModal(item)">Connected ( {{ item.endpoints.length }} ) Endpoints<i class='bx bx-chevron-right'></i></VButton>
           </div>
+          <VButton type="fill" full-width="true" :link-to="{ name: 'SingleDashboard', params: { dashboard_id: item.id } }">View Dashboard</VButton>
           <div v-if="item.scope === 'Private'" class="scope">
             <i class="bx bxs-lock-alt" />Only people who have access can view this dashboard
           </div>
@@ -255,18 +251,25 @@ export default {
         v-model:data="formData.scope" name="scope" label="Access" icon="bx bxs-lock-alt"
       />
     </VModal>
+    <VModal v-model:isActive="isEndpointsModalVissible" :isDrawer="false" header="Connectedd Endpoints" @on-close="closeModal">
+      <ul class="modalEndpoints">
+        <li v-for="item in formData.endpoints" :key="item">
+          {{ item.name }} <VBadge type="outline" :color="item.status">{{ item.status }}</VBadge>
+        </li>
+      </ul>
+    </VModal>
   </template>
 </template>
 
-<style scoped>
-header {
+<style>
+.viewHeader {
   margin-bottom: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-header > div {
+.viewHeader > div {
   display: flex;
   gap: 24px;
 }
@@ -290,11 +293,11 @@ header > div {
 
 .dashboards-holder .btn-set-holder {
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: 17px;
+  right: 17px;
 }
 
-.dashboard {
+.dashboards-holder .dashboard {
     padding: 40px;
     background-color: var(--box-bg);
     border-radius: var(--box-radius);
@@ -303,74 +306,88 @@ header > div {
     display: flex;
     flex-flow: column;
     position: relative;
+    gap: 24px;
 }
 
-.dashboard:only-child {
+.dashboards-holder .dashboard:only-child {
   max-width: 33.3%;
 }
 
-.dashboard h5 {
-    margin-bottom: 8px;
+.dashboards-holder .dashboard h5 {
+  margin-bottom: 8px;
 }
 
-.dashboard p {
-    margin-bottom: 36px;
+.dashboards-holder .dashboard p {
+  margin-bottom: 36px;
 }
 
-.connected-endpoints {
-    margin-top: auto;
+.dashboards-holder .scope {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.connected-endpoints ul {
-    padding: 14px 16px;
-    border-top: solid 1px var(--box-border);
-    border-bottom: solid 1px var(--box-border);
-    margin-bottom: 32px;
-    margin-top: 24px;
+.dashboards-holder .scope i {
+  font-size: 20px;
 }
 
-.connected-endpoints li {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    color: white;
-    position: relative;
+.dashboards-holder .connected-endpoints {
+  margin-top: auto;
 }
 
-.connected-endpoints li.empty-endpoint {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 24px;
-    letter-spacing: 0em;
-    justify-content: center;
-    gap: 8px;
-    color: var(--bod)
+.dashboards-holder .connected-endpoints .empty{
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+  background-color: #141C24;
+  padding: 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
 }
 
-.connected-endpoints li:not(:first-child) {
-    display: none;
+.dashboards-holder .connected-endpoints .empty i {
+  font-size: 16px;
 }
 
-.connected-endpoints li span:last-child{
-    text-overflow: ellipsis;
-    overflow: hidden;
+.dashboards-holder .connected-endpoints button {
+  padding: 15.28px 16px;
 }
 
-.scope {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 20px;
-    letter-spacing: 0em;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.dashboards-holder .connected-endpoints button:hover {
+  background-color: var(--gray-scale-6);
+  border-color: var(--gray-scale-6);
+  color: white;
 }
 
-.scope i {
-    font-size: 20px;
+.dashboards-holder .connected-endpoints span {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
 }
 
-.scope i.bxs-lock-alt {
-    color: white;
+.dashboards-holder .connected-endpoints span i {
+  font-size: 22px;
 }
+
+.modal-holder .modalEndpoints li{
+  display: flex;
+  justify-content: space-between;
+  padding: 22px;
+  border-top: solid 1px var(--box-border)
+}
+
+.modal-holder .modalEndpoints li:last-child {
+  border-bottom: solid 1px var(--box-border)
+}
+
 </style>
