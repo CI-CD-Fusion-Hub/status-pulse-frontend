@@ -12,6 +12,10 @@ export default {
       type: String,
       default: '',
     },
+    buttonIcon: {
+      type: String,
+      default: '',
+    },
     type: {
       type: String,
       default: 'add',
@@ -23,7 +27,11 @@ export default {
     isDrawer: {
       type: Boolean,
       default: true,
-    }
+    },
+    showButtons: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['update:isActive', 'onSend', 'onClose', 'onDelete'],
   computed: {
@@ -64,6 +72,7 @@ export default {
     v-if="is_visible"
     class="modal-holder"
     :is-drawer="isDrawer"
+    :is-buttons-active="showButtons"
   >
     <div class="modal-container" :type="type">
       <header>
@@ -73,17 +82,18 @@ export default {
         <VButton
           icon="bx bx-x"
           class="btn-modal-close"
+          type="basic"
           @on-click="close_modal"
         />
       </header>
       <main>
         <slot />
       </main>
-      <footer v-if="isDrawer">
+      <footer v-if="showButtons">
         <VButton v-if="type === 'edit'" class="btn-delete" type="basic" icon="bx bx-trash" @on-click="onDelete">
           Delete
         </VButton>
-        <VButton type="fill" @on-click="onSend">
+        <VButton type="fill" :icon="buttonIcon" @on-click="onSend">
           {{ buttonLabel }}
         </VButton>
       </footer>
@@ -101,13 +111,17 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--main-bg-color);
+  background-color: #010408a1;
   z-index: 10;
 }
 
 .modal-holder[is-drawer="true"] {
   justify-content: flex-end;
   align-items: stretch;
+}
+
+.modal-holder[is-buttons-active="false"] .modal-container{
+  padding-bottom: 32px;
 }
 
 .modal-holder .modal-container {
@@ -117,19 +131,19 @@ export default {
   background-color: var(--box-bg);
   display: flex;
   flex-flow: column;
+  gap: 32px;
 }
 .modal-holder[is-drawer="true"] .modal-container {
-  height: 100%; 
+  height: 100%;
 }
 .modal-holder[is-drawer="false"] .modal-container{
-  padding-bottom: 32px;
   border-radius: 8px;
 }
 
 .modal-holder .modal-container header {
   display: flex;
   justify-content: space-between;
-  padding: 32px;
+  padding: 32px 32px 0 32px;
   color: white;
   align-items: center;
 }
@@ -163,5 +177,17 @@ export default {
 
 .modal-holder .modal-container footer .btn-delete button {
   color: var(--red-500);
+}
+
+.modal-holder .modal-container .btn-modal-close {
+  width: 35px;
+  height: 35px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.modal-holder .modal-container .btn-modal-close:hover {
+  background-color: var(--box-border);
 }
 </style>

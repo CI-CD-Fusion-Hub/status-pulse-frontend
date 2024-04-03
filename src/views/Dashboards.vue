@@ -52,6 +52,7 @@ export default {
       isAddModalVissible: false,
       isEditModalVissible: false,
       isEndpointsModalVissible: false,
+      isShareModalVissible: false,
     };
   },
   async created() {
@@ -63,6 +64,11 @@ export default {
     },
     async showEditModal(item) {
       this.isEditModalVissible = true;
+
+      this.formData = item;
+    },
+    async showShareModal(item) {
+      this.isShareModalVissible = true;
 
       this.formData = item;
     },
@@ -214,7 +220,7 @@ export default {
             <VButton icon="bx bx-edit-alt" @on-click="showEditModal(item)">
               Edit
             </VButton>
-            <VButton icon="bx bx-share" @on-click="shareDashboard(item)">
+            <VButton icon="bx bx-share" @on-click="showShareModal(item)">
               Share
             </VButton>
             <VButton icon="bx bxs-trash" @on-click="deleteData(item.id)">
@@ -224,10 +230,16 @@ export default {
           <h5>{{ item.name }}</h5>
           <p>{{ item.description }}</p>
           <div class="connected-endpoints">
-            <div v-if="item.endpoints.length === 0" class="empty"><i class='bx bxs-ghost'></i>No Endpoints connected</div>
-            <VButton v-else type="outline" full-width="true" @on-click="showEndpointsModal(item)">Connected ( {{ item.endpoints.length }} ) Endpoints<i class='bx bx-chevron-right'></i></VButton>
+            <div v-if="item.endpoints.length === 0" class="empty">
+              <i class="bx bxs-ghost" />No Endpoints connected
+            </div>
+            <VButton v-else type="outline" full-width="true" @on-click="showEndpointsModal(item)">
+              Connected ( {{ item.endpoints.length }} ) Endpoints<i class="bx bx-chevron-right" />
+            </VButton>
           </div>
-          <VButton type="fill" full-width="true" :link-to="{ name: 'SingleDashboard', params: { dashboard_id: item.id } }">View Dashboard</VButton>
+          <VButton type="fill" full-width="true" :link-to="{ name: 'SingleDashboard', params: { dashboard_id: item.id } }">
+            View Dashboard
+          </VButton>
           <div v-if="item.scope === 'Private'" class="scope">
             <i class="bx bxs-lock-alt" />Only people who have access can view this dashboard
           </div>
@@ -251,12 +263,19 @@ export default {
         v-model:data="formData.scope" name="scope" label="Access" icon="bx bxs-lock-alt"
       />
     </VModal>
-    <VModal v-model:isActive="isEndpointsModalVissible" :isDrawer="false" header="Connectedd Endpoints" @on-close="closeModal">
+    <VModal v-model:isActive="isEndpointsModalVissible" :is-drawer="false" header="Connectedd Endpoints" :show-buttons="false" @on-close="closeModal">
       <ul class="modalEndpoints">
         <li v-for="item in formData.endpoints" :key="item">
-          {{ item.name }} <VBadge type="outline" :color="item.status">{{ item.status }}</VBadge>
+          {{ item.name }} <VBadge type="outline" :color="item.status">
+            {{ item.status }}
+          </VBadge>
         </li>
       </ul>
+    </VModal>
+    <VModal v-model:isActive="isShareModalVissible" :is-drawer="false" header="Share dashboard" button-label="Copy Link" button-icon="bx bx-link-alt" @on-close="closeModal">
+      <VDropdownAccess
+        v-model:data="formData.scope" name="scope" label="" icon="bx bxs-lock-alt"
+      />
     </VModal>
   </template>
 </template>
@@ -389,5 +408,4 @@ export default {
 .modal-holder .modalEndpoints li:last-child {
   border-bottom: solid 1px var(--box-border)
 }
-
 </style>

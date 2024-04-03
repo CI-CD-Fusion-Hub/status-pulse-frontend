@@ -1,8 +1,9 @@
 <script>
 import { useNotifyStore } from '../stores/notifications';
+import VButton from './VButton.vue';
 
 export default {
-  components: {},
+  components: { VButton },
   props: {
     heading: {
       type: String,
@@ -20,15 +21,25 @@ export default {
   data() {
     return {
       all_notifications: useNotifyStore().notifications,
-      status_icon: {
-        error: ['fas', 'xmark'],
-        success: ['fas', 'check'],
-      },
+      breadcrumbs: [],
     };
+  },
+  watch: {
+    $route() {
+      this.generateBreadcrumbs();
+    },
+  },
+  mounted() {
+    // console.log(this.$route)
+    this.generateBreadcrumbs();
   },
   methods: {
     remove_notification(index) {
       this.all_notifications.splice(index, 1);
+    },
+    generateBreadcrumbs() {
+      this.breadcrumbs = Array.isArray(this.$route.meta.breadcrumb) ? this.$route.meta.breadcrumb : [this.$route.meta.breadcrumb];
+      console.log(this.breadcrumbs);
     },
   },
 };
@@ -36,6 +47,17 @@ export default {
 
 <template>
   <header class="top-header">
+    <nav class="breadcrumb-holder">
+      <ol class="breadcrumb">
+        <li v-for="item in breadcrumbs" :key="item" class="breadcrumb-item">
+          <i class="bx bx-chevron-right" />
+          <VButton v-if="item?.to" type="link" :link-to="item?.to">
+            {{ item.label }}
+          </VButton>
+          <span v-else>{{ item.label || item }}</span>
+        </li>
+      </ol>
+    </nav>
     <div class="user-profile">
       <span>F</span>
       <i class="bx bx-chevron-down" />
@@ -43,10 +65,11 @@ export default {
   </header>
 </template>
 
-<style scoped>
+<style>
 .top-header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px 40px;
     background-color: var(--box-bg);
 }
@@ -66,5 +89,28 @@ export default {
     align-items: center;
     justify-content: center;
     background-color: var(--gray-scale-6);
+}
+
+.breadcrumb-holder .breadcrumb,
+.breadcrumb-holder .breadcrumb .breadcrumb-item {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.breadcrumb-holder .breadcrumb .breadcrumb-item button,
+.breadcrumb-holder .breadcrumb .breadcrumb-item {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.breadcrumb-holder .breadcrumb .breadcrumb-item button:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-holder .breadcrumb .breadcrumb-item i {
+  font-size: 18px;
 }
 </style>

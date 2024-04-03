@@ -115,7 +115,6 @@ export default {
 .btn-holder[type="fill"] button,
 .btn-holder[type="outline"] button {
   display: flex;
-  flex-flow: row-reverse;
 }
 
 .btn-holder[type="fill"][full-width="true"] a,

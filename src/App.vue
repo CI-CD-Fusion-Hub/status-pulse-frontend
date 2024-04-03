@@ -80,7 +80,6 @@ export default {
   flex-flow: column;
   align-items: stretch;
   height: 100vh;
-  z-index: 4;
 }
 
 .main_container > main > div {
@@ -90,7 +89,6 @@ export default {
   height: 100%;
   overflow-y: scroll;
   position: relative;
-  z-index: 1;
   overflow-x: hidden;
 }
 </style>
