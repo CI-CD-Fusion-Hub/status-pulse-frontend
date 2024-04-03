@@ -123,14 +123,14 @@ export default {
 }
 
 .uptime-graph li div {
-  min-width: 178px;
+  width: 155px;
   position: absolute;
   background-color: var(--gray-scale-6);
   padding: 8px 12px;
   display: none;
   border-radius: 2px;
   top:-68px;
-  left:-64px;
+  left:-66px;
   right: 0;
 }
 
@@ -162,6 +162,7 @@ export default {
   display: flex;
   gap: 8px;
   align-items: center;
+  font-weight: 500;
 }
 
 .uptime-graph li:hover div span[status] {

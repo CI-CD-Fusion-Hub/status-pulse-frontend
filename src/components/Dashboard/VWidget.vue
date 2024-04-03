@@ -24,7 +24,7 @@ export default {
   computed: {},
   async mounted() {
     await this.loadData();
-    await this.reloadData();
+    // await this.reloadData();
   },
   beforeUnmount() {
     clearInterval(this.interval);
