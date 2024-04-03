@@ -105,10 +105,16 @@ export default {
   font-weight: 500;
   line-height: 20px;
   text-decoration: none;
+  color: inherit;
+}
+
+.breadcrumb-holder .breadcrumb .breadcrumb-item > span {
+  color: white;
 }
 
 .breadcrumb-holder .breadcrumb .breadcrumb-item button:hover {
   text-decoration: underline;
+  color: white;
 }
 
 .breadcrumb-holder .breadcrumb .breadcrumb-item i {
