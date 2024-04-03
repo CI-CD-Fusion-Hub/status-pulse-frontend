@@ -54,7 +54,7 @@ export default {
           <VButton v-if="item?.to" type="link" :link-to="item?.to">
             {{ item.label }}
           </VButton>
-          <span v-else>{{ item.label || item }}</span>
+          <span v-else>{{ item?.label || item }}</span>
         </li>
       </ol>
     </nav>

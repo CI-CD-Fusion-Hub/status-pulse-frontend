@@ -130,17 +130,18 @@ export default {
   display: none;
   border-radius: 2px;
   top:-68px;
-  left:-66px;
+  left: calc(50% - 89.5px);
   right: 0;
 }
 
 
-.uptime-graph li div::before {
+.uptime-graph li::before {
   content: url("data:image/svg+xml,%3Csvg width='7' height='8' viewBox='0 0 7 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 8L7 0L0.788855 3.10557C0.0518064 3.4741 0.0518053 4.5259 0.788854 4.89443L7 8Z' fill='%23414B55'/%3E%3C/svg%3E");
   position: absolute;
-  bottom: -13px;
-  left: 50%;
+  top: -12px;
+  left: calc(50% - 4px);
   transform: rotate(270deg);
+  display: none;
 }
 
 .uptime-graph li:hover div {
@@ -151,6 +152,18 @@ export default {
   display: flex;
   gap: 5px;
   flex-flow: column;
+}
+.uptime-graph li:first-child:hover div {
+  right: auto;
+  left: 0
+}
+.uptime-graph li:last-child:hover div {
+  left: auto;
+  right: 0
+}
+
+.uptime-graph li:hover::before {
+  display: inherit;
 }
 
 .uptime-graph li:hover div span:first-child {

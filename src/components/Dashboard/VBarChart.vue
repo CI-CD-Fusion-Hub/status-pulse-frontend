@@ -33,22 +33,19 @@ export default {
         scales: {
           y: {
             beginAtZero: true,
-          },
+          }
         },
       },
     };
   },
   computed: {
     loadChartData() {
-      const labels = this.data?.map((item) => {
-        return this.unixTimestampToFormattedString(item.created_at);
+      const chartData = this.data.map(function(item) {
+        return { x: new Date(item.created_at), y: Math.random() * 100 }; // Replace Math.random() * 100 with your actual y-values
       });
-
-      const chartData = this.data?.map(item => item.response_time);
       const backgroundColors = this.data?.map(item => item.status === 'healthy' ? '#22C55E' : '#EF4444');
       console.log(chartData);
       return {
-        labels,
         datasets: [
           {
             label: 'Response Time (ms)',
