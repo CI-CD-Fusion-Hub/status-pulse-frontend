@@ -24,7 +24,12 @@ const routes = [
     path: '/endpoints/:endpoint_id',
     name: 'SingleEndpoint',
     component: SingleEndpoint,
-    meta: { breadcrumb: 'Single Endpoint' },
+    meta: {
+      breadcrumb: [
+        { to: '/endpoints', label: 'Endpoints' },
+        { label: `Single Endpoints` },
+      ],
+    },
   },
   {
     path: '/dashboards',
