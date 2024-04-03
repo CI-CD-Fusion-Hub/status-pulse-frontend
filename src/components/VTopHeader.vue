@@ -67,11 +67,12 @@ export default {
 
 <style>
 .top-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 40px;
-    background-color: var(--box-bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px 10px 33px;
+  background-color: var(--main-bg-color);
+  border-bottom: solid 1px #252F3A;
 }
 
 .top-header .user-profile {
