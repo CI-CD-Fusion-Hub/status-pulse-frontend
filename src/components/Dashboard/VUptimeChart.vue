@@ -6,47 +6,47 @@ export default {
       default: () => [],
     },
   },
+  data() {
+    return {
+      posX: 90,
+      tooltipWidth: 180,
+    };
+  },
   computed: {},
   methods: {
-    getEndpointTooltip(item) {
-      if (item.status !== 'nodata') {
-        return `
-        Date: ${this.unixTimestampToFormattedString(item.created_at)}\n
-        Status: ${item.status}
-        `;
-      }
-      else {
-        return `No Data`;
-      }
-    },
-    floorTimestamp(unixTimestamp) {
-      const date = new Date(unixTimestamp * 1000);
-
-      date.setUTCMinutes(0);
-      date.setUTCSeconds(0);
-      date.setUTCMilliseconds(0);
-
-      return date.getTime();
-    },
     formatDate(timestamp) {
-      var dateObject = new Date(timestamp * 1000);
-      var month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(dateObject);
-      var day = dateObject.getDate();
-      var year = dateObject.getFullYear();
-      var hour = dateObject.getHours().toString().padStart(2, '0');
-      var minute = dateObject.getMinutes().toString().padStart(2, '0');
+      const dateObject = new Date(timestamp * 1000);
+      const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(dateObject);
+      const day = dateObject.getDate();
+      const year = dateObject.getFullYear();
+      const hour = dateObject.getHours().toString().padStart(2, '0');
+      const minute = dateObject.getMinutes().toString().padStart(2, '0');
+
       return `${month} ${day},${year} - ${hour}:${minute} h`;
-    }
+    },
+    tooltipPosition(e) {
+      const target = e.target.getBoundingClientRect();
+      const parent = e.target.parentElement.getBoundingClientRect();
+
+      if (target.left - (this.tooltipWidth / 2) < parent.left)
+        this.posX = (parent.left - target.left - (target.width / 2)) * -1;
+
+      else if (target.left + this.tooltipWidth > parent.right)
+        this.posX = (this.tooltipWidth - (parent.right - target.left + this.tooltipWidth)) + this.tooltipWidth + target.width / 2;
+
+      else
+        this.posX = 90;
+    },
   },
 };
 </script>
 
 <template>
   <ul class="uptime-graph">
-    <li v-for="item in data" :key="item" :class="`uptime-item ${item.status} ${item?.is_active}`">
-      <div>
+    <li v-for="item in data" :key="item" :class="`uptime-item ${item.status} ${item?.is_active}`" @mouseover="tooltipPosition($event)">
+      <div :style="{ left: `calc(50% - ${posX}px)` }">
         <span>{{ formatDate(item.created_at) }}</span>
-        <span><span :status="item.status"></span>{{ item.status }} (100%)</span>
+        <span><span :status="item.status" />{{ item.status }} (100%)</span>
       </div>
     </li>
   </ul>
@@ -102,7 +102,6 @@ export default {
   background-color: #9c8c34;
 }
 
-
 .uptime-graph li.uptime-item.nodata,
 .uptime-graph li:hover div span[status="nodata"]{
   background-color: var(--bar-chart-bg);
@@ -123,23 +122,20 @@ export default {
 }
 
 .uptime-graph li div {
-  width: 155px;
+  width: 156px;
   position: absolute;
   background-color: var(--gray-scale-6);
   padding: 8px 12px;
   display: none;
   border-radius: 2px;
   top:-68px;
-  left: calc(50% - 89.5px);
-  right: 0;
 }
-
 
 .uptime-graph li::before {
   content: url("data:image/svg+xml,%3Csvg width='7' height='8' viewBox='0 0 7 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 8L7 0L0.788855 3.10557C0.0518064 3.4741 0.0518053 4.5259 0.788854 4.89443L7 8Z' fill='%23414B55'/%3E%3C/svg%3E");
   position: absolute;
   top: -12px;
-  left: calc(50% - 4px);
+  left: calc(50% - 5px);
   transform: rotate(270deg);
   display: none;
 }
@@ -153,13 +149,9 @@ export default {
   gap: 5px;
   flex-flow: column;
 }
-.uptime-graph li:first-child:hover div {
-  right: auto;
-  left: 0
-}
-.uptime-graph li:last-child:hover div {
-  left: auto;
-  right: 0
+
+.uptime-graph li:first-child div {
+  left: 0;
 }
 
 .uptime-graph li:hover::before {
@@ -169,6 +161,7 @@ export default {
 .uptime-graph li:hover div span:first-child {
   color: var(--gray-scale-4)
 }
+
 .uptime-graph li:hover div span:last-child {
   color: white;
   text-transform: capitalize;
@@ -183,5 +176,4 @@ export default {
   height: 10px;
   border-radius: 2px;
 }
-
 </style>

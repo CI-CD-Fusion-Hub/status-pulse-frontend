@@ -33,14 +33,14 @@ export default {
         scales: {
           y: {
             beginAtZero: true,
-          }
+          },
         },
       },
     };
   },
   computed: {
     loadChartData() {
-      const chartData = this.data.map(function(item) {
+      const chartData = this.data.map((item) => {
         return { x: new Date(item.created_at), y: Math.random() * 100 }; // Replace Math.random() * 100 with your actual y-values
       });
       const backgroundColors = this.data?.map(item => item.status === 'healthy' ? '#22C55E' : '#EF4444');
