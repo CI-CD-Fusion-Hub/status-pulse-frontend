@@ -67,6 +67,7 @@ export default {
       return h(VRenderColumn, { ...el.props, row }, el.children);
     },
     async changePage(n) {
+      console.log(n)
       if (n >= 1 && n <= this.totalPages)
         await this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: n }) });
       this.$emit('onPageChanged', n);
@@ -91,7 +92,7 @@ export default {
     </div>
     <table>
       <div v-if="isLoading" class="loader">
-        <font-awesome-icon :icon="['fas', 'spinner']" spin />
+        <i class="bx bx-loader-alt bx-spin" />
       </div>
       <thead>
         <tr>
@@ -106,7 +107,7 @@ export default {
       <tbody>
         <tr v-if="tableData.length === 0">
           <td colspan="100" class="empty_data">
-            <font-awesome-icon :icon="['fas', 'ghost']" /> No Data
+            <i class='bx bxs-ghost'></i> No Data
           </td>
         </tr>
         <tr v-for="(row, index) in tableData" :key="row">
@@ -124,18 +125,23 @@ export default {
         </tr>
       </tbody>
     </table>
-    <!-- <nav v-if="pagination && totalPages > 1" class="pagination_holder">
-      <VButton :icon="['fas', 'chevron-left']" tooltip-text="Prev" @on-click="changePage(getActivePage - 1)" />
-      <VButtonSet>
+    <nav v-if="pagination && totalPages > 1" class="pagination-holder">
+      <div class="pagination">
+        <VButton icon="bx bx-chevron-left" class="arrows" type="outline" @on-click="changePage(getActivePage - 1)" />
         <VButton
-          v-for="n in totalPages" :key="n" :is-active="getActivePage === n ? true : false"
-          @on-click="changePage(n)"
-        >
-          {{ n }}
+            v-for="n in totalPages" :key="n" :is-active="getActivePage === n ? true : false" type="outline"
+            @on-click="changePage(n)"
+          >
+            {{ n }}
         </VButton>
-      </VButtonSet>
-      <VButton :icon="['fas', 'chevron-right']" tooltip-text="Next" @on-click="changePage(getActivePage + 1)" />
-    </nav> -->
+        <VButton icon="bx bx-chevron-right" class="arrows" type="outline" @on-click="changePage(getActivePage + 1)" />
+      </div>
+      <div class="page-teleport">
+        <div>Go to</div>
+        <VTextInput type="number" v-model:data="getActivePage" @update="console.log(getActivePage)"></VTextInput>
+      </div>
+    </nav>
+
   </div>
 </template>
 
@@ -145,27 +151,33 @@ table {
   border-collapse: collapse;
   background-color: var(--main-color);
   padding: 15px;
-  border-radius: var(--border-radius);
   font-size: 14px;
   position: relative;
   margin-bottom: 10px;
   color: white;
   border: var(--border-style);
-  overflow: hidden;
 }
 
 thead {
-  border-bottom: var(--border-style)
+  background-color: var(--gray-scale-9);
 }
 
-th,
-td {
-  padding: 15px 2.5px;
+thead th {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 24px;
+  padding: 8px;
   text-align: left;
 }
 
-tbody tr:nth-child(odd) {
-  background-color: var(--main-bg-color)
+tbody tr {
+  border-radius: 5px;
+  background-color: var(--box-bg);
+  border-bottom: solid 2px var(--main-bg-color);
+}
+
+tbody td {
+  padding: 14px 0;
 }
 
 table .index_row {
@@ -173,8 +185,9 @@ table .index_row {
   text-align: center;
 }
 
-table div.btn-holder {
+table .btn-set-holder div.btn-holder {
   margin-top: 0;
+  justify-content: center;
 }
 
 table .empty_data {
@@ -182,26 +195,56 @@ table .empty_data {
   font-weight: 500;
 }
 
-.pagination_holder {
+.pagination-holder {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  flex-flow: row;
+  gap: 20px;
+  margin-top: 32px;
 }
 
-.table_search + table,
-.table_search + table .loader {
-  border-radius: 0 0 var(--border-radius) var(--border-radius);
+.pagination-holder .pagination {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
 }
 
-.table_search .input-holder {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+.pagination-holder .pagination .btn-holder button {
+  width:28px;
+  height: 28px;
+  padding: 0;
+  font-size: 13px;
 }
 
-@media only screen and (min-width: 1024px) {
-  th,
-  td {
-    padding: 15px 15px;
-  }
+.pagination-holder .pagination .btn-holder button:hover,
+.pagination-holder .pagination .btn-holder[active='true'] button{
+  background-color: var(--select-bg);
+  color: white;
+  border-color: var(--select-bg);
 }
+
+.pagination-holder .pagination .btn-holder button i {
+  font-size: 20px;
+}
+
+.pagination-holder .page-teleport {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pagination-holder .page-teleport .input-holder {
+  width: 50px;
+}
+
+.pagination-holder .page-teleport .input-holder input {
+  padding: 3px 3px;
+  width: 48px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
 </style>

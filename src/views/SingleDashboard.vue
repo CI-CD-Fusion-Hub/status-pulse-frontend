@@ -286,9 +286,13 @@ export default {
 div.vgl-layout {
   width: calc(100% + 48px);
   margin-left: -24px;
-  --vgl-placeholder-bg: var(--green-500);
+  --vgl-placeholder-bg: var(--gray-scale-6);
   --vgl-placeholder-opacity: 40%;
   --vgl-item-resizing-opacity: 80%;
+}
+
+.vgl-item--dragging {
+  border: solid 1px var(--body-text);
 }
 
 .vgl-item {

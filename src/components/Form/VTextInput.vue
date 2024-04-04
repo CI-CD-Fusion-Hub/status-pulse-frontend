@@ -129,4 +129,15 @@ export default {
   margin-top: 4px;
   color: var(--select-error-color)
 }
+
+.input-holder input::-webkit-outer-spin-button,
+.input-holder input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.input-holder input[type=number] {
+  -moz-appearance: textfield;
+}
 </style>

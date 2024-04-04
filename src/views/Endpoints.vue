@@ -148,7 +148,7 @@ export default {
         </div>
       </header>
       <VTable
-        :table-data="endpoints.data.data" :is-loading="isLoading" :pagination="true" :page-size="5" :total-pages="endpoints.pages"
+        :table-data="endpoints.data.data" :is-loading="isLoading" :pagination="true" :page-size="5" :total-pages="endpoints.data.pages"
         :is-searchable="true" :search-in-columns="['name', 'url']" :show-row-index="true" @on-page-changed="loadData" @on-search="loadData"
       >
         <!-- <VColumn header="Type" value="type">
@@ -162,12 +162,12 @@ export default {
         <VColumn header="Cron" value="cron" />
         <VColumn header="Status" value="status">
           <template #body="{ row }">
-            <VBadge type="status" :color="row.status">
+            <VBadge type="outline" :color="row.status">
               {{ row.status }}
             </VBadge>
           </template>
         </VColumn>
-        <VColumn header="Actions" value="actions">
+        <VColumn header="" value="actions">
           <template #body="{ row }">
             <VContextMenu>
               <VButton icon="bx bx-show" :link-to="{ name: 'SingleEndpoint', params: { endpoint_id: row.id } }">
