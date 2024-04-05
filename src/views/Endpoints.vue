@@ -208,7 +208,7 @@ export default {
 
 <style scoped>
 header {
-  margin-bottom: 40px;
+  margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;

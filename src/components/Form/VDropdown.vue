@@ -231,7 +231,7 @@ export default {
 
 .dropdown-holder .dropdown-field > a i:last-child {
   margin-left: auto;
-  font-size: 20px;
+  font-size: 11px;
   transition: transform 100ms ease-in-out;
 }
 
@@ -299,7 +299,7 @@ export default {
 }
 
 .dropdown-holder .dropdown-menu .dropdown-menu-item a {
-  padding: 8px 24px;
+  padding: 8px 6px 8px 17px;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
