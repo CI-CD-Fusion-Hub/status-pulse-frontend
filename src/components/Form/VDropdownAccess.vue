@@ -203,6 +203,10 @@ export default {
 .dropdown-holder .dropdown-menu[is-vissible="true"] {
   display: flex;
   gap: 8px;
+  position: absolute;
+  top: calc(100% + 8px);
+  width: calc(100% - 2px);
+  z-index: 2;
 }
 
 .dropdown-holder .dropdown-menu ul {

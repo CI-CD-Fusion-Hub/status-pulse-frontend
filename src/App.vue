@@ -84,7 +84,6 @@ export default {
 
 .main_container > main > div {
   padding: 24px 40px;
-  border-top-left-radius: 8px;
   background-color: var(--main-bg-color);
   height: 100%;
   overflow-y: scroll;

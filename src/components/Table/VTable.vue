@@ -3,10 +3,11 @@ import { h, useSlots } from 'vue';
 import VButtonSet from '../VContextMenu.vue';
 import VButton from '../VButton.vue';
 import VTextInput from '../Form/VTextInput.vue';
+import VDropdown from '../Form/VDropdown.vue';
 import VRenderColumn from './VTableRenderColumn.vue';
 
 export default {
-  components: { VButton, VButtonSet, VTextInput, VRenderColumn },
+  components: { VButton, VButtonSet, VTextInput, VRenderColumn, VDropdown },
   props: {
     tableData: {
       type: Array,
@@ -23,10 +24,6 @@ export default {
     pagination: {
       type: Boolean,
       default: false,
-    },
-    pageSize: {
-      type: Number,
-      default: 15,
     },
     isSearchable: {
       type: Boolean,
@@ -46,6 +43,7 @@ export default {
     return {
       search_text: this.$route?.query.search || '',
       slots: useSlots(),
+      pageSize: 10,
     };
   },
   computed: {
@@ -137,8 +135,12 @@ export default {
         <VButton icon="bx bx-chevron-right" class="arrows" type="outline" @on-click="changePage(getActivePage + 1)" />
       </div>
       <div class="page-teleport">
-        <div>Go to</div>
+        <span>Go to</span>
         <VTextInput v-model:data="getActivePage" type="number" @update="console.log(getActivePage)" />
+      </div>
+      <div class="entries-size">
+        <span>Show</span>
+        <VDropdown :options="[{label: '5 Entries', value: 5}, {label: '10 Entries', value: 10}, {label: '15 Entries', value: 15}]" option-label="label" option-value="value" v-model:data="pageSize" />
       </div>
     </nav>
   </div>
@@ -155,10 +157,11 @@ table {
   margin-bottom: 10px;
   color: white;
   border: var(--border-style);
+  border-radius: 6px;
 }
 
 thead {
-  background-color: var(--gray-scale-9);
+  background-color: var(--gray-color-9);
 }
 
 thead th {
@@ -170,13 +173,22 @@ thead th {
 }
 
 tbody tr {
-  border-radius: 5px;
   background-color: var(--box-bg);
   border-bottom: solid 2px var(--main-bg-color);
 }
 
+table thead tr th {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+table tbody tr:last-child td {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
 tbody td {
-  padding: 14px 0;
+  padding: 9px 0;
 }
 
 table .index_row {
@@ -245,4 +257,31 @@ table .empty_data {
   font-weight: 500;
   line-height: 20px;
 }
+
+.pagination-holder .entries-size {
+  margin-left: auto;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.pagination-holder .entries-size span,
+.pagination-holder .page-teleport span {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.pagination-holder .entries-size .dropdown-holder .dropdown-field {
+  min-width: 125px;
+}
+
+.pagination-holder .entries-size .dropdown-field .drop-down-btn {
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
 </style>

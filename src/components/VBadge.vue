@@ -55,5 +55,8 @@ export default {
   padding: 4px 16px 4px 16px;
   border-radius: 36px;
   border: solid 1px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
 }
 </style>
