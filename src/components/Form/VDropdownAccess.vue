@@ -82,7 +82,7 @@ export default {
         <div>
           <span>{{ data }}</span>
           <i
-            class="bx bx-chevron-down"
+            class="bx bxs-down-arrow"
             :is-open="isOpen"
           />
         </div>
@@ -140,12 +140,18 @@ export default {
 
 .dropdown-holder .dropdown-field > a i:last-child {
   margin-left: auto;
-  font-size: 20px;
+  font-size: 11px;
   transition: transform 100ms ease-in-out;
 }
 
 .dropdown-holder .dropdown-field > a i[is-open="true"]:last-child {
   transform: rotate(-90deg);
+}
+
+.dropdown-holder .dropdown-field > a span {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
 }
 
 .dropdown-holder .dropdown-field .drop-down-btn {
@@ -214,7 +220,7 @@ export default {
 }
 
 .dropdown-holder .dropdown-menu .dropdown-menu-item a {
-  padding: 8px 24px;
+  padding: 9px 11px 8px 18px;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;

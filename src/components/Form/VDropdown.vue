@@ -155,7 +155,7 @@ export default {
         <span v-else-if="data?.length > 0">{{ data }}</span>
         <span v-else>{{ dropdownPlaceholder }}</span>
         <i
-          class="bx bx-chevron-down"
+          class="bx bxs-down-arrow"
           :is-open="isOpen"
         />
       </a>

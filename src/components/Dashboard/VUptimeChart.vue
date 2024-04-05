@@ -62,11 +62,8 @@ export default {
   cursor: pointer;
 }
 
-.uptime-graph li:first-child {
-  border-radius: 6 0 0 6;
-}
-.uptime-graph li:last-child{
-  border-radius: 0 6 6 0;
+.uptime-graph li {
+  border-radius: 6px;
 }
 
 .uptime-graph li {
@@ -96,7 +93,7 @@ export default {
 
 .uptime-graph li.uptime-item.unhealthy,
 .uptime-graph li:hover div span[status="unhealthy"]{
-  background-color: yellow;
+  background-color: #FDE047;
 }
 .uptime-graph li.uptime-item.unhealthy:hover {
   background-color: #9c8c34;

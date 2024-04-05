@@ -244,7 +244,7 @@ export default {
             <i class="bx bxs-lock-alt" />Only people who have access can view this dashboard
           </div>
           <div v-else class="scope">
-            <i class="bx bx-globe" />Anyone on the internet with the link can view this dashboard
+            <i class="bx bx-world" />Anyone on the internet with the link can view this dashboard
           </div>
         </li>
       </ul>
@@ -282,7 +282,7 @@ export default {
 
 <style>
 .viewHeader {
-  margin-bottom: 40px;
+  margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -317,7 +317,7 @@ export default {
 }
 
 .dashboards-holder .dashboard {
-    padding: 40px;
+    padding: 32px;
     background-color: var(--box-bg);
     border-radius: var(--box-radius);
     box-sizing: border-box;
@@ -332,12 +332,24 @@ export default {
   max-width: 33.3%;
 }
 
+.dashboards-holder .dashboard h5,
+.dashboards-holder .dashboard p {
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  display: -webkit-box;
+}
+
 .dashboards-holder .dashboard h5 {
   margin-bottom: 8px;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  width: calc(100% - 20px);
 }
 
 .dashboards-holder .dashboard p {
   margin-bottom: 36px;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .dashboards-holder .scope {

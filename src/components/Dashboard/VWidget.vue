@@ -87,7 +87,7 @@ export default {
       <VButton icon="bx bx-edit-alt" @on-click="onEdit()">
         Edit
       </VButton>
-      <VButton icon="bx bxs-trash" @on-click="onDelete()">
+      <VButton icon="bx bx-trash" @on-click="onDelete()">
         Delete
       </VButton>
     </VContextMenu>

@@ -121,7 +121,7 @@ export default {
 }
 
 .modal-holder[is-buttons-active="false"] .modal-container{
-  padding-bottom: 32px;
+  padding-bottom: 44px;
 }
 
 .modal-holder .modal-container {
@@ -137,7 +137,7 @@ export default {
   height: 100%;
 }
 .modal-holder[is-drawer="false"] .modal-container{
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .modal-holder .modal-container header {
@@ -146,6 +146,7 @@ export default {
   padding: 32px 32px 0 32px;
   color: white;
   align-items: center;
+  position: relative;
 }
 
 .modal-holder .modal-container header i {
@@ -169,6 +170,10 @@ export default {
   justify-content: space-between;
 }
 
+.modal-holder .modal-container[type="edit"] footer i {
+  font-size: 20px;
+}
+
 .modal-holder .modal-container footer {
   margin-top: auto;
   padding: 32px;
@@ -185,6 +190,9 @@ export default {
   justify-content: center;
   align-items: center;
   border-radius: 50%;
+  top: 16px;
+  right: 16px;
+  position: absolute;
 }
 
 .modal-holder .modal-container .btn-modal-close:hover {

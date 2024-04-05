@@ -60,7 +60,7 @@ export default {
     </nav>
     <div class="user-profile">
       <span>F</span>
-      <i class="bx bx-chevron-down" />
+      <i class="bx bxs-down-arrow" />
     </div>
   </header>
 </template>
@@ -70,7 +70,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 40px 10px 33px;
+  padding: 20px 45px 20px 33px;
   background-color: var(--main-bg-color);
   border-bottom: solid 1px #252F3A;
 }
@@ -89,7 +89,11 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--gray-scale-6);
+    background-color: var(--primary-color-7);
+}
+
+.top-header .user-profile i {
+  font-size: 11px;
 }
 
 .breadcrumb-holder .breadcrumb,

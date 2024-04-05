@@ -172,7 +172,7 @@ export default {
 }
 
 .aside-menu .logo-holder {
-  padding: 24px 0;
+  padding: 17px 0 29px 0;
   color: white;
   font-size: 20px;
   font-style: normal;

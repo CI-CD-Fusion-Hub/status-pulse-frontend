@@ -67,7 +67,7 @@ export default {
       return h(VRenderColumn, { ...el.props, row }, el.children);
     },
     async changePage(n) {
-      console.log(n)
+      console.log(n);
       if (n >= 1 && n <= this.totalPages)
         await this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: n }) });
       this.$emit('onPageChanged', n);
@@ -107,7 +107,7 @@ export default {
       <tbody>
         <tr v-if="tableData.length === 0">
           <td colspan="100" class="empty_data">
-            <i class='bx bxs-ghost'></i> No Data
+            <i class="bx bxs-ghost" /> No Data
           </td>
         </tr>
         <tr v-for="(row, index) in tableData" :key="row">
@@ -129,19 +129,18 @@ export default {
       <div class="pagination">
         <VButton icon="bx bx-chevron-left" class="arrows" type="outline" @on-click="changePage(getActivePage - 1)" />
         <VButton
-            v-for="n in totalPages" :key="n" :is-active="getActivePage === n ? true : false" type="outline"
-            @on-click="changePage(n)"
-          >
-            {{ n }}
+          v-for="n in totalPages" :key="n" :is-active="getActivePage === n ? true : false" type="outline"
+          @on-click="changePage(n)"
+        >
+          {{ n }}
         </VButton>
         <VButton icon="bx bx-chevron-right" class="arrows" type="outline" @on-click="changePage(getActivePage + 1)" />
       </div>
       <div class="page-teleport">
         <div>Go to</div>
-        <VTextInput type="number" v-model:data="getActivePage" @update="console.log(getActivePage)"></VTextInput>
+        <VTextInput v-model:data="getActivePage" type="number" @update="console.log(getActivePage)" />
       </div>
     </nav>
-
   </div>
 </template>
 
@@ -246,5 +245,4 @@ table .empty_data {
   font-weight: 500;
   line-height: 20px;
 }
-
 </style>
