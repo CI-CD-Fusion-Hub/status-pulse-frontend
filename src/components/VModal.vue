@@ -161,6 +161,11 @@ export default {
   flex-flow: column;
 }
 
+.modal-holder .modal-container main > ul {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
 .modal-holder .modal-container[type="add"] footer {
   display: flex;
   justify-content: flex-end;
