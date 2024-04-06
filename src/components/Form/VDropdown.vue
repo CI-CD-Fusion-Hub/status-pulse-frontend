@@ -318,4 +318,12 @@ export default {
   color: var(--green-500);
   font-size: 20px;
 }
+
+.dropdown-holder  > p {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+  margin-top:4px;
+}
 </style>

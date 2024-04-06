@@ -140,4 +140,5 @@ export default {
 .input-holder input[type=number] {
   -moz-appearance: textfield;
 }
+
 </style>
