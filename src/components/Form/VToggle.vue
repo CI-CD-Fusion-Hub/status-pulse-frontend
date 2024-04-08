@@ -23,11 +23,11 @@ export default {
     },
     data: {
       type: String,
-      default: "",
+      default: '',
     },
     type: {
       type: String,
-      default: "normal",
+      default: 'normal',
     },
     options: {
       type: Array,
@@ -36,7 +36,7 @@ export default {
     },
     name: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   emits: ['update:data'],
@@ -44,16 +44,16 @@ export default {
 </script>
 
 <template>
-    <div class="radio-holder">
-        <label>{{ label }}</label>
-        <div class="input-radio" :type="type">
-            <div v-for="item in options" :key="item" @click="$emit('update:data', item[optionValue] || item)" :is-checked="data === (item[optionValue] || item)">
-                <i v-if="type === 'icon'" :class='item[optionIcon]'></i>
-                <span v-else-if="type === 'checked'" class="checked"><i class='bx bx-check' ></i></span>
-                <span>{{ item[optionLabel] || item }}</span>
-            </div>
-        </div>
+  <div class="radio-holder">
+    <label>{{ label }}</label>
+    <div class="input-radio" :type="type">
+      <div v-for="item in options" :key="item" :is-checked="data === (item[optionValue] || item)" @click="$emit('update:data', item[optionValue] || item)">
+        <i v-if="type === 'icon'" :class="item[optionIcon]" />
+        <span v-else-if="type === 'checked'" class="checked"><i class="bx bx-check" /></span>
+        <span>{{ item[optionLabel] || item }}</span>
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
@@ -115,8 +115,6 @@ export default {
     line-height: 20px;
 }
 
-
-
 .radio-holder .input-radio div span {
     font-size: 14px;
     font-weight: 400;
@@ -143,5 +141,4 @@ export default {
 .radio-holder .input-radio div[is-checked="true"] .checked {
     display: inherit;
 }
-
 </style>

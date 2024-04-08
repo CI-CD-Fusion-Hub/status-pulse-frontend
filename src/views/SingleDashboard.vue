@@ -8,7 +8,6 @@ import VModal from '../components/VModal.vue';
 import VTextInput from '../components/Form/VTextInput.vue';
 import VDropdown from '../components/Form/VDropdown.vue';
 import VToggle from '../components/Form/VToggle.vue';
-import VCheckBox from '../components/Form/VCheckBox.vue';
 import VWidget from '../components/Dashboard/VWidget.vue';
 
 export default {
@@ -22,7 +21,6 @@ export default {
     VLoader,
     VWidget,
     VToggle,
-    VCheckBox,
   },
   setup() {
     return { v$: useVuelidate() };
@@ -32,8 +30,8 @@ export default {
       backendUrl: import.meta.env.VITE_backendUrl,
       data: { endpoints: [] },
       endpoints: [],
-      hourUnits: [{label: '8h', value: 8},{label: '16h', value: 16},{label: '24h', value: 24},{label: '32h', value: 32},{label: '48h', value: 48},{label: '72h', value: 72}],
-      dayUnits: [{label: '1 Week', value: 7},{label: '2 Weeks', value: 14},{label: '3 Weeks', value: 21},{label: '1 Month', value: 31}],
+      hourUnits: [{ label: '8h', value: 8 }, { label: '16h', value: 16 }, { label: '24h', value: 24 }, { label: '32h', value: 32 }, { label: '48h', value: 48 }, { label: '72h', value: 72 }],
+      dayUnits: [{ label: '1 Week', value: 7 }, { label: '2 Weeks', value: 14 }, { label: '3 Weeks', value: 21 }, { label: '1 Month', value: 31 }],
       formData: {},
       isLoading: true,
       isAddModalVissible: false,
@@ -235,7 +233,7 @@ export default {
   <VModal v-model:isActive="isAddModalVissible" header="Add Widget" button-label="Add Widget" @on-send="addData" @on-close="closeModal">
     <VDropdown v-model:data="formData.endpoints" label="Endpoints" name="Endpoint" placeholder="Select Endpoint" :options="endpoints" option-label="name" option-value="id" description="Select endpoint which you want connect to dashboard" />
     <template v-if="formData.endpoints">
-      <VToggle v-model:data="formData.type" type="icon" label="Widget type" :options="[{icon: 'bx bx-bar-chart-alt', label: 'Uptime bar', value: 'Uptime'},{icon: 'bx bx-line-chart', label: 'Line Chart',value: 'LineChart'}]" option-label="label" option-value="value" optionIcon="icon" />
+      <VToggle v-model:data="formData.type" type="icon" label="Widget type" :options="[{ icon: 'bx bx-bar-chart-alt', label: 'Uptime bar', value: 'Uptime' }, { icon: 'bx bx-line-chart', label: 'Line Chart', value: 'LineChart' }]" option-label="label" option-value="value" option-icon="icon" />
       <VToggle v-model:data="formData.unit" type="checked" label="Interval" :options="['Days', 'Hours']" />
       <VToggle v-if="formData.unit === 'Hours'" v-model:data="formData.duration" type="normal" :options="hourUnits" option-label="label" option-value="value" />
       <VToggle v-else-if="formData.unit === 'Days'" v-model:data="formData.duration" type="normal" :options="dayUnits" option-label="label" option-value="value" />

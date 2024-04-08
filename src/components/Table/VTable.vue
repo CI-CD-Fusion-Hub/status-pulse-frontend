@@ -140,7 +140,7 @@ export default {
       </div>
       <div class="entries-size">
         <span>Show</span>
-        <VDropdown :options="[{label: '5 Entries', value: 5}, {label: '10 Entries', value: 10}, {label: '15 Entries', value: 15}]" option-label="label" option-value="value" v-model:data="pageSize" />
+        <VDropdown v-model:data="pageSize" :options="[{ label: '5 Entries', value: 5 }, { label: '10 Entries', value: 10 }, { label: '15 Entries', value: 15 }]" option-label="label" option-value="value" />
       </div>
     </nav>
   </div>
@@ -283,5 +283,4 @@ table .empty_data {
   font-weight: 500;
   line-height: 20px;
 }
-
 </style>

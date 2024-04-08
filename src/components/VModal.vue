@@ -35,7 +35,7 @@ export default {
     isLoading: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   emits: ['update:isActive', 'onSend', 'onClose', 'onDelete'],
   computed: {
