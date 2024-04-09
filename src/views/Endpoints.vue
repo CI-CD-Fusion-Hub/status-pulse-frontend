@@ -125,6 +125,24 @@ export default {
       this.isAddModalVissible = false;
       this.isBtnLoading = false;
     },
+    async deleteData(id) {
+      try {
+        this.isLoading = true;
+
+        const response = await this.axios({
+          method: 'delete',
+          url: `${this.backendUrl}/endpoints/${id}`,
+        });
+
+        await this.loadData();
+        this.closeModal();
+        useNotifyStore().add(response.data.status, response.data.message);
+      }
+      catch (error) {
+        useNotifyStore().add('error', 'Error loading data!');
+        this.isLoading = false;
+      }
+    },
   },
 };
 </script>
@@ -151,11 +169,6 @@ export default {
         :table-data="endpoints.data.data" :is-loading="isLoading" :pagination="true" :page-size="5" :total-pages="endpoints.data.pages"
         :is-searchable="true" :search-in-columns="['name', 'url']" :show-row-index="true" @on-page-changed="loadData" @on-search="loadData"
       >
-        <!-- <VColumn header="Type" value="type">
-          <template #body="{ row }">
-            <span :tooltip-text="row.type" tooltip-position="Top" />
-          </template>
-        </VColumn> -->
         <VColumn header="Name" value="name" />
         <VColumn header="Description" value="description" />
         <VColumn header="URL" value="url" />
