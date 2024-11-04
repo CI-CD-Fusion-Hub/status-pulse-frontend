@@ -59,6 +59,7 @@ export default {
       endpoints: [],
       isLoading: true,
       isAddModalVissible: false,
+      isTableLoading: true,
       formData: {},
     };
   },
@@ -78,14 +79,17 @@ export default {
       this.isAddModalVissible = true;
     },
     async loadData() {
+      this.isTableLoading = true;
+
       try {
         const response = await this.axios({
           method: 'get',
-          url: `${this.backendUrl}/endpoints`,
+          url: `${this.backendUrl}/endpoints?page=${this.$route.query.page || '1'}&search=${this.$route.query.search || ''}`,
         });
 
         this.endpoints = response.data;
         this.isLoading = false;
+        this.isTableLoading = false;
       }
       catch (error) {
         console.log('Unable to get authentication method.');
@@ -166,7 +170,7 @@ export default {
         </div>
       </header>
       <VTable
-        :table-data="endpoints.data.data" :is-loading="isLoading" :pagination="true" :page-size="5" :total-pages="endpoints.data.pages"
+        :table-data="endpoints.data.data" :is-loading="isTableLoading" :pagination="true" :page-size="5" :total-pages="endpoints.data.pages"
         :is-searchable="true" :search-in-columns="['name', 'url']" :show-row-index="true" @on-page-changed="loadData" @on-search="loadData"
       >
         <VColumn header="Name" value="name" />
@@ -202,12 +206,12 @@ export default {
     </template>
     <VModal v-model:isActive="isAddModalVissible" header="Creat new dashboard" button-label="Add dashboard" @on-send="addData" @on-close="closeModal">
       <VDropdown
-        v-model:data="formData.type" name="type" placeholder="Endpoint Type" :options="['http']"
+        v-model:data="formData.type" :is-multyselect="true" name="type" placeholder="Endpoint Type" label="Endpoint Type" :options="['http', 'asdasd']"
       />
-      <VTextInput v-model:data="formData.name" name="name" placeholder="Name" />
-      <VTextInput v-model:data="formData.description" name="description" placeholder="Description" />
-      <VTextInput v-model:data="formData.url" name="url" placeholder="URL" />
-      <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" />
+      <VTextInput v-model:data="formData.name" name="name" placeholder="Enter endpoint name" label="Name" />
+      <VTextArea v-model:data="formData.description" name="description" placeholder="Enter endpoint description" label="Description" />
+      <VTextInput v-model:data="formData.url" name="url" placeholder="URL" label="URL" />
+      <VTextInput v-model:data="formData.threshold" type="number" name="threshold" placeholder="Threshold in ms" label="Enter threshold in ms" description="Threshold time to mark endpoint as unhealthy." />
       <VTextInput v-model:data="formData.cron" name="cron" placeholder="Cron" />
       <VTextInput v-model:data="formData.status_code" type="number" name="status_code" placeholder="Status Code" />
       <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" />

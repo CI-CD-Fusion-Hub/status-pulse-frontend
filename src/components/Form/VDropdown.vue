@@ -64,12 +64,18 @@ export default {
   data() {
     return {
       isOpen: false,
-      dropdownPlaceholder: this.isMultyselect ? this.data : this.placeholder,
-      value: this.data?.length > 0 ? this.data : [],
+      dropdownPlaceholder: this.isMultyselect && this.data?.length > 0 ? this.data : this.placeholder,
       searchValue: '',
     };
   },
   computed: {
+    getValue() {
+      if (this.isMultyselect && this.data?.length > 0) {
+        return this.data
+      } else if (this.optionLabel !== '' ) {
+        return this.options
+      }
+    },
     filterResults() {
       if (!this.options)
         return [];
@@ -85,9 +91,11 @@ export default {
   },
   methods: {
     toggleDropdown() {
+      console.log(this.data)
       this.isOpen = !this.isOpen;
     },
     selectValue(item) {
+      console.log(item)
       const selectedValue = this.optionLabel && this.optionValue ? item[this.optionValue] : item;
       const selectedLabel = this.optionLabel && this.optionValue ? item[this.optionLabel] : item;
 
@@ -119,6 +127,9 @@ export default {
 
       return label[0][this.optionLabel];
     },
+  },
+  onMounted() {
+    console.log("FINDMEEE!!!")
   },
 };
 </script>

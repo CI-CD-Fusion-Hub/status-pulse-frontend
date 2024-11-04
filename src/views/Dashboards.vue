@@ -294,19 +294,19 @@ export default {
 }
 
 .dashboards-holder {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90%, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
 }
 
 @media only screen and (min-width: 768px) {
-    .dashboards-holder {
-        grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
+    .dashboards-holder li.dashboard{
+      max-width: 100%;
     }
 }
 @media only screen and (min-width: 1280px) {
-    .dashboards-holder {
-        grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+    .dashboards-holder  li.dashboard{
+      max-width: 50%;
     }
 }
 
@@ -317,19 +317,16 @@ export default {
 }
 
 .dashboards-holder .dashboard {
-    padding: 32px;
-    background-color: var(--box-bg);
-    border-radius: var(--box-radius);
-    box-sizing: border-box;
-    grid-template: 1fr;
-    display: flex;
-    flex-flow: column;
-    position: relative;
-    gap: 24px;
-}
-
-.dashboards-holder .dashboard:only-child {
-  max-width: 33.3%;
+  padding: 32px;
+  background-color: var(--box-bg);
+  border-radius: var(--box-radius);
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column;
+  position: relative;
+  gap: 24px;
+  flex: 0 0 calc((100% / 3) - 14px);
+  max-width: 33%;
 }
 
 .dashboards-holder .dashboard h5,
