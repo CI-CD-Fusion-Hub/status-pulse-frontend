@@ -125,7 +125,7 @@ export default {
   padding: 8px 12px;
   display: none;
   border-radius: 2px;
-  top:-68px;
+  top:-88px;
 }
 
 .uptime-graph li::before {
