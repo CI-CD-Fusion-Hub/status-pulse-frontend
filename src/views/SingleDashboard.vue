@@ -72,34 +72,32 @@ export default {
 
       return position;
     },
-    findAvailablePosition(existingItems, newItem) {
-      const gridWidth = 12; // Assuming a grid layout with a total width of 12 columns
-      const grid = Array.from({ length: existingItems.length }, () => Array(gridWidth).fill(false));
+    // findAvailablePosition(existingItems, newItem) {
+    //   const gridWidth = 12; // Assuming a grid layout with a total width of 12 columns
+    //   const grid = Array.from({ length: existingItems.length }, () => Array(gridWidth).fill(false));
 
-      // Mark existing positions as occupied
-      existingItems.forEach(item => {
-        for (let x = item.x; x < item.x + item.w; x++) {
-          for (let y = item.y; y < item.y + item.h; y++) {
-            grid[y][x] = true;
-          }
-        }
-      });
+    //   // Mark existing positions as occupied
+    //   existingItems.forEach((item) => {
+    //     for (let x = item.x; x < item.x + item.w; x++) {
+    //       for (let y = item.y; y < item.y + item.h; y++)
+    //         grid[y][x] = true;
+    //     }
+    //   });
 
-      // Find available positions on the grid
-      const availablePositions = [];
-      grid.forEach((row, y) => {
-        row.forEach((isOccupied, x) => {
-          if (!isOccupied) {
-            availablePositions.push({ x, y });
-          }
-        });
-      });
+    //   // Find available positions on the grid
+    //   const availablePositions = [];
+    //   grid.forEach((row, y) => {
+    //     row.forEach((isOccupied, x) => {
+    //       if (!isOccupied)
+    //         availablePositions.push({ x, y });
+    //     });
+    //   });
 
-      // Choose a position for the new item (you can implement your own logic here)
-      // For example, prioritize positions closest to the top-left corner
-      const chosenPosition = availablePositions[0] || { x: 0, y: 0 };
-      return chosenPosition;
-    },
+    //   // Choose a position for the new item (you can implement your own logic here)
+    //   // For example, prioritize positions closest to the top-left corner
+    //   const chosenPosition = availablePositions[0] || { x: 0, y: 0 };
+    //   return chosenPosition;
+    // },
     async loadData() {
       try {
         const response = await this.axios({

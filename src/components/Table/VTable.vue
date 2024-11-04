@@ -44,7 +44,7 @@ export default {
       search_text: this.$route?.query.search || '',
       slots: useSlots(),
       pageSize: 10,
-      tableSize: [{ label: '10 Entries', value: 10 }, { label: '20 Entries', value: 20 }, { label: '50 Entries', value: 50 }]
+      tableSize: [{ label: '10 Entries', value: 10 }, { label: '20 Entries', value: 20 }, { label: '50 Entries', value: 50 }],
     };
   },
   computed: {
@@ -297,5 +297,4 @@ table .empty_data {
   height: 50vh;
   font-size: 20px;
 }
-
 </style>

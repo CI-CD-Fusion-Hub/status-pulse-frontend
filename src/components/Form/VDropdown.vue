@@ -69,13 +69,12 @@ export default {
     };
   },
   computed: {
-    getValue() {
-      if (this.isMultyselect && this.data?.length > 0) {
-        return this.data
-      } else if (this.optionLabel !== '' ) {
-        return this.options
-      }
-    },
+    // getValue() {
+    //   if (this.isMultyselect && this.data?.length > 0)
+    //     return this.data;
+    //   else if (this.optionLabel !== '')
+    //     return this.options;
+    // },
     filterResults() {
       if (!this.options)
         return [];
@@ -91,11 +90,10 @@ export default {
   },
   methods: {
     toggleDropdown() {
-      console.log(this.data)
+      console.log(this.data);
       this.isOpen = !this.isOpen;
     },
     selectValue(item) {
-      console.log(item)
       const selectedValue = this.optionLabel && this.optionValue ? item[this.optionValue] : item;
       const selectedLabel = this.optionLabel && this.optionValue ? item[this.optionLabel] : item;
 
@@ -129,7 +127,7 @@ export default {
     },
   },
   onMounted() {
-    console.log("FINDMEEE!!!")
+    console.log('FINDMEEE!!!');
   },
 };
 </script>
