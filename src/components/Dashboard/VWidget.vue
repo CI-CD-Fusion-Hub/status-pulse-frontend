@@ -1,70 +1,67 @@
-<script>
-import VContextMenu from '../VContextMenu.vue';
-import VButton from '../VButton.vue';
-import VBarChart from './VBarChart.vue';
-import VUptimeChart from './VUptimeChart.vue';
+<script setup>
+import axios from "axios";
+import VContextMenu from "../VContextMenu.vue";
+import VButton from "../VButton.vue";
+import VBarChart from "./VBarChart.vue";
+import VUptimeChart from "./VUptimeChart.vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
-export default {
-  components: { VContextMenu, VButton, VUptimeChart, VBarChart },
-  props: {
-    data: {
-      type: Object,
-      default: () => {},
-    },
+const props = defineProps({
+  data: {
+    type: Object,
+    default: () => {},
   },
-  emits: ['onEdit', 'onDelete'],
-  data() {
-    return {
-      backendUrl: import.meta.env.VITE_backendUrl,
-      widgetData: [],
-      isLoading: true,
-      interval: null,
-    };
-  },
-  computed: {},
-  async mounted() {
-    await this.loadData();
-    // await this.reloadData();
-  },
-  beforeUnmount() {
-    clearInterval(this.interval);
-  },
-  methods: {
-    async loadData() {
+});
+
+const emit = defineEmits(["onEdit", "onDelete"]);
+const backendUrl = import.meta.env.VITE_backendUrl;
+const widgetData = ref([]);
+const isLoading = ref(true);
+const interval = ref(null);
+
+onMounted(async () => {
+  await loadData();
+  await reloadData();
+});
+
+onBeforeUnmount(() => clearInterval(interval.value));
+
+async function loadData() {
+  try {
+    const response = await axios({
+      method: "get",
+      url: `${backendUrl}/endpoints/${props.data.id}/widget?unit=${
+        props.data.unit
+      }&duration=${props.data.duration}&type=${
+        props.data.type
+      }&rand=${new Date().getTime()}-${props.data.i}`,
+    });
+    widgetData.value = response.data.data;
+    isLoading.value = false;
+  } catch (error) {
+    console.log("Error occurred while reloading data:", error);
+  }
+}
+
+async function reloadData() {
+  interval.value = setInterval(() => {
+    (async () => {
       try {
-        const response = await this.axios({
-          method: 'get',
-          url: `${this.backendUrl}/endpoints/${this.data.id}/widget?unit=${this.data.unit}&duration=${this.data.duration}&type=${this.data.type}&rand=${new Date().getTime()}-${this.data.i}`,
-        });
+        isLoading.value = true;
+        await loadData();
+      } catch (error) {
+        console.log("Error occurred while reloading data:", error);
+      }
+    })();
+  }, 60000);
+}
 
-        this.widgetData = response.data.data;
-        this.isLoading = false;
-      }
-      catch (error) {
-        console.log('Unable to get authentication method.');
-      }
-    },
-    async reloadData() {
-      this.interval = setInterval(() => {
-        (async () => {
-          try {
-            this.isLoading = true;
-            await this.loadData();
-          }
-          catch (error) {
-            console.log('Error occurred while reloading data:', error);
-          }
-        })();
-      }, 60000);
-    },
-    onEdit() {
-      this.$emit('onEdit');
-    },
-    onDelete() {
-      this.$emit('onDelete');
-    },
-  },
-};
+function onEdit() {
+  emit("onEdit");
+}
+function onDelete() {
+  emit("onDelete");
+}
 </script>
 
 <template>
@@ -75,7 +72,7 @@ export default {
     <div v-if="isLoading" class="loader">
       <i class="bx bx-loader-circle bx-spin bx-rotate-90" />
     </div>
-    <div v-else-if="widgetData.length === 0" class="loader">
+    <div v-else-if="widgetData.value" class="loader">
       <i class="bx bxs-ghost" />No Data
     </div>
     <template v-else>
@@ -84,33 +81,29 @@ export default {
     </template>
 
     <VContextMenu>
-      <VButton icon="bx bx-edit-alt" @on-click="onEdit()">
-        Edit
-      </VButton>
-      <VButton icon="bx bx-trash" @on-click="onDelete()">
-        Delete
-      </VButton>
+      <VButton icon="bx bx-edit-alt" @on-click="onEdit()"> Edit </VButton>
+      <VButton icon="bx bx-trash" @on-click="onDelete()"> Delete </VButton>
     </VContextMenu>
   </div>
 </template>
 
 <style>
 .widget-holder {
-    width: 100%;
-    height: 100%;
-    color: white;
-    display: flex;
-    flex-flow: column;
-    position: relative;
+  width: 100%;
+  height: 100%;
+  color: white;
+  display: flex;
+  flex-flow: column;
+  position: relative;
 }
 
 .widget-holder > p {
-    margin-bottom: 20px;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 24px;
-    letter-spacing: -0.01em;
-    color: var(--body-text);
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  color: var(--body-text);
 }
 
 .widget-holder .loader {
@@ -126,9 +119,9 @@ export default {
 }
 
 .widget-holder .btn-set-holder {
-    position: absolute;
-    top: 0;
-    right: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .widget-holder .btn-set-holder > .btn-holder button {

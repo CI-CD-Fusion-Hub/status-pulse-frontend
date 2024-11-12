@@ -1,65 +1,60 @@
-<script>
-export default {
-  props: {
-    name: {
-      type: String,
-      default: '',
-    },
-    placeholder: {
-      type: String,
-      default: '',
-    },
-    label: {
-      type: String,
-      default: '',
-    },
-    length: {
-      type: Number,
-      default: 6,
-    },
-    data: {
-      type: String,
-      default: '',
-    },
-    type: {
-      type: String,
-      default: 'text',
-    },
-    description: {
-      type: String,
-      default: '',
-    },
-    tooltipText: {
-      type: String,
-      default: null,
-    },
-    tooltipPos: {
-      type: String,
-      default: 'Left',
-    },
+<script setup>
+const props = defineProps({
+  name: {
+    type: String,
+    default: "",
   },
-  emits: ['update:data'],
-  data() {
-    return {
-      code: '',
-    };
+  placeholder: {
+    type: String,
+    default: "",
   },
-  methods: {
-    setValue(target, idx, e) {
-      if (e.length > 1 && e.length !== this.length) {
-        e = e.substring(0, 1);
-        target.value = e;
-      }
-
-      this.code = this.code.substring(0, idx - 1) + e + this.code.substring(idx);
-
-      if (this.code.length > this.length)
-        this.code = this.code.substring(0, this.length);
-
-      this.$emit('update:data', this.code);
-    },
+  label: {
+    type: String,
+    default: "",
   },
-};
+  length: {
+    type: Number,
+    default: 6,
+  },
+  data: {
+    type: String,
+    default: "",
+  },
+  type: {
+    type: String,
+    default: "text",
+  },
+  description: {
+    type: String,
+    default: "",
+  },
+  tooltipText: {
+    type: String,
+    default: null,
+  },
+  tooltipPos: {
+    type: String,
+    default: "Left",
+  },
+});
+
+const emit = defineEmits(["update:data"]);
+
+const code = ref("");
+
+function setValue(target, idx, e) {
+  if (e.length > 1 && e.length !== props.length) {
+    e = e.substring(0, 1);
+    target.value = e;
+  }
+
+  code.value = code.value.substring(0, idx - 1) + e + code.value.substring(idx);
+
+  if (code.value.length > props.length)
+    code.value = code.value.substring(0, props.length);
+
+  emit("update:data", code.value);
+}
 </script>
 
 <template>
@@ -73,7 +68,7 @@ export default {
         :maxlength="n === 1 ? length : 1"
         :value="code[n - 1]"
         @input="setValue($event.target, n, $event.target.value)"
-      >
+      />
       <label class="inside-label" :for="name + n">{{ label }}</label>
     </div>
   </div>
@@ -81,9 +76,9 @@ export default {
 
 <style scoped>
 .input-holder {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .input-holder .input-field {
@@ -97,7 +92,7 @@ export default {
   font-weight: 400;
   line-height: 20px;
   width: 100%;
-  text-align: center    ;
+  text-align: center;
 }
 
 .input-holder .input-field input {
@@ -115,7 +110,7 @@ export default {
   border-color: var(--select-hover-color);
 }
 
-.input-holder .input-field input:focus{
+.input-holder .input-field input:focus {
   border-color: var(--select-focus-color);
   background-color: transparent;
 }
@@ -128,7 +123,7 @@ export default {
 }
 
 .input-holder .input-field input:focus + label,
-.input-holder .input-field input:not(:placeholder-shown) + label  {
+.input-holder .input-field input:not(:placeholder-shown) + label {
   display: none;
 }
 
@@ -142,6 +137,6 @@ export default {
   font-weight: 400;
   line-height: 20px;
   margin-top: 4px;
-  color: var(--select-error-color)
+  color: var(--select-error-color);
 }
 </style>

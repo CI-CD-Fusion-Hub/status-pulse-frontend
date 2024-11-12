@@ -68,9 +68,6 @@ export default {
     this.isAddModalVissible = false;
     this.isEditModalVissible = false;
   },
-  async created() {
-    await this.loadData();
-  },
   async mounted() {
     await this.loadData();
   },
@@ -156,22 +153,9 @@ export default {
   <template v-else>
     <EmptyState v-if="endpoints.data.length === 0" heading="No Endpoints" @on-click="showAddModal" />
     <template v-else>
-      <header>
-        <h4>Dashboard</h4>
-        <div>
-          <VTextInput
-            v-model:data="search"
-            name="search"
-            placeholder="Search..."
-          />
-          <VButton type="fill" @on-click="showAddModal">
-            Add New
-          </VButton>
-        </div>
-      </header>
       <VTable
-        :table-data="endpoints.data.data" :is-loading="isTableLoading" :pagination="true" :page-size="5" :total-pages="endpoints.data.pages"
-        :is-searchable="true" :search-in-columns="['name', 'url']" :show-row-index="true" @on-page-changed="loadData" @on-search="loadData"
+        :table-data="endpoints.data.data" :is-loading="isTableLoading" :page-size="3" :search-in-columns="['name', 'url']" @on-page-changed="loadData" @on-search="loadData"
+        table-header="Endpoints" @on-add="showAddModal"
       >
         <VColumn header="Name" value="name" />
         <VColumn header="Description" value="description" />
@@ -206,7 +190,7 @@ export default {
     </template>
     <VModal v-model:isActive="isAddModalVissible" header="Creat new dashboard" button-label="Add dashboard" @on-send="addData" @on-close="closeModal">
       <VDropdown
-        v-model:data="formData.type" :is-multyselect="true" name="type" placeholder="Endpoint Type" label="Endpoint Type" :options="['http', 'asdasd']"
+        v-model:data="formData.type" :is-multiselect="false" name="type" placeholder="Endpoint Type" label="Endpoint Type" :options="['http', 'asdasd']"
       />
       <VTextInput v-model:data="formData.name" name="name" placeholder="Enter endpoint name" label="Name" />
       <VTextArea v-model:data="formData.description" name="description" placeholder="Enter endpoint description" label="Description" />
@@ -216,7 +200,7 @@ export default {
       <VTextInput v-model:data="formData.status_code" type="number" name="status_code" placeholder="Status Code" />
       <VTextArea v-model:data="formData.response" name="response" placeholder="Response Schema: {'test': '', 'findme': ''}" />
       <VDropdown
-        v-model:data="formData.notifications" :is-multyselect="true" option-label="name" option-value="id" name="notifications" placeholder="Notifications"
+        v-model:data="formData.notifications" :is-multiselect="true" option-label="name" option-value="id" name="notifications" placeholder="Notifications"
         :options="notifications"
       />
     </VModal>

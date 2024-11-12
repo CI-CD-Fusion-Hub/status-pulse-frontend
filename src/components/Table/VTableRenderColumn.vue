@@ -19,3 +19,12 @@ export default {
     <slot name="body" :row="row" />
   </div>
 </template>
+
+<style scoped>
+div {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 500px;
+}
+</style>

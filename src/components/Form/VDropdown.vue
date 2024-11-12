@@ -1,140 +1,176 @@
-<script>
-import VButton from '../VButton.vue';
+<script setup>
+import VTextInput from "../Form/VTextInput.vue";
+import { computed, ref, onMounted } from "vue";
 
-export default {
-  component: {
-    VButton,
+const props = defineProps({
+  options: {
+    type: Array,
+    default: () => [],
+    required: true,
   },
-  props: {
-    options: {
-      type: Array,
-      default: () => [],
-      required: true,
-    },
-    label: {
-      type: String,
-      default: '',
-    },
-    optionLabel: {
-      type: String,
-      default: null,
-    },
-    optionValue: {
-      type: String,
-      default: null,
-    },
-    name: {
-      type: String,
-      default: '',
-    },
-    placeholder: {
-      type: String,
-      default: '',
-    },
-    data: {
-      type: Array,
-      default: () => [],
-    },
-    icon: {
-      type: String,
-      default: '',
-    },
-    isSearchable: {
-      type: Boolean,
-      default: false,
-    },
-    isMultyselect: {
-      type: Boolean,
-      default: false,
-    },
-    tooltipText: {
-      type: String,
-      default: null,
-    },
-    tooltipPos: {
-      type: String,
-      default: 'Left',
-    },
-    description: {
-      type: String,
-      default: '',
-    },
+  label: {
+    type: String,
+    default: "",
   },
-  emits: ['update:data'],
-  data() {
-    return {
-      isOpen: false,
-      dropdownPlaceholder: this.isMultyselect && this.data?.length > 0 ? this.data : this.placeholder,
-      searchValue: '',
-    };
+  optionLabel: {
+    type: String,
+    default: null,
   },
-  computed: {
-    // getValue() {
-    //   if (this.isMultyselect && this.data?.length > 0)
-    //     return this.data;
-    //   else if (this.optionLabel !== '')
-    //     return this.options;
-    // },
-    filterResults() {
-      if (!this.options)
-        return [];
+  optionValue: {
+    type: String,
+    default: null,
+  },
+  name: {
+    type: String,
+    default: "",
+  },
+  placeholder: {
+    type: String,
+    default: "",
+  },
+  data: {
+    type: Array,
+    default: () => [],
+  },
+  icon: {
+    type: String,
+    default: "",
+  },
+  isSearchable: {
+    type: Boolean,
+    default: false,
+  },
+  isMultiselect: {
+    type: Boolean,
+    default: false,
+  },
+  tooltipText: {
+    type: String,
+    default: null,
+  },
+  tooltipPos: {
+    type: String,
+    default: "Left",
+  },
+  description: {
+    type: String,
+    default: "",
+  },
+  dynamicContent: {
+    type: Boolean,
+    default: false,
+  },
+});
 
-      return this.options.filter((item) => {
-        // Check if items is in already selected items
-        if (this.isMultyselect && this.optionLabel !== '')
-          return !this.value.includes(item[this.optionValue]) ? item[this.optionLabel].includes(this.searchValue) : false;
+const emit = defineEmits(["update:data", "onSelect"]);
+const isOpen = ref(false);
+const dropdownPlaceholder = ref(
+  props.isMultiselect ? props.data : props.placeholder
+);
+const searchValue = ref("");
+const dropdownValue = ref(props.isMultiselect ? [] : "");
 
-        return item.toString().includes(this.searchValue);
-      });
-    },
-  },
-  methods: {
-    toggleDropdown() {
-      console.log(this.data);
-      this.isOpen = !this.isOpen;
-    },
-    selectValue(item) {
-      const selectedValue = this.optionLabel && this.optionValue ? item[this.optionValue] : item;
-      const selectedLabel = this.optionLabel && this.optionValue ? item[this.optionLabel] : item;
+const filterResults = computed(() => {
+  if (!props.options) return [];
 
-      if (this.isMultyselect) {
-        this.value.push(selectedValue);
-        this.dropdownPlaceholder.push(selectedLabel);
+  return props.options.filter((item) => {
+    // Check if items are already selected items
+    if (props.isMultiselect && props.optionLabel !== null) {
+      return !dropdownValue.value.includes(item[props.optionValue])
+        ? item[props.optionLabel].includes(searchValue.value)
+        : false;
+    }
+    return item.toString().includes(searchValue.value);
+  });
+});
+
+onMounted(() => {
+  initializeValue(props.data);
+});
+
+function initializeValue(data) {
+  if (props.isMultiselect) {
+    dropdownValue.value = [...data];
+    dropdownPlaceholder.value = [...data];
+  } else {
+    if (props.optionLabel && props.optionValue) {
+      if (data.length > 0) {
+        const valueMap = props.options.find(
+          (item) => item[props.optionValue] === data
+        );
+        dropdownValue.value = valueMap.value;
+        dropdownPlaceholder.value = valueMap.label;
+      } else {
+        dropdownValue.value = data;
+        dropdownPlaceholder.value = props.placeholder;
       }
-      else {
-        this.value = selectedValue;
-        this.dropdownPlaceholder = selectedLabel;
-        this.isOpen = false;
-      }
+    } else {
+      dropdownValue.value = data;
+      dropdownPlaceholder.value = data;
+    }
+  }
+}
 
-      this.$emit('update:data', this.value);
-    },
-    removeValue(e) {
-      this.dropdownPlaceholder = this.dropdownPlaceholder.filter((item) => {
-        return item !== e;
-      });
+function toggleDropdown() {
+  isOpen.value = !isOpen.value;
+}
 
-      this.value = this.value.filter((item) => {
-        return item !== (e[this.optionValue] || e);
-      });
-    },
-    getPlaceHolder(item) {
-      const label = this.options.filter((e) => {
-        return item === e[this.optionValue];
-      });
+function selectValue(item) {
+  const selectedValue =
+    props.optionLabel && props.optionValue ? item[props.optionValue] : item;
+  const selectedLabel =
+    props.optionLabel && props.optionValue ? item[props.optionLabel] : item;
 
-      return label[0][this.optionLabel];
-    },
-  },
-  onMounted() {
-    console.log('FINDMEEE!!!');
-  },
-};
+  if (props.isMultiselect) {
+    if (!dropdownValue.value.includes(selectedValue)) {
+      console.log("ÏN");
+      dropdownValue.value.push(selectedValue);
+      dropdownPlaceholder.value.push(selectedLabel);
+    } else {
+      const valueIndex = dropdownValue.value.indexOf(selectedValue);
+      dropdownValue.value.splice(valueIndex, 1);
+      dropdownPlaceholder.value.splice(valueIndex, 1);
+    }
+  } else {
+    dropdownValue.value = selectedValue;
+    dropdownPlaceholder.value = selectedLabel;
+    isOpen.value = false;
+  }
+
+  onSelect();
+}
+
+function removeValue(e) {
+  dropdownPlaceholder.value = dropdownPlaceholder.value.filter((item) => {
+    return item !== e;
+  });
+
+  dropdownValue.value = dropdownValue.value.filter((item) => {
+    return item !== (e[props.optionValue] || e);
+  });
+
+  emit("update:data", dropdownValue.value);
+}
+
+// function getPlaceHolder(item) {
+//   const label = this.options.filter((e) => {
+//     return item === e[this.optionValue];
+//   });
+
+//   return label[0][this.optionLabel];
+// }
+
+function onSelect() {
+  emit("update:data", dropdownValue.value);
+  emit("onSelect");
+}
 </script>
 
 <template>
   <div class="dropdown-holder">
-    <label v-if="label !== ''" class="outside-label" :for="name">{{ label }}</label>
+    <label v-if="label !== ''" class="outside-label" :for="name">{{
+      label
+    }}</label>
     <div
       class="dropdown-field"
       :tooltip-text="tooltipText"
@@ -142,20 +178,17 @@ export default {
     >
       <a
         href="javascript:;"
-        :class="`drop-down-btn is-multyselect-${isMultyselect}`"
+        :class="`drop-down-btn is-multiselect-${isMultiselect}`"
         @click="toggleDropdown"
       >
-        <i
-          v-if="icon !== ''"
-          :class="icon"
-        />
+        <i v-if="icon !== ''" :class="icon" />
         <template v-if="Array.isArray(dropdownPlaceholder)">
           <div
             v-for="item in dropdownPlaceholder"
             :key="item"
             class="dropdown-tag"
           >
-            <span v-if="optionLabel">{{ item[optionLabel] || getPlaceHolder(item) }}</span>
+            <span v-if="optionLabel">{{ item }}</span>
             <span v-else>{{ item }}</span>
             <i class="bx bx-x" @click.stop="removeValue(item)" />
           </div>
@@ -163,30 +196,18 @@ export default {
         </template>
         <span v-else-if="data?.length > 0">{{ data }}</span>
         <span v-else>{{ dropdownPlaceholder }}</span>
-        <i
-          class="bx bxs-down-arrow"
-          :is-open="isOpen"
-        />
+        <i class="bx bxs-down-arrow" :is-open="isOpen" />
       </a>
       <div class="dropdown-menu" :is-vissible="isOpen">
-        <div
+        <VTextInput
           v-if="isSearchable && options.length !== 0"
-          class="input-holder"
-        >
-          <input
-            :id="name"
-            type="text"
-            placeholder=""
-            @input="searchValue = $event.target.value"
-          >
-          <label :for="name">Search</label>
-          <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
-        </div>
+          v-model:data="searchValue"
+          name="searchValue"
+          placeholder="Search..."
+        />
         <ul>
           <li v-if="filterResults.length === 0" class="dropdown-menu-item">
-            <div class="no-data">
-              <i class="bx bxs-ghost" />No Data
-            </div>
+            <div class="no-data"><i class="bx bxs-ghost" />No Data</div>
           </li>
           <li
             v-for="item in filterResults"
@@ -197,20 +218,34 @@ export default {
               v-if="optionValue && optionLabel"
               href="javascript:;"
               @click="selectValue(item)"
-            >{{ item[optionLabel] }}<i v-if="dropdownPlaceholder === item[optionLabel]" class="bx bx-check" /></a>
-            <a
-              v-else
-              href="javascript:;"
-              @click="selectValue(item)"
-            >{{ item }}<i v-if="dropdownPlaceholder === item" class="bx bx-check" /></a>
+            >
+              {{ item[optionLabel] }}
+              <i
+                v-if="dropdownPlaceholder === item[optionLabel]"
+                class="bx bx-check"
+              />
+              <i
+                v-if="
+                  isMultiselect === true &&
+                  dropdownPlaceholder.includes(item[optionLabel])
+                "
+                class="bx bx-check"
+              />
+            </a>
+            <a v-else href="javascript:;" @click="selectValue(item)">
+              {{ item }}
+              <i v-if="dropdownPlaceholder === item" class="bx bx-check" />
+              <i
+                v-if="
+                  isMultiselect === true && dropdownPlaceholder.includes(item)
+                "
+                class="bx bx-check"
+              />
+            </a>
           </li>
         </ul>
       </div>
-      <input
-        type="hidden"
-        :name="name"
-        :value="data"
-      >
+      <input type="hidden" :name="name" :value="data" />
     </div>
     <p>{{ description }}</p>
   </div>
@@ -221,7 +256,7 @@ export default {
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
-  color: #E9EBED;
+  color: #e9ebed;
   display: block;
   margin-bottom: 6px;
 }
@@ -259,6 +294,9 @@ export default {
   border-radius: var(--select-radius);
   transition: all 300ms ease-in-out;
   color: white;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
 }
 
 .dropdown-holder .dropdown-field .drop-down-btn:hover {
@@ -276,12 +314,11 @@ export default {
   border: 1px;
   background-color: var(--context-menu-bg);
   border: solid 1px var(--context-menu-border);
-  max-height: 215px;
-  overflow-y: scroll;
 }
 
 .dropdown-holder .dropdown-menu[is-vissible="true"] {
   display: flex;
+  flex-flow: column;
   gap: 8px;
   position: absolute;
   top: calc(100% + 8px);
@@ -291,7 +328,8 @@ export default {
 
 .dropdown-holder .dropdown-menu ul {
   width: 100%;
-
+  max-height: 215px;
+  overflow-y: scroll;
 }
 
 .dropdown-holder .dropdown-menu .dropdown-menu-item .no-data {
@@ -307,7 +345,7 @@ export default {
   flex-flow: column;
   width: 100%;
 }
-.dropdown-holder .dropdown-menu .dropdown-menu-item:hover a{
+.dropdown-holder .dropdown-menu .dropdown-menu-item:hover a {
   background-color: var(--gray-scale-6);
 }
 
@@ -328,11 +366,40 @@ export default {
   font-size: 20px;
 }
 
-.dropdown-holder  > p {
+.dropdown-holder > p {
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
   text-align: left;
-  margin-top:4px;
+  margin-top: 4px;
+}
+
+.dropdown-holder .dropdown-field .is-multiselect-true .dropdown-tag {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 0 6px;
+  border-radius: 6px;
+  border: solid 1px var(--select-default-color);
+  transition: border 300ms ease-in-out;
+}
+
+.dropdown-holder .dropdown-field .is-multiselect-true .dropdown-tag:hover {
+  border-color: white;
+}
+
+.dropdown-holder .dropdown-field .is-multiselect-true .dropdown-tag > i {
+  font-size: 16px;
+  transition: color 300ms ease-in-out;
+}
+
+.dropdown-holder .dropdown-field .is-multiselect-true .dropdown-tag > i:hover {
+  color: var(--red-500);
+}
+
+.dropdown-holder .input-holder {
+  padding: 0 17px 16px 17px;
+  border-bottom: solid 1px #252f3a;
 }
 </style>

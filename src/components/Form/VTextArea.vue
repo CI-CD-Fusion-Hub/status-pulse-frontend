@@ -1,70 +1,53 @@
-<script>
-export default {
-  props: {
-    name: {
-      type: String,
-      default: '',
-    },
-    placeholder: {
-      type: String,
-      default: '',
-    },
-    label: {
-      type: String,
-      default: '',
-    },
-    data: {
-      type: String,
-      default: '',
-    },
-    icon: {
-      type: Array,
-      default: () => [],
-    },
-    type: {
-      type: String,
-      default: 'text',
-    },
-    tooltipText: {
-      type: String,
-      default: null,
-    },
-    tooltipPos: {
-      type: String,
-      default: 'Left',
-    },
-    description: {
-      type: String,
-      default: '',
-    },
+<script setup>
+const props = defineProps({
+  name: {
+    type: String,
+    default: "",
   },
-  emits: ['update:data'],
-  data() {
-    return {
-      textAreaData: this.data,
-    };
+  placeholder: {
+    type: String,
+    default: "",
   },
-  methods: {
-    getData(value) {
-      console.log(value);
-      try {
-        const parsedJSON = JSON.parse(this.data);
-        const beautifiedJSON = JSON.stringify(parsedJSON, null, 2);
-        this.textAreaData = beautifiedJSON;
-      }
-      catch (error) {
-        this.textAreaData = 'Invalid JSON';
-      }
+  label: {
+    type: String,
+    default: "",
+  },
+  data: {
+    type: String,
+    default: "",
+  },
+  icon: {
+    type: Array,
+    default: () => [],
+  },
+  type: {
+    type: String,
+    default: "text",
+  },
+  tooltipText: {
+    type: String,
+    default: null,
+  },
+  tooltipPos: {
+    type: String,
+    default: "Left",
+  },
+  description: {
+    type: String,
+    default: "",
+  },
+});
 
-      this.$emit('update:data', this.textAreaData);
-    },
-  },
-};
+const emit = defineEmits(["update:data"]);
+
+const textAreaData = ref(props.data);
 </script>
 
 <template>
   <div class="text-holder">
-    <label v-if="label !== ''" class="outside-label" :for="name">{{ label }}</label>
+    <label v-if="label !== ''" class="outside-label" :for="name">{{
+      label
+    }}</label>
     <div
       class="text-field"
       :tooltip-text="tooltipText"
@@ -75,7 +58,7 @@ export default {
         :name="name"
         placeholder=" "
         :value="data"
-        @input="$emit('update:data', $event.target.value)"
+        @input="emit('update:data', $event.target.value)"
       />
       <label class="inside-label" :for="name">{{ placeholder }}</label>
     </div>
@@ -88,7 +71,7 @@ export default {
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
-  color: #E9EBED;
+  color: #e9ebed;
   display: block;
   margin-bottom: 6px;
 }
@@ -123,7 +106,7 @@ export default {
   border-color: var(--select-hover-color);
 }
 
-.text-holder .text-field textarea:focus{
+.text-holder .text-field textarea:focus {
   border-color: var(--select-focus-color);
   background-color: transparent;
 }
@@ -140,7 +123,7 @@ export default {
 }
 
 .text-holder .text-field textarea:focus + label,
-.text-holder .text-field textarea:not(:placeholder-shown) + label  {
+.text-holder .text-field textarea:not(:placeholder-shown) + label {
   display: none;
 }
 
@@ -154,6 +137,6 @@ export default {
   font-weight: 400;
   line-height: 20px;
   margin-top: 4px;
-  color: var(--select-error-color)
+  color: var(--select-error-color);
 }
 </style>

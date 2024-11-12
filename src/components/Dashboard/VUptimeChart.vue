@@ -1,50 +1,54 @@
-<script>
-export default {
-  props: {
-    data: {
-      type: Array,
-      default: () => [],
-    },
+<script setup>
+import { ref } from "vue";
+
+const props = defineProps({
+  data: {
+    type: Array,
+    default: () => [],
   },
-  data() {
-    return {
-      posX: 90,
-      tooltipWidth: 180,
-    };
-  },
-  computed: {},
-  methods: {
-    formatDate(timestamp) {
-      const dateObject = new Date(timestamp * 1000);
-      const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(dateObject);
-      const day = dateObject.getDate();
-      const year = dateObject.getFullYear();
-      const hour = dateObject.getHours().toString().padStart(2, '0');
-      const minute = dateObject.getMinutes().toString().padStart(2, '0');
+});
 
-      return `${month} ${day},${year} - ${hour}:${minute} h`;
-    },
-    tooltipPosition(e) {
-      const target = e.target.getBoundingClientRect();
-      const parent = e.target.parentElement.getBoundingClientRect();
+const posX = ref(90);
+const tooltipWidth = 180;
 
-      if (target.left - (this.tooltipWidth / 2) < parent.left)
-        this.posX = (parent.left - target.left - (target.width / 2)) * -1;
+function formatDate(timestamp) {
+  const dateObject = new Date(timestamp * 1000);
+  const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(
+    dateObject
+  );
+  const day = dateObject.getDate();
+  const year = dateObject.getFullYear();
+  const hour = dateObject.getHours().toString().padStart(2, "0");
+  const minute = dateObject.getMinutes().toString().padStart(2, "0");
 
-      else if (target.left + this.tooltipWidth > parent.right)
-        this.posX = (this.tooltipWidth - (parent.right - target.left + this.tooltipWidth)) + this.tooltipWidth + target.width / 2;
+  return `${month} ${day},${year} - ${hour}:${minute} h`;
+}
 
-      else
-        this.posX = 90;
-    },
-  },
-};
+function tooltipPosition(e) {
+  const target = e.target.getBoundingClientRect();
+  const parent = e.target.parentElement.getBoundingClientRect();
+
+  if (target.left - tooltipWidth / 2 < parent.left)
+    posX.value = (parent.left - target.left - target.width / 2) * -1;
+  else if (target.left + tooltipWidth > parent.right)
+    posX.value =
+      tooltipWidth -
+      (parent.right - target.left + tooltipWidth) +
+      tooltipWidth +
+      target.width / 2;
+  else posX.value = 90;
+}
 </script>
 
 <template>
   <ul class="uptime-graph">
-    <li v-for="item in data" :key="item" :class="`uptime-item ${item.status} ${item?.is_active}`" @mouseover="tooltipPosition($event)">
-      <div :style="{ left: `calc(50% - ${posX}px)` }">
+    <li
+      v-for="item in props.data"
+      :key="item"
+      :class="`uptime-item ${item.status} ${item?.is_active}`"
+      @mouseover="tooltipPosition($event)"
+    >
+      <div :style="{ left: `calc(50% - ${posX.value}px)` }">
         <span>{{ formatDate(item.created_at) }}</span>
         <span><span :status="item.status" />{{ item.status }} (100%)</span>
       </div>
@@ -76,7 +80,7 @@ export default {
 }
 
 .uptime-graph li.uptime-item.healthy,
-.uptime-graph li:hover div span[status="healthy"]{
+.uptime-graph li:hover div span[status="healthy"] {
   background-color: var(--green-500);
 }
 .uptime-graph li.uptime-item.healthy:hover {
@@ -84,7 +88,7 @@ export default {
 }
 
 .uptime-graph li.uptime-item.degraded,
-.uptime-graph li:hover div span[status="degraded"]{
+.uptime-graph li:hover div span[status="degraded"] {
   background-color: var(--red-500);
 }
 .uptime-graph li.uptime-item.degraded:hover {
@@ -92,15 +96,15 @@ export default {
 }
 
 .uptime-graph li.uptime-item.unhealthy,
-.uptime-graph li:hover div span[status="unhealthy"]{
-  background-color: #FDE047;
+.uptime-graph li:hover div span[status="unhealthy"] {
+  background-color: #fde047;
 }
 .uptime-graph li.uptime-item.unhealthy:hover {
   background-color: #9c8c34;
 }
 
 .uptime-graph li.uptime-item.nodata,
-.uptime-graph li:hover div span[status="nodata"]{
+.uptime-graph li:hover div span[status="nodata"] {
   background-color: var(--bar-chart-bg);
 }
 .uptime-graph li.uptime-item.nodata:hover {
@@ -125,7 +129,7 @@ export default {
   padding: 8px 12px;
   display: none;
   border-radius: 2px;
-  top:-88px;
+  top: -88px;
 }
 
 .uptime-graph li::before {
@@ -156,7 +160,7 @@ export default {
 }
 
 .uptime-graph li:hover div span:first-child {
-  color: var(--gray-scale-4)
+  color: var(--gray-scale-4);
 }
 
 .uptime-graph li:hover div span:last-child {

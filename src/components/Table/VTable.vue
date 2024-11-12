@@ -13,9 +13,21 @@ export default {
       type: Array,
       default: () => [],
     },
-    showRowIndex: {
+    hideHeader: {
       type: Boolean,
       default: false,
+    },
+    tableHeader: {
+      type: String,
+      default: '',
+    },
+    showAddBtn: {
+      type: Boolean,
+      default: true,
+    },
+    showRowIndex: {
+      type: Boolean,
+      default: true,
     },
     isLoading: {
       type: Boolean,
@@ -23,28 +35,28 @@ export default {
     },
     pagination: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     isSearchable: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     searchInColumns: {
       type: Array,
       default: () => [],
     },
-    totalPages: {
+    itemsPerPage: {
       type: Number,
-      default: 1,
+      default: 5,
     },
   },
-  emits: ['onPageChanged', 'onSearch'],
+  emits: ['onPageChanged', 'onSearch', 'onAdd'],
   data() {
     return {
       search_text: this.$route?.query.search || '',
+      pageSize: this.itemsPerPage || 10,
       slots: useSlots(),
-      pageSize: 10,
-      tableSize: [{ label: '10 Entries', value: 10 }, { label: '20 Entries', value: 20 }, { label: '50 Entries', value: 50 }],
+      tableSize: [{ label: '5 Entries', value: 5 }, { label: '10 Entries', value: 10 }, { label: '20 Entries', value: 20 }],
     };
   },
   computed: {
@@ -52,7 +64,6 @@ export default {
       return this.slots.default().filter((obj) => {
         if (obj.props)
           return true;
-
         else
           return false;
       });
@@ -60,21 +71,41 @@ export default {
     getActivePage() {
       return Number.parseInt(this.$route.query.page) || 1;
     },
+    filteredData() {
+      if (!this.search_text)
+        return this.tableData;
+
+      return this.tableData.filter(row =>
+        this.searchInColumns.some(col =>
+          row[col] && row[col].toString().toLowerCase().includes(this.search_text.toLowerCase()),
+        ),
+      );
+    },
+    paginatedData() {
+      const start = (this.getActivePage - 1) * this.pageSize;
+      const end = start + this.pageSize;
+      return this.filteredData.slice(start, end);
+    },
+    getTotalPages() {
+      return Math.ceil(this.filteredData.length / this.pageSize);
+    },
   },
   methods: {
     vnode(el, row) {
       return h(VRenderColumn, { ...el.props, row }, el.children);
     },
     async changePage(n) {
-      if (n >= 1 && n <= this.totalPages)
-        await this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: n }) });
+      if (n >= 1 && n <= this.getTotalPages)
+        await this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: n, page_size: this.pageSize }) });
       this.$emit('onPageChanged', n);
     },
-    async filterResults(e) {
-      await this.$router.push({ path: this.$route.path, query: this.pagination ? { search: e, page: 1 } : { search: e } });
-
-      this.search_text = e.toLowerCase();
-      this.$emit('onSearch', this.search_text);
+    async executeSearch(e) {
+      this.changePage(1);
+      this.search_text = e;
+      await this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: 1, search: e, page_size: this.pageSize }) });
+    },
+    onAdd() {
+      this.$emit('onAdd');
     },
   },
 };
@@ -82,12 +113,19 @@ export default {
 
 <template>
   <div>
-    <div v-if="isSearchable" class="table_search">
-      <!-- <VTextInput
-        name="table_search" placeholder="Search" :icon="['fas', 'magnifying-glass']" :data="search_text"
-        @keyup.enter="filterResults($event.target.value)"
-      /> -->
-    </div>
+    <header v-if="!hideHeader" class="table-heading">
+      <h4>{{ tableHeader }}</h4>
+      <div>
+        <VTextInput
+          v-if="isSearchable"
+          name="search" placeholder="Search" :data="search_text"
+          @keyup.enter="executeSearch($event.target.value)"
+        />
+        <VButton v-if="showAddBtn" type="fill" @on-click="onAdd">
+          Add New
+        </VButton>
+      </div>
+    </header>
     <div v-if="isLoading" class="table-loader">
       <i class="bx bx-loader-circle bx-spin bx-rotate-90" />
     </div>
@@ -104,12 +142,12 @@ export default {
           </tr>
         </thead>
         <tbody>
-          <tr v-if="tableData.length === 0">
+          <tr v-if="filteredData.length === 0">
             <td colspan="100" class="empty_data">
               <i class="bx bxs-ghost" /> No Data
             </td>
           </tr>
-          <tr v-for="(row, index) in tableData" :key="row">
+          <tr v-for="(row, index) in paginatedData" :key="row">
             <td v-if="showRowIndex" class="index_row">
               {{ (index + 1) + pageSize * (getActivePage - 1) }}
             </td>
@@ -124,24 +162,29 @@ export default {
           </tr>
         </tbody>
       </table>
-      <nav v-if="pagination && totalPages > 1" class="pagination-holder">
-        <div class="pagination">
+      <nav v-if="pagination" class="pagination-holder">
+        <div v-if="getTotalPages > 1" class="pagination">
           <VButton icon="bx bx-chevron-left" class="arrows" type="outline" @on-click="changePage(getActivePage - 1)" />
-          <VButton
-            v-for="n in totalPages" :key="n" :is-active="getActivePage === n ? true : false" type="outline"
-            @on-click="changePage(n)"
-          >
-            {{ n }}
-          </VButton>
+          <!-- <VButton icon="bx bx-dots-horizontal-rounded" type="outline" v-if="(getActivePage - 1) > 1" /> -->
+          <template v-for="n in getTotalPages" :key="n">
+            <VButton
+              v-if="(getActivePage - 2) < n && (getActivePage + 2) > n"
+              :is-active="getActivePage === n ? true : false" type="outline"
+              @on-click="changePage(n)"
+            >
+              {{ n }}
+            </VButton>
+          </template>
+          <!-- <VButton icon="bx bx-dots-horizontal-rounded" type="outline" v-if="(getActivePage + 1) < getTotalPages" /> -->
           <VButton icon="bx bx-chevron-right" class="arrows" type="outline" @on-click="changePage(getActivePage + 1)" />
         </div>
-        <div class="page-teleport">
+        <div v-if="getTotalPages > 1" class="page-teleport">
           <span>Go to</span>
-          <VTextInput v-model:data="getActivePage" type="number" @change="changePage(getActivePage)" />
+          <VTextInput v-model:data="getActivePage" type="number" name="goToPage" @keyup.enter="changePage($event.target.value)" />
         </div>
-        <div class="entries-size">
+        <div v-if="paginatedData.length >= tableSize[0].value" class="entries-size">
           <span>Show</span>
-          <VDropdown v-model:data="pageSize" :options="tableSize" option-label="label" option-value="value" />
+          <VDropdown v-model:data="pageSize" :options="tableSize" option-label="label" option-value="value" @on-select="changePage(1)" />
         </div>
       </nav>
     </template>
@@ -179,6 +222,10 @@ tbody tr {
   border-bottom: solid 2px var(--main-bg-color);
 }
 
+tbody tr:last-child {
+  border-bottom: none;
+}
+
 table thead tr th {
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
@@ -190,7 +237,7 @@ table tbody tr:last-child td {
 }
 
 tbody td {
-  padding: 9px 0;
+  padding: 4.5px 10px;
 }
 
 table .index_row {
@@ -296,5 +343,17 @@ table .empty_data {
   border-radius: 6px;
   height: 50vh;
   font-size: 20px;
+}
+
+.table-heading {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.table-heading > div {
+  display: flex;
+  gap: 24px;
 }
 </style>

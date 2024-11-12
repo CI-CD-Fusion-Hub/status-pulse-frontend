@@ -1,106 +1,98 @@
-<script>
-export default {
-  props: {
-    name: {
-      type: String,
-      default: '',
-    },
-    placeholder: {
-      type: String,
-      default: '',
-    },
-    label: {
-      type: String,
-      default: '',
-    },
-    data: {
-      type: String,
-      default: '',
-    },
-    isValid: {
-      type: Boolean,
-      default: false,
-    },
-    checkUppercase: {
-      type: Boolean,
-      default: false,
-    },
-    checkLowercase: {
-      type: Boolean,
-      default: false,
-    },
-    checkNumber: {
-      type: Boolean,
-      default: false,
-    },
-    checkSpecialChars: {
-      type: Boolean,
-      default: false,
-    },
-    checkLength: {
-      type: Boolean,
-      default: false,
-    },
+<script setup>
+import { ref, onMounted } from "vue";
+
+const props = defineProps({
+  name: {
+    type: String,
+    default: "",
   },
-  emits: ['update:data', 'update:isValid'],
-  data() {
-    return {
-      isUppercaseValid: false,
-      isLowercaseValid: false,
-      isNumberValid: false,
-      isSpecialCharValid: false,
-      isLengthValid: false,
-      isInputValid: false,
-    };
+  placeholder: {
+    type: String,
+    default: "",
   },
-  methods: {
-    hasUpperCase(str) {
-      return /[A-Z]/.test(str);
-    },
-    hasLowerCase(str) {
-      return /[a-z]/.test(str);
-    },
-    hasNumber(str) {
-      return /\d/.test(str);
-    },
-    hasSpecialChar(str) {
-      return /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(str);
-    },
-    isGreaterThanSeven(str) {
-      return str.length > 7;
-    },
-    validate(value) {
-      const validator = [];
-
-      if (this.checkUppercase)
-        this.isUppercaseValid = this.hasUpperCase(value);
-      if (this.checkLowercase)
-        this.isLowercaseValid = this.hasLowerCase(value);
-      if (this.checkNumber)
-        this.isNumberValid = this.hasNumber(value);
-      if (this.checkSpecialChars)
-        this.isSpecialCharValid = this.hasSpecialChar(value);
-      if (this.checkLength)
-        this.isLengthValid = this.isGreaterThanSeven(value);
-
-      // Push the validity checks into the validator array
-      validator.push(
-        this.isUppercaseValid,
-        this.isLowercaseValid,
-        this.isNumberValid,
-        this.isSpecialCharValid,
-        this.isLengthValid,
-      );
-
-      // Check if any of the validations failed
-      this.isInputValid = !validator.includes(false);
-
-      // Emit events
-      this.$emit('update:isValid', this.isInputValid);
-      this.$emit('update:data', value);
-    },
+  label: {
+    type: String,
+    default: "",
   },
-};
+  data: {
+    type: String,
+    default: "",
+  },
+  isValid: {
+    type: Boolean,
+    default: false,
+  },
+  checkUppercase: {
+    type: Boolean,
+    default: false,
+  },
+  checkLowercase: {
+    type: Boolean,
+    default: false,
+  },
+  checkNumber: {
+    type: Boolean,
+    default: false,
+  },
+  checkSpecialChars: {
+    type: Boolean,
+    default: false,
+  },
+  checkLength: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emit = defineEmits(["update:data", "update:isValid"]);
+
+const isUppercaseValid = false;
+const isLowercaseValid = false;
+const isNumberValid = false;
+const isSpecialCharValid = false;
+const isLengthValid = false;
+const isInputValid = false;
+
+function hasUpperCase(str) {
+  return /[A-Z]/.test(str);
+}
+function hasLowerCase(str) {
+  return /[a-z]/.test(str);
+}
+function hasNumber(str) {
+  return /\d/.test(str);
+}
+function hasSpecialChar(str) {
+  return /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(str);
+}
+function isGreaterThanSeven(str) {
+  return str.length > 7;
+}
+function validate(value) {
+  const validator = [];
+
+  if (props.checkUppercase) isUppercaseValid = hasUpperCase(value);
+  if (props.checkLowercase) isLowercaseValid = hasLowerCase(value);
+  if (props.checkNumber) isNumberValid = hasNumber(value);
+  if (props.checkSpecialChars) isSpecialCharValid = hasSpecialChar(value);
+  if (props.checkLength) isLengthValid = isGreaterThanSeven(value);
+
+  // Push the validity checks into the validator array
+  validator.push(
+    isUppercaseValid,
+    isLowercaseValid,
+    isNumberValid,
+    isSpecialCharValid,
+    isLengthValid
+  );
+
+  // Check if any of the validations failed
+  isInputValid = !validator.includes(false);
+
+  // Emit events
+  emit("update:isValid", isInputValid);
+  emit("update:data", value);
+}
 </script>
 
 <template>
@@ -114,26 +106,35 @@ export default {
         placeholder=" "
         :value="data"
         @input="validate($event.target.value)"
-      >
+      />
       <label class="inside-label" :for="name">{{ placeholder }}</label>
     </div>
     <!-- <div v-if="" class="input-error">Helper Text</div> -->
     <div v-if="data !== null && data !== ''" class="input-validator">
       <ul>
         <li v-if="checkUppercase" :class="isUppercaseValid ? 'valid' : ''">
-          <i :class="isUppercaseValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />Uppercase letter
+          <i
+            :class="isUppercaseValid ? 'bx bxs-check-circle' : 'bx bx-circle'"
+          />Uppercase letter
         </li>
         <li v-if="checkLowercase" :class="isLowercaseValid ? 'valid' : ''">
-          <i :class="isLowercaseValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />Lowercase letter
+          <i
+            :class="isLowercaseValid ? 'bx bxs-check-circle' : 'bx bx-circle'"
+          />Lowercase letter
         </li>
         <li v-if="checkNumber" :class="isNumberValid ? 'valid' : ''">
-          <i :class="isNumberValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />Number
+          <i
+            :class="isNumberValid ? 'bx bxs-check-circle' : 'bx bx-circle'"
+          />Number
         </li>
         <li v-if="checkSpecialChars" :class="isSpecialCharValid ? 'valid' : ''">
-          <i :class="isSpecialCharValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />Special character (e.g. !?&lt;>@#$%)
+          <i
+            :class="isSpecialCharValid ? 'bx bxs-check-circle' : 'bx bx-circle'"
+          />Special character (e.g. !?&lt;>@#$%)
         </li>
         <li v-if="checkLength" :class="isLengthValid ? 'valid' : ''">
-          <i :class="isLengthValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />> 7 characters
+          <i :class="isLengthValid ? 'bx bxs-check-circle' : 'bx bx-circle'" />>
+          7 characters
         </li>
       </ul>
     </div>
@@ -145,7 +146,7 @@ export default {
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
-  color: #E9EBED;
+  color: #e9ebed;
   display: block;
   margin-bottom: 6px;
 }
@@ -179,7 +180,7 @@ export default {
   border-color: var(--select-hover-color);
 }
 
-.input-holder .input-field input:focus{
+.input-holder .input-field input:focus {
   border-color: var(--select-focus-color);
   background-color: transparent;
 }
@@ -193,7 +194,7 @@ export default {
 }
 
 .input-holder .input-field input:focus + label,
-.input-holder .input-field input:not(:placeholder-shown) + label  {
+.input-holder .input-field input:not(:placeholder-shown) + label {
   display: none;
 }
 
@@ -207,10 +208,10 @@ export default {
   font-weight: 400;
   line-height: 20px;
   margin-top: 4px;
-  color: var(--select-error-color)
+  color: var(--select-error-color);
 }
 
-.input-holder .input-validator li:first-child{
+.input-holder .input-validator li:first-child {
   margin-top: 16px;
 }
 

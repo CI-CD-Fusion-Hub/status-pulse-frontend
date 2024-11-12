@@ -1,46 +1,47 @@
-<script>
-export default {
-  props: {
-    name: {
-      type: String,
-      default: '',
-    },
-    placeholder: {
-      type: String,
-      default: '',
-    },
-    label: {
-      type: String,
-      default: '',
-    },
-    data: {
-      type: String,
-      default: '',
-    },
-    type: {
-      type: String,
-      default: 'text',
-    },
-    description: {
-      type: String,
-      default: '',
-    },
-    tooltipText: {
-      type: String,
-      default: null,
-    },
-    tooltipPos: {
-      type: String,
-      default: 'Left',
-    },
+<script setup>
+const props = defineProps({
+  name: {
+    type: String,
+    default: "",
   },
-  emits: ['update:data'],
-};
+  placeholder: {
+    type: String,
+    default: "",
+  },
+  label: {
+    type: String,
+    default: "",
+  },
+  data: {
+    type: String,
+    default: "",
+  },
+  type: {
+    type: String,
+    default: "text",
+  },
+  description: {
+    type: String,
+    default: "",
+  },
+  tooltipText: {
+    type: String,
+    default: null,
+  },
+  tooltipPos: {
+    type: String,
+    default: "Left",
+  },
+});
+
+const emit = defineEmits(["update:data"]);
 </script>
 
 <template>
   <div class="input-holder">
-    <label v-if="label !== ''" class="outside-label" :for="name">{{ label }}</label>
+    <label v-if="label !== ''" class="outside-label" :for="name">{{
+      label
+    }}</label>
     <div class="input-field">
       <input
         :id="name"
@@ -48,8 +49,8 @@ export default {
         :name="name"
         placeholder=" "
         :value="data"
-        @input="$emit('update:data', $event.target.value)"
-      >
+        @input="emit('update:data', $event.target.value)"
+      />
       <label class="inside-label" :for="name">{{ placeholder }}</label>
       <!-- <i class='bx bx-search'></i> -->
     </div>
@@ -62,7 +63,7 @@ export default {
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
-  color: #E9EBED;
+  color: #e9ebed;
   display: block;
   margin-bottom: 6px;
 }
@@ -95,7 +96,7 @@ export default {
   border-color: var(--select-hover-color);
 }
 
-.input-holder .input-field input:focus{
+.input-holder .input-field input:focus {
   border-color: var(--select-focus-color);
   background-color: transparent;
 }
@@ -113,7 +114,7 @@ export default {
 }
 
 .input-holder .input-field input:focus + label,
-.input-holder .input-field input:not(:placeholder-shown) + label  {
+.input-holder .input-field input:not(:placeholder-shown) + label {
   display: none;
 }
 
@@ -127,7 +128,7 @@ export default {
   font-weight: 400;
   line-height: 20px;
   margin-top: 4px;
-  color: var(--select-error-color)
+  color: var(--select-error-color);
 }
 
 .input-holder input::-webkit-outer-spin-button,
@@ -137,7 +138,7 @@ export default {
 }
 
 /* Firefox */
-.input-holder input[type=number] {
+.input-holder input[type="number"] {
   -moz-appearance: textfield;
 }
 </style>
