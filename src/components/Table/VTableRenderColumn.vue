@@ -1,16 +1,14 @@
-<script>
-export default {
-  props: {
-    header: {
-      type: String,
-    },
-    value: { type: String },
-    row: {
-      required: false,
-      type: Object,
-    },
+<script setup>
+const props = defineProps({
+  header: {
+    type: String,
   },
-};
+  value: { type: String },
+  row: {
+    required: false,
+    type: Object,
+  },
+});
 </script>
 
 <template>

@@ -1,79 +1,81 @@
 <script>
-import VButton from './VButton.vue';
+import VButton from "./VButton.vue";
+import { onMounted, onBeforeUnmount } from "vue";
+
+const props = defineProps({
+  header: {
+    type: String,
+    default: "",
+  },
+  buttonLabel: {
+    type: String,
+    default: "",
+  },
+  buttonIcon: {
+    type: String,
+    default: "",
+  },
+  type: {
+    type: String,
+    default: "add",
+  },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
+  isDrawer: {
+    type: Boolean,
+    default: true,
+  },
+  showButtons: {
+    type: Boolean,
+    default: true,
+  },
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emit = defineEmits(["update:isActive", "onSend", "onClose", "onDelete"]);
+
+const isVisible = computed(() => {
+  return props.isActive;
+});
+
+onMounted(() => {
+  window.addEventListener("keydown", handleKeyDown());
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", handleKeyDown());
+});
+
+function closeModal() {
+  emit("update:isActive", false);
+  onClose();
+}
+function handleKeyDown(event) {
+  if (event.key === "Escape") closeModal();
+}
+function onSend() {
+  emit("onSend");
+}
+function onClose() {
+  emit("onClose");
+}
+function onDelete() {
+  emit("onDelete");
+}
 
 export default {
-  components: { VButton },
-  props: {
-    header: {
-      type: String,
-      default: '',
-    },
-    buttonLabel: {
-      type: String,
-      default: '',
-    },
-    buttonIcon: {
-      type: String,
-      default: '',
-    },
-    type: {
-      type: String,
-      default: 'add',
-    },
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
-    isDrawer: {
-      type: Boolean,
-      default: true,
-    },
-    showButtons: {
-      type: Boolean,
-      default: true,
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  emits: ['update:isActive', 'onSend', 'onClose', 'onDelete'],
-  computed: {
-    is_visible() {
-      return this.isActive;
-    },
-  },
-  mounted() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  },
-  beforeUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  },
-  methods: {
-    close_modal() {
-      this.$emit('update:isActive', false);
-      this.onClose();
-    },
-    handleKeyDown(event) {
-      if (event.key === 'Escape')
-        this.close_modal();
-    },
-    onSend() {
-      this.$emit('onSend');
-    },
-    onClose() {
-      this.$emit('onClose');
-    },
-    onDelete() {
-      this.$emit('onDelete');
-    },
-  },
+  methods: {},
 };
 </script>
 
 <template>
   <div
-    v-if="is_visible"
+    v-if="isVisible"
     class="modal-holder"
     :is-drawer="isDrawer"
     :is-buttons-active="showButtons"
@@ -87,14 +89,20 @@ export default {
           icon="bx bx-x"
           class="btn-modal-close"
           type="basic"
-          @on-click="close_modal"
+          @on-click="closeModal"
         />
       </header>
       <main>
         <slot />
       </main>
       <footer v-if="showButtons">
-        <VButton v-if="type === 'edit'" class="btn-delete" type="basic" icon="bx bx-trash" @on-click="onDelete">
+        <VButton
+          v-if="type === 'edit'"
+          class="btn-delete"
+          type="basic"
+          icon="bx bx-trash"
+          @on-click="onDelete"
+        >
           Delete
         </VButton>
         <VButton type="fill" :icon="buttonIcon" @on-click="onSend">
@@ -111,7 +119,7 @@ export default {
   height: 100vh;
   position: fixed;
   left: 0;
-  top:0;
+  top: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -124,7 +132,7 @@ export default {
   align-items: stretch;
 }
 
-.modal-holder[is-buttons-active="false"] .modal-container{
+.modal-holder[is-buttons-active="false"] .modal-container {
   padding-bottom: 44px;
 }
 
@@ -140,7 +148,7 @@ export default {
 .modal-holder[is-drawer="true"] .modal-container {
   height: 100%;
 }
-.modal-holder[is-drawer="false"] .modal-container{
+.modal-holder[is-drawer="false"] .modal-container {
   border-radius: 6px;
 }
 
@@ -186,7 +194,7 @@ export default {
 .modal-holder .modal-container footer {
   margin-top: auto;
   padding: 32px;
-  border-top: solid 1px var(--box-border)
+  border-top: solid 1px var(--box-border);
 }
 
 .modal-holder .modal-container footer .btn-delete button {

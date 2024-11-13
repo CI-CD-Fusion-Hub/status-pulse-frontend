@@ -1,79 +1,76 @@
-<script>
-export default {
-  props: {
-    type: {
-      type: String,
-      default: '',
-    },
-    icon: {
-      type: String,
-      default: '',
-    },
-    data: {
-      type: String,
-      default: '',
-    },
-    isFullWidth: {
-      type: Boolean,
-      default: false,
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-    linkTo: {
-      type: Object,
-      default: () => ({}),
-    },
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
-    isDisabled: {
-      type: Boolean,
-      default: false,
-    },
-    isTooltipActive: {
-      type: Boolean,
-      default: null,
-    },
-    tooltipText: {
-      type: String,
-      default: null,
-    },
-    tooltipPos: {
-      type: String,
-      default: 'Top',
-    },
-    align: {
-      type: String,
-      default: 'right',
-    },
+<script setup>
+const props = defineProps({
+  type: {
+    type: String,
+    default: "",
   },
-  emits: ['onClick'],
-  methods: {
-    onClick() {
-      this.$emit('onClick');
-    },
+  icon: {
+    type: String,
+    default: "",
   },
-};
+  data: {
+    type: String,
+    default: "",
+  },
+  isFullWidth: {
+    type: Boolean,
+    default: false,
+  },
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
+  linkTo: {
+    type: Object,
+    default: () => ({}),
+  },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
+  isDisabled: {
+    type: Boolean,
+    default: false,
+  },
+  isTooltipActive: {
+    type: Boolean,
+    default: null,
+  },
+  tooltipText: {
+    type: String,
+    default: null,
+  },
+  tooltipPos: {
+    type: String,
+    default: "Top",
+  },
+  align: {
+    type: String,
+    default: "right",
+  },
+});
+
+const emit = defineEmits(["onClick"]);
+
+function onClick() {
+  emit("onClick");
+}
 </script>
 
 <template>
-  <div class="btn-holder" :active="isActive" :full-width="isFullWidth" :type="type">
-    <router-link
-      v-if="Object.keys(linkTo).length > 0"
-      :to="linkTo"
-    >
+  <div
+    class="btn-holder"
+    :active="isActive"
+    :full-width="isFullWidth"
+    :type="type"
+  >
+    <router-link v-if="Object.keys(linkTo).length > 0" :to="linkTo">
       <button @click="onClick">
         <i v-if="icon !== ''" :class="icon" />
         <span v-if="$slots.default"><slot /></span>
       </button>
     </router-link>
-    <button
-      v-else
-      @click="onClick"
-    >
+    <button v-else @click="onClick">
       <i v-if="isLoading" class="bx bx-loader-alt bx-spin" />
       <template v-else>
         <i v-if="icon !== ''" :class="icon" />
@@ -120,7 +117,7 @@ export default {
 .btn-holder[type="fill"][full-width="true"] a,
 .btn-holder[type="outline"][full-width="true"] a,
 .btn-holder[type="fill"][full-width="true"] button,
-.btn-holder[type="outline"][full-width="true"] button{
+.btn-holder[type="outline"][full-width="true"] button {
   width: 100%;
 }
 
@@ -148,7 +145,6 @@ export default {
   background-color: var(--primary-color);
   border: none;
   color: white;
-
 }
 .btn-holder[type="fill"] button:hover,
 .btn-holder.active[type="fill"] button {
@@ -183,14 +179,14 @@ export default {
 .btn-holder[type="link"] button {
   color: var(--gray-scale-3);
 }
-.btn-holder[type="link"] button:hover{
+.btn-holder[type="link"] button:hover {
   color: white;
 }
 
 .btn-holder[type="link-important"] button {
   color: var(--link-default-color);
 }
-.btn-holder[type="link-important"] button:hover{
+.btn-holder[type="link-important"] button:hover {
   color: var(--link-hover-color);
 }
 </style>

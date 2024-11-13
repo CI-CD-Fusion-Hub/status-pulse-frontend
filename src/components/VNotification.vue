@@ -1,48 +1,34 @@
-<script>
-import { useNotifyStore } from '../stores/notifications';
-import VButton from './VButton.vue';
+<script setup>
+import { useNotifyStore } from "../stores/notifications";
+import VButton from "./VButton.vue";
 
-export default {
-  components: {
-    VButton,
-  },
-  data() {
-    return {
-      all_notifications: useNotifyStore().notifications,
-      status_icon: {
-        error: 'bx bxs-error-circle',
-        success: 'bx bxs-check-circle',
-      },
-    };
-  },
-  methods: {
-    remove_notification(index) {
-      this.all_notifications.splice(index, 1);
-    },
-  },
+const allNotifications = useNotifyStore().notifications;
+const statusIcon = {
+  error: "bx bxs-error-circle",
+  success: "bx bxs-check-circle",
 };
+function removeNotification(index) {
+  allNotifications.splice(index, 1);
+}
 </script>
 
 <template>
   <div>
-    <div
-      v-if="all_notifications.length > 0"
-      class="notifications"
-    >
+    <div v-if="allNotifications.length > 0" class="notifications">
       <div
-        v-for="(notification, index) in all_notifications"
+        v-for="(notification, index) in allNotifications"
         :key="index"
         class="notification"
         :type="notification.status"
       >
-        <i :class="status_icon[notification.status]" />
+        <i :class="statusIcon[notification.status]" />
         <div>
           {{ notification.message }}
         </div>
         <VButton
           icon="bx bx-x"
           class="btn-notification"
-          @on-click="remove_notification(index)"
+          @on-click="removeNotification(index)"
         />
       </div>
     </div>
@@ -87,14 +73,16 @@ export default {
 .notifications .notification[type="success"] {
   background-color: #4caf50;
   color: #fff;
-  background: linear-gradient(0deg, #052E16, #052E16),linear-gradient(0deg, #07211C, #07211C);
-  border: 1px solid #052E16;
-  color: var(--green-300)
+  background: linear-gradient(0deg, #052e16, #052e16),
+    linear-gradient(0deg, #07211c, #07211c);
+  border: 1px solid #052e16;
+  color: var(--green-300);
 }
 
 .notifications .notification[type="error"] {
-  background: linear-gradient(0deg, #260806, #260806),linear-gradient(0deg, #772323, #772323);
+  background: linear-gradient(0deg, #260806, #260806),
+    linear-gradient(0deg, #772323, #772323);
   border: 1px solid #772323;
-  color: #F25454;
+  color: #f25454;
 }
 </style>

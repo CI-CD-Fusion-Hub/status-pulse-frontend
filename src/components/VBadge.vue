@@ -1,22 +1,14 @@
-<script>
-export default {
-  components: {},
-  props: {
-    type: {
-      type: String,
-      default: '', // 3 types: fill, outline and status
-    },
-    color: {
-      type: String,
-      default: 'healthy',
-    },
+<script setup>
+const props = defineProps({
+  type: {
+    type: String,
+    default: "", // 3 types: fill, outline and status
   },
-  data() {
-    return {
-
-    };
+  color: {
+    type: String,
+    default: "healthy",
   },
-};
+});
 </script>
 
 <template>

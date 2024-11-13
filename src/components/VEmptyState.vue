@@ -1,48 +1,35 @@
 <script>
-import { useNotifyStore } from '../stores/notifications';
-import VButton from './VButton.vue';
+import { useNotifyStore } from "../stores/notifications";
+import VButton from "./VButton.vue";
 
-export default {
-  components: {
-    VButton,
+const props = defineProps({
+  heading: {
+    type: String,
+    default: "",
   },
-  props: {
-    heading: {
-      type: String,
-      default: '',
-    },
-    text: {
-      type: String,
-      default: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
-    },
-    buttonText: {
-      type: String,
-      default: 'Add new',
-    },
+  text: {
+    type: String,
+    default:
+      "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
   },
-  emits: ['onClick'],
-  data() {
-    return {
-      all_notifications: useNotifyStore().notifications,
-      status_icon: {
-        error: ['fas', 'xmark'],
-        success: ['fas', 'check'],
-      },
-    };
+  buttonText: {
+    type: String,
+    default: "Add new",
   },
-  methods: {
-    onClick() {
-      this.$emit('onClick');
-    },
-  },
-};
+});
+
+const emit = defineEmits(["onClick"]);
+
+function onClick() {
+  emit("onClick");
+}
 </script>
 
 <template>
   <div class="empty-state">
     <h3>{{ heading }}</h3>
     <p>{{ text }}</p>
-    <VButton type="fill" @on-click="onClick()">
+    <VButton type="fill" @on-click="onClick">
       {{ buttonText }}
     </VButton>
   </div>

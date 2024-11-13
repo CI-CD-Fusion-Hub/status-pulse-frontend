@@ -1,24 +1,20 @@
-<script>
-import VButton from './VButton.vue';
+<script setup>
+import VButton from "./VButton.vue";
 
-export default {
-  components: { VButton },
-  data() {
-    return {
-      isMenuVisible: false,
-    };
-  },
-  methods: {
-    toggleMenu() {
-      this.isMenuVisible = !this.isMenuVisible;
-    },
-  },
-};
+const isMenuVisible = ref(false);
+
+function toggleMenu() {
+  isMenuVisible.value = !isMenuVisible.value;
+}
 </script>
 
 <template>
   <div class="btn-set-holder">
-    <VButton icon="bx bx-dots-vertical-rounded" :is-active="isMenuVisible" @on-click="toggleMenu" />
+    <VButton
+      icon="bx bx-dots-vertical-rounded"
+      :is-active="isMenuVisible"
+      @on-click="toggleMenu"
+    />
     <div v-if="isMenuVisible" class="btn-set-menu" @click="toggleMenu">
       <slot />
     </div>
@@ -37,8 +33,7 @@ export default {
 }
 
 .btn-set-holder > .btn-holder:hover button {
- background-color: #17212B;
-
+  background-color: #17212b;
 }
 
 .btn-set-holder > .btn-holder button {
@@ -84,7 +79,7 @@ export default {
   background-color: var(--gray-scale-6);
 }
 .btn-set-holder .btn-set-menu .btn-holder:hover button i,
-.btn-set-holder .btn-set-menu .btn-holder:hover button span{
+.btn-set-holder .btn-set-menu .btn-holder:hover button span {
   color: var(--gray-color-1);
 }
 

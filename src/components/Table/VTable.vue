@@ -1,114 +1,125 @@
-<script>
-import { h, useSlots } from 'vue';
-import VButtonSet from '../VContextMenu.vue';
-import VButton from '../VButton.vue';
-import VTextInput from '../Form/VTextInput.vue';
-import VDropdown from '../Form/VDropdown.vue';
-import VRenderColumn from './VTableRenderColumn.vue';
+<script setup>
+import { h, useSlots, computed, ref } from "vue";
+import VButtonSet from "../VContextMenu.vue";
+import VButton from "../VButton.vue";
+import VTextInput from "../Form/VTextInput.vue";
+import VDropdown from "../Form/VDropdown.vue";
+import VRenderColumn from "./VTableRenderColumn.vue";
 
-export default {
-  components: { VButton, VButtonSet, VTextInput, VRenderColumn, VDropdown },
-  props: {
-    tableData: {
-      type: Array,
-      default: () => [],
-    },
-    hideHeader: {
-      type: Boolean,
-      default: false,
-    },
-    tableHeader: {
-      type: String,
-      default: '',
-    },
-    showAddBtn: {
-      type: Boolean,
-      default: true,
-    },
-    showRowIndex: {
-      type: Boolean,
-      default: true,
-    },
-    isLoading: {
-      type: Boolean,
-      default: true,
-    },
-    pagination: {
-      type: Boolean,
-      default: true,
-    },
-    isSearchable: {
-      type: Boolean,
-      default: true,
-    },
-    searchInColumns: {
-      type: Array,
-      default: () => [],
-    },
-    itemsPerPage: {
-      type: Number,
-      default: 5,
-    },
+const props = defineProps({
+  tableData: {
+    type: Array,
+    default: () => [],
   },
-  emits: ['onPageChanged', 'onSearch', 'onAdd'],
-  data() {
-    return {
-      search_text: this.$route?.query.search || '',
-      pageSize: this.itemsPerPage || 10,
-      slots: useSlots(),
-      tableSize: [{ label: '5 Entries', value: 5 }, { label: '10 Entries', value: 10 }, { label: '20 Entries', value: 20 }],
-    };
+  hideHeader: {
+    type: Boolean,
+    default: false,
   },
-  computed: {
-    getColumns() {
-      return this.slots.default().filter((obj) => {
-        if (obj.props)
-          return true;
-        else
-          return false;
-      });
-    },
-    getActivePage() {
-      return Number.parseInt(this.$route.query.page) || 1;
-    },
-    filteredData() {
-      if (!this.search_text)
-        return this.tableData;
+  tableHeader: {
+    type: String,
+    default: "",
+  },
+  showAddBtn: {
+    type: Boolean,
+    default: true,
+  },
+  showRowIndex: {
+    type: Boolean,
+    default: true,
+  },
+  isLoading: {
+    type: Boolean,
+    default: true,
+  },
+  pagination: {
+    type: Boolean,
+    default: true,
+  },
+  isSearchable: {
+    type: Boolean,
+    default: true,
+  },
+  searchInColumns: {
+    type: Array,
+    default: () => [],
+  },
+  itemsPerPage: {
+    type: Number,
+    default: 5,
+  },
+});
 
-      return this.tableData.filter(row =>
-        this.searchInColumns.some(col =>
-          row[col] && row[col].toString().toLowerCase().includes(this.search_text.toLowerCase()),
-        ),
-      );
-    },
-    paginatedData() {
-      const start = (this.getActivePage - 1) * this.pageSize;
-      const end = start + this.pageSize;
-      return this.filteredData.slice(start, end);
-    },
-    getTotalPages() {
-      return Math.ceil(this.filteredData.length / this.pageSize);
-    },
-  },
-  methods: {
-    vnode(el, row) {
-      return h(VRenderColumn, { ...el.props, row }, el.children);
-    },
-    async changePage(n) {
-      if (n >= 1 && n <= this.getTotalPages)
-        await this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: n, page_size: this.pageSize }) });
-      this.$emit('onPageChanged', n);
-    },
-    async executeSearch(e) {
-      this.changePage(1);
-      this.search_text = e;
-      await this.$router.push({ path: this.$route.path, query: Object.assign({}, this.$route.query, { page: 1, search: e, page_size: this.pageSize }) });
-    },
-    onAdd() {
-      this.$emit('onAdd');
-    },
-  },
-};
+const emit = defineEmits(["onPageChanged", "onSearch", "onAdd"]);
+const searchText = ref(this.$route?.query.search || "");
+const pageSize = props.itemsPerPage || 10;
+const slots = useSlots();
+const tableSize = [
+  { label: "5 Entries", value: 5 },
+  { label: "10 Entries", value: 10 },
+  { label: "20 Entries", value: 20 },
+];
+
+const getColumns = computed(() => {
+  return slots.default().filter((obj) => {
+    if (obj.props) return true;
+    else return false;
+  });
+});
+const getActivePage = computed(() => {
+  return Number.parseInt(this.$route.query.page) || 1;
+});
+const filteredData = computed(() => {
+  if (!searchText.value) return props.tableData;
+
+  return props.tableData.filter((row) =>
+    props.searchInColumns.some(
+      (col) =>
+        row[col] &&
+        row[col]
+          .toString()
+          .toLowerCase()
+          .includes(searchText.value.toLowerCase())
+    )
+  );
+});
+
+const paginatedData = computed(() => {
+  const start = (getActivePage - 1) * pageSize;
+  const end = start + pageSize;
+  return filteredData.slice(start, end);
+});
+const getTotalPages = computed(() => {
+  return Math.ceil(filteredData.length / pageSize);
+});
+function vnode(el, row) {
+  return h(VRenderColumn, { ...el.props, row }, el.children);
+}
+async function changePage(n) {
+  if (n >= 1 && n <= getTotalPages)
+    await this.$router.push({
+      path: this.$route.path,
+      query: Object.assign({}, this.$route.query, {
+        page: n,
+        page_size: pageSize,
+      }),
+    });
+  emit("onPageChanged", n);
+}
+async function executeSearch(e) {
+  changePage(1);
+  searchText.value = e;
+  await this.$router.push({
+    path: this.$route.path,
+    query: Object.assign({}, this.$route.query, {
+      page: 1,
+      search: e,
+      page_size: pageSize,
+    }),
+  });
+}
+function onAdd() {
+  emit("onAdd");
+}
 </script>
 
 <template>
@@ -118,7 +129,9 @@ export default {
       <div>
         <VTextInput
           v-if="isSearchable"
-          name="search" placeholder="Search" :data="search_text"
+          name="search"
+          placeholder="Search"
+          :data="search_text"
           @keyup.enter="executeSearch($event.target.value)"
         />
         <VButton v-if="showAddBtn" type="fill" @on-click="onAdd">
@@ -133,9 +146,7 @@ export default {
       <table>
         <thead>
           <tr>
-            <th v-if="showRowIndex" class="index_row">
-              #
-            </th>
+            <th v-if="showRowIndex" class="index_row">#</th>
             <th v-for="el in getColumns" :key="el.props.header">
               {{ el.props.header }}
             </th>
@@ -149,11 +160,14 @@ export default {
           </tr>
           <tr v-for="(row, index) in paginatedData" :key="row">
             <td v-if="showRowIndex" class="index_row">
-              {{ (index + 1) + pageSize * (getActivePage - 1) }}
+              {{ index + 1 + pageSize * (getActivePage - 1) }}
             </td>
-            <td v-for="el in getColumns" :key="`slot-${el.props?.header ?? ''}-${idx}`">
+            <td
+              v-for="el in getColumns"
+              :key="`slot-${el.props?.header ?? ''}-${idx}`"
+            >
               <template v-if="!el.children">
-                {{ row[el.props.value] ?? '' }}
+                {{ row[el.props.value] ?? "" }}
               </template>
               <template v-else-if="el.children">
                 <component :is="vnode(el, row)" />
@@ -164,27 +178,52 @@ export default {
       </table>
       <nav v-if="pagination" class="pagination-holder">
         <div v-if="getTotalPages > 1" class="pagination">
-          <VButton icon="bx bx-chevron-left" class="arrows" type="outline" @on-click="changePage(getActivePage - 1)" />
+          <VButton
+            icon="bx bx-chevron-left"
+            class="arrows"
+            type="outline"
+            @on-click="changePage(getActivePage - 1)"
+          />
           <!-- <VButton icon="bx bx-dots-horizontal-rounded" type="outline" v-if="(getActivePage - 1) > 1" /> -->
           <template v-for="n in getTotalPages" :key="n">
             <VButton
-              v-if="(getActivePage - 2) < n && (getActivePage + 2) > n"
-              :is-active="getActivePage === n ? true : false" type="outline"
+              v-if="getActivePage - 2 < n && getActivePage + 2 > n"
+              :is-active="getActivePage === n ? true : false"
+              type="outline"
               @on-click="changePage(n)"
             >
               {{ n }}
             </VButton>
           </template>
           <!-- <VButton icon="bx bx-dots-horizontal-rounded" type="outline" v-if="(getActivePage + 1) < getTotalPages" /> -->
-          <VButton icon="bx bx-chevron-right" class="arrows" type="outline" @on-click="changePage(getActivePage + 1)" />
+          <VButton
+            icon="bx bx-chevron-right"
+            class="arrows"
+            type="outline"
+            @on-click="changePage(getActivePage + 1)"
+          />
         </div>
         <div v-if="getTotalPages > 1" class="page-teleport">
           <span>Go to</span>
-          <VTextInput v-model:data="getActivePage" type="number" name="goToPage" @keyup.enter="changePage($event.target.value)" />
+          <VTextInput
+            v-model:data="getActivePage"
+            type="number"
+            name="goToPage"
+            @keyup.enter="changePage($event.target.value)"
+          />
         </div>
-        <div v-if="paginatedData.length >= tableSize[0].value" class="entries-size">
+        <div
+          v-if="paginatedData.length >= tableSize[0].value"
+          class="entries-size"
+        >
           <span>Show</span>
-          <VDropdown v-model:data="pageSize" :options="tableSize" option-label="label" option-value="value" @on-select="changePage(1)" />
+          <VDropdown
+            v-model:data="pageSize"
+            :options="tableSize"
+            option-label="label"
+            option-value="value"
+            @on-select="changePage(1)"
+          />
         </div>
       </nav>
     </template>
@@ -271,14 +310,14 @@ table .empty_data {
 }
 
 .pagination-holder .pagination .btn-holder button {
-  width:28px;
+  width: 28px;
   height: 28px;
   padding: 0;
   font-size: 13px;
 }
 
 .pagination-holder .pagination .btn-holder button:hover,
-.pagination-holder .pagination .btn-holder[active='true'] button{
+.pagination-holder .pagination .btn-holder[active="true"] button {
   background-color: var(--select-bg);
   color: white;
   border-color: var(--select-bg);

@@ -1,12 +1,10 @@
-<script>
-export default {
-  props: {
-    header: {
-      type: String,
-      default: '',
-    },
+<script setup>
+const props = defineProps({
+  header: {
+    type: String,
+    default: "",
   },
-};
+});
 </script>
 
 <template>

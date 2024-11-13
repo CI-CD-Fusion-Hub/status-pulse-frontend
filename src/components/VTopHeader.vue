@@ -1,48 +1,44 @@
-<script>
-import { useNotifyStore } from '../stores/notifications';
-import VButton from './VButton.vue';
+<script setup>
+import { useNotifyStore } from "../stores/notifications";
+import VButton from "./VButton.vue";
+import { onMounted, watch } from "vue";
 
-export default {
-  components: { VButton },
-  props: {
-    heading: {
-      type: String,
-      default: '',
-    },
-    text: {
-      type: String,
-      default: 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.',
-    },
-    func: {
-      type: Function,
-      default: null,
-    },
+const props = defineProps({
+  heading: {
+    type: String,
+    default: "",
   },
-  data() {
-    return {
-      all_notifications: useNotifyStore().notifications,
-      breadcrumbs: [],
-    };
+  text: {
+    type: String,
+    default:
+      "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
   },
-  watch: {
-    $route() {
-      this.generateBreadcrumbs();
-    },
+  func: {
+    type: Function,
+    default: null,
   },
-  mounted() {
-    // console.log(this.$route)
-    this.generateBreadcrumbs();
-  },
-  methods: {
-    remove_notification(index) {
-      this.all_notifications.splice(index, 1);
-    },
-    generateBreadcrumbs() {
-      this.breadcrumbs = Array.isArray(this.$route.meta.breadcrumb) ? this.$route.meta.breadcrumb : [this.$route.meta.breadcrumb];
-      console.log(this.breadcrumbs);
-    },
-  },
-};
+});
+
+const allNotifications = useNotifyStore().notifications;
+const breadcrumbs = ref([]);
+
+onMounted(() => {
+  generateBreadcrumbs();
+});
+
+function removeNotification(index) {
+  allNotifications.splice(index, 1);
+}
+function generateBreadcrumbs() {
+  breadcrumbs.value = Array.isArray(this.$route.meta.breadcrumb)
+    ? this.$route.meta.breadcrumb
+    : [this.$route.meta.breadcrumb];
+  console.log(breadcrumbs.value);
+}
+
+watch($route(), () => {
+  generateBreadcrumbs();
+});
 </script>
 
 <template>
@@ -72,24 +68,24 @@ export default {
   align-items: center;
   padding: 20px 45px 20px 33px;
   background-color: var(--main-bg-color);
-  border-bottom: solid 1px #252F3A;
+  border-bottom: solid 1px #252f3a;
 }
 
 .top-header .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
 }
 
-.top-header .user-profile span{
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--primary-color-7);
+.top-header .user-profile span {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-color-7);
 }
 
 .top-header .user-profile i {
