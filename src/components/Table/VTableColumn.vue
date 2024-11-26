@@ -4,6 +4,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  value: {
+    type: String,
+    default: "",
+  },
 });
 </script>
 

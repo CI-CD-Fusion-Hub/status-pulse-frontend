@@ -2,6 +2,11 @@
 import { useNotifyStore } from "../stores/notifications";
 import { useUserStore } from "../stores/user";
 import axios from "axios";
+import { ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
 
 const props = defineProps({
   menuItems: {
@@ -15,19 +20,17 @@ const userInfo = useUserStore();
 const isCollapsed = ref(true);
 
 async function logout() {
-      try {
-        await axios({ method: "post", url: `${backendUrl}/logout` });
+  try {
+    await axios({ method: "post", url: `${backendUrl}/logout` });
 
-        this.$router.push({ path: "/login" });
-      } catch (error) {
-        useNotifyStore().add("error", "Error loading data!");
-      }
-    }
-    function toggleMenu() {
-      isCollapsed.value = !isCollapsed.value;
-    }
-
-
+    router.push({ path: "/login" });
+  } catch (error) {
+    useNotifyStore().add("error", "Error loading data!");
+  }
+}
+function toggleMenu() {
+  isCollapsed.value = !isCollapsed.value;
+}
 </script>
 
 <template>
@@ -74,7 +77,7 @@ async function logout() {
         >
           <router-link
             :to="route.path"
-            :class="{ active: $route.path.startsWith(route.path) }"
+            :class="{ active: route.path.startsWith(route.path) }"
           >
             <i :class="route.icon" />
             <span v-if="!isCollapsed">{{ route.label }}</span>

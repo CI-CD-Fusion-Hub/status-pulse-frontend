@@ -1,54 +1,33 @@
 <script>
-import { useVuelidate } from '@vuelidate/core';
-import EmptyState from '../components/VEmptyState.vue';
-import VLoader from '../components/VLoader.vue';
-import VTable from '../components/Table/VTable.vue';
-import VContextMenu from '../components/VContextMenu.vue';
-import VButton from '../components/VButton.vue';
-import VBadge from '../components/VBadge.vue';
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import EmptyState from "../components/VEmptyState.vue";
+import VLoader from "../components/VLoader.vue";
+import VTable from "../components/Table/VTable.vue";
+import VContextMenu from "../components/VContextMenu.vue";
+import VButton from "../components/VButton.vue";
+import VBadge from "../components/VBadge.vue";
 
-export default {
-  components: {
-    EmptyState,
-    VLoader,
-    VTable,
-    VButton,
-    VContextMenu,
-    VBadge,
-  },
-  setup() {
-    return { v$: useVuelidate() };
-  },
-  data() {
-    return {
-      backendUrl: import.meta.env.VITE_backendUrl,
-      endpoints: [],
-      isLoading: true,
-    };
-  },
-  async created() {
-    await this.loadData();
-  },
-  async mounted() {
-    await this.loadData();
-  },
-  methods: {
-    async loadData() {
-      try {
-        const response = await this.axios({
-          method: 'get',
-          url: `${this.backendUrl}/endpoints`,
-        });
+const backendUrl = import.meta.env.VITE_backendUrl;
+const endpoints = ref([]);
+const isLoading = ref(true);
 
-        this.endpoints = response.data;
-        this.isLoading = false;
-      }
-      catch (error) {
-        console.log('Unable to get authentication method.');
-      }
-    },
-  },
-};
+onMounted(async () => {
+  await loadData();
+});
+async function loadData() {
+  try {
+    const response = await axios({
+      method: "get",
+      url: `${backendUrl}/endpoints`,
+    });
+
+    endpoints.value = response.data;
+    isLoading.value = false;
+  } catch (error) {
+    console.log("Unable to get authentication method.");
+  }
+}
 </script>
 
 <template>
@@ -56,8 +35,16 @@ export default {
   <template v-else>
     <EmptyState v-if="endpoints.data.length === 0" heading="No Endpoints" />
     <VTable
-      :table-data="endpoints.data.data" :is-loading="isLoading" :pagination="true" :page-size="5" :total-pages="endpoints.pages"
-      :is-searchable="true" :search-in-columns="['name', 'url']" :show-row-index="true" @on-page-changed="loadData" @on-search="loadData"
+      :table-data="endpoints.data.data"
+      :is-loading="isLoading"
+      :pagination="true"
+      :page-size="5"
+      :total-pages="endpoints.pages"
+      :is-searchable="true"
+      :search-in-columns="['name', 'url']"
+      :show-row-index="true"
+      @on-page-changed="loadData"
+      @on-search="loadData"
     >
       <!-- <VColumn header="Type" value="type">
         <template #body="{ row }">
@@ -69,12 +56,8 @@ export default {
       <VColumn header="URL" value="url" />
       <VColumn header="Cron" value="cron" />
       <VContextMenu>
-        <VButton icon="bx bx-edit-alt" @on-click="onEdit()">
-          Edit
-        </VButton>
-        <VButton icon="bx bxs-trash" @on-click="onDelete()">
-          Delete
-        </VButton>
+        <VButton icon="bx bx-edit-alt" @on-click="onEdit()"> Edit </VButton>
+        <VButton icon="bx bxs-trash" @on-click="onDelete()"> Delete </VButton>
       </VContextMenu>
       <VColumn header="Status" value="status">
         <template #body="{ row }">
@@ -88,13 +71,28 @@ export default {
           <VButtonSet v-if="row">
             <VButton
               v-if="row.status"
-              :icon="['fas', 'eye']" :link-to="{ name: 'SingleEndpoint', params: { endpoint_id: row.id } }"
+              :icon="['fas', 'eye']"
+              :link-to="{
+                name: 'SingleEndpoint',
+                params: { endpoint_id: row.id },
+              }"
               tooltip-text="View"
             />
-            <VButton v-if="row.status" :icon="['fas', 'fa-share-nodes']" tooltip-text="Share" @on-click="shareEndpoint(row.id)" />
-            <VButton :icon="['fas', 'pen-to-square']" tooltip-text="Edit" @on-click="showEditModal(row)" />
             <VButton
-              :icon="['fas', 'trash']" :is-loading="isBtnLoading" tooltip-text="Remove"
+              v-if="row.status"
+              :icon="['fas', 'fa-share-nodes']"
+              tooltip-text="Share"
+              @on-click="shareEndpoint(row.id)"
+            />
+            <VButton
+              :icon="['fas', 'pen-to-square']"
+              tooltip-text="Edit"
+              @on-click="showEditModal(row)"
+            />
+            <VButton
+              :icon="['fas', 'trash']"
+              :is-loading="isBtnLoading"
+              tooltip-text="Remove"
               @on-click="deleteData(row.id)"
             />
           </VButtonSet>
@@ -104,6 +102,4 @@ export default {
   </template>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

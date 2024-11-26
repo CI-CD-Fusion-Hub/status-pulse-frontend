@@ -1,45 +1,51 @@
-<script>
-import VAsideMenu from './components/VAsideMenu.vue';
-import VTopHeader from './components/VTopHeader.vue';
-import VNotification from './components/VNotification.vue';
-import { useUserStore } from './stores/user';
+<script setup>
+import { onMounted } from "vue";
+import VAsideMenu from "./components/VAsideMenu.vue";
+import VTopHeader from "./components/VTopHeader.vue";
+import VNotification from "./components/VNotification.vue";
+import { useUserStore } from "./stores/user";
 
-export default {
-  components: { VAsideMenu, VNotification, VTopHeader },
-  data() {
-    return {
-      asideMenuRoutes: [
-        {
-          path: '/dashboards',
-          icon: 'bx bx-network-chart',
-          label: 'Dashboards',
-          requiredAccessLevel: ['User', 'Admin'],
-        },
-        {
-          path: '/endpoints',
-          icon: 'bx bx-globe',
-          label: 'Endpoints',
-          requiredAccessLevel: ['User', 'Admin'],
-        },
-        {
-          path: '/notifiy_channels',
-          icon: 'bx bx-bell',
-          label: 'Notify Channels',
-          requiredAccessLevel: ['User', 'Admin'],
-        },
-      ],
-    };
+const asideMenuRoutes = [
+  {
+    path: "/dashboards",
+    icon: "bx bx-network-chart",
+    label: "Dashboards",
+    requiredAccessLevel: ["User", "Admin"],
   },
-  created() {
-    const userInfo = useUserStore();
-    if (!window.location.href.includes('/login') && !window.location.href.includes('/logout'))
-      userInfo.loadData();
+  {
+    path: "/endpoints",
+    icon: "bx bx-globe",
+    label: "Endpoints",
+    requiredAccessLevel: ["User", "Admin"],
   },
-};
+  {
+    path: "/notifiy_channels",
+    icon: "bx bx-bell",
+    label: "Notify Channels",
+    requiredAccessLevel: ["User", "Admin"],
+  },
+];
+
+onMounted(() => {
+  const userInfo = useUserStore();
+  if (
+    !window.location.href.includes("/login") &&
+    !window.location.href.includes("/logout")
+  )
+    userInfo.loadData();
+});
 </script>
 
 <template>
-  <div v-if="!$route.path.includes('login') && !$route.path.includes('register') && !$route.path.includes('forgotPassword') && !$route.path.includes('verifyCode')" class="main_container">
+  <div
+    v-if="
+      !$route.path.includes('login') &&
+      !$route.path.includes('register') &&
+      !$route.path.includes('forgotPassword') &&
+      !$route.path.includes('verifyCode')
+    "
+    class="main_container"
+  >
     <VAsideMenu :menu-items="asideMenuRoutes" />
     <main>
       <VTopHeader />

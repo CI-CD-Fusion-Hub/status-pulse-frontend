@@ -5,6 +5,10 @@ import VButton from "../VButton.vue";
 import VTextInput from "../Form/VTextInput.vue";
 import VDropdown from "../Form/VDropdown.vue";
 import VRenderColumn from "./VTableRenderColumn.vue";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
 
 const props = defineProps({
   tableData: {
@@ -50,7 +54,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["onPageChanged", "onSearch", "onAdd"]);
-const searchText = ref(this.$route?.query.search || "");
+const searchText = ref(route?.query.search || "");
 const pageSize = props.itemsPerPage || 10;
 const slots = useSlots();
 const tableSize = [
@@ -65,8 +69,9 @@ const getColumns = computed(() => {
     else return false;
   });
 });
+
 const getActivePage = computed(() => {
-  return Number.parseInt(this.$route.query.page) || 1;
+  return Number.parseInt(route.query.page) || 1;
 });
 const filteredData = computed(() => {
   if (!searchText.value) return props.tableData;
@@ -86,19 +91,19 @@ const filteredData = computed(() => {
 const paginatedData = computed(() => {
   const start = (getActivePage - 1) * pageSize;
   const end = start + pageSize;
-  return filteredData.slice(start, end);
+  return filteredData.value.slice(start, end);
 });
 const getTotalPages = computed(() => {
-  return Math.ceil(filteredData.length / pageSize);
+  return Math.ceil(filteredData.value.length / pageSize);
 });
 function vnode(el, row) {
   return h(VRenderColumn, { ...el.props, row }, el.children);
 }
 async function changePage(n) {
   if (n >= 1 && n <= getTotalPages)
-    await this.$router.push({
-      path: this.$route.path,
-      query: Object.assign({}, this.$route.query, {
+    await router.push({
+      path: route.path,
+      query: Object.assign({}, route.query, {
         page: n,
         page_size: pageSize,
       }),
@@ -108,9 +113,9 @@ async function changePage(n) {
 async function executeSearch(e) {
   changePage(1);
   searchText.value = e;
-  await this.$router.push({
-    path: this.$route.path,
-    query: Object.assign({}, this.$route.query, {
+  await router.push({
+    path: route.path,
+    query: Object.assign({}, route.query, {
       page: 1,
       search: e,
       page_size: pageSize,
@@ -131,7 +136,7 @@ function onAdd() {
           v-if="isSearchable"
           name="search"
           placeholder="Search"
-          :data="search_text"
+          :data="searchText"
           @keyup.enter="executeSearch($event.target.value)"
         />
         <VButton v-if="showAddBtn" type="fill" @on-click="onAdd">

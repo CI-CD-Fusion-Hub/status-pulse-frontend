@@ -1,99 +1,93 @@
 <script>
-import { useVuelidate } from '@vuelidate/core';
-import { email, helpers, required } from '@vuelidate/validators';
-import VTextInput from '../components/Form/VTextInput.vue';
-import VPasswordInput from '../components/Form/VPasswordInput.vue';
-import VButton from '../components/VButton.vue';
-import { useNotifyStore } from '../stores/notifications';
-import { useUserStore } from '../stores/user';
+import { useVuelidate } from "@vuelidate/core";
+import { email, helpers, required } from "@vuelidate/validators";
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import VTextInput from "../components/Form/VTextInput.vue";
+import VPasswordInput from "../components/Form/VPasswordInput.vue";
+import VButton from "../components/VButton.vue";
+import { useNotifyStore } from "../stores/notifications";
+import { useUserStore } from "../stores/user";
 
-export default {
-  components: {
-    VTextInput,
-    VPasswordInput,
-    VButton,
+const router = useRouter();
+
+const formData = ref({
+  name: "",
+  email: "",
+  password: "",
+  rememberMe: false,
+  isPasswordValid: false,
+});
+
+const rules = computed(() => ({
+  email: {
+    required: helpers.withMessage("Email field cannot be empty.", required),
+    email: helpers.withMessage(
+      "Email field is not a valid email address.",
+      email
+    ),
   },
-  setup() {
-    return { v$: useVuelidate() };
+  password: {
+    required: helpers.withMessage("Password field cannot be empty.", required),
   },
-  data() {
-    return {
-      backendUrl: import.meta.env.VITE_backendUrl,
-      isBtnLoading: false,
-      userStore: useUserStore(),
-      formData: {
-        name: null,
-        email: null,
-        password: null,
-        rememberMe: false,
-        isPasswordValid: false,
-      },
-
-    };
+  isPasswordValid: {
+    required: helpers.withMessage(
+      "Password field doesn't meet required complexity.",
+      required
+    ),
   },
-  validations() {
-    return {
-      formData: {
-        email: {
-          required: helpers.withMessage('Email field cannot be empty.', required),
-          email: helpers.withMessage('Email field is not a valid email address.', email),
-        },
-        password: {
-          required: helpers.withMessage('Password field cannot be empty.', required),
-        },
-        isPasswordValid: {
-          required: helpers.withMessage('Password field doesn\'t meet required complexity.', required),
-        },
-        name: {
-          required: helpers.withMessage('Name field cannot be empty.', required),
-        },
-      },
-    };
+  name: {
+    required: helpers.withMessage("Name field cannot be empty.", required),
   },
-  methods: {
-    async register() {
-      try {
-        this.isBtnLoading = true;
-        const isValid = await this.v$.$validate();
+}));
 
-        if (!isValid) {
-          this.v$.formData.$errors.forEach((e) => {
-            useNotifyStore().add('error', e.$message);
-          });
-          this.isBtnLoading = false;
-          return;
-        }
+const v$ = useVuelidate(rules, formData);
 
-        const response = await this.axios({
-          method: 'post',
-          url: `${this.backendUrl}/register`,
-          data: this.formData,
-        });
+const backendUrl = import.meta.env.VITE_backendUrl;
+const isBtnLoading = ref(false);
 
-        if (response.data.status === 'error') {
-          useNotifyStore().add(response.data.status, response.data.message);
-          this.isBtnLoading = false;
-          return;
-        }
+async function register() {
+  const userStore = useUserStore();
+  try {
+    isBtnLoading.value = true;
+    const isValid = await v$.value.$validate();
 
-        this.userStore.loadData();
-        this.$router.push({ path: '/' });
-        useNotifyStore().add(response.data.status, response.data.message);
-      }
-      catch (error) {
-        useNotifyStore().add('error', error.data.message || 'Error loading data!');
-      }
+    if (!isValid) {
+      v$.value.$errors.forEach((e) => {
+        useNotifyStore().add("error", e.$message);
+      });
+      isBtnLoading.value = false;
+      return;
+    }
 
-      this.isBtnLoading = false;
-    },
-  },
-};
+    const response = await axios({
+      method: "post",
+      url: `${backendUrl}/register`,
+      data: formData.value,
+    });
+
+    if (response.data.status === "error") {
+      useNotifyStore().add(response.data.status, response.data.message);
+      isBtnLoading.value = false;
+      return;
+    }
+
+    userStore.loadData();
+    router.push({ path: "/" });
+    useNotifyStore().add(response.data.status, response.data.message);
+  } catch (error) {
+    useNotifyStore().add("error", error.data.message || "Error loading data!");
+  }
+
+  isBtnLoading.value = false;
+}
 </script>
 
 <template>
   <div class="container">
     <div class="text-holder">
-      <h1>Register to <br>Status-Pulse</h1>
+      <h1>Register to <br />Status-Pulse</h1>
       <p>Start monitoring in minutes.</p>
       <p>
         Already have a account?
@@ -149,14 +143,16 @@ export default {
           @on-click="login()"
         >
           Terms of Service
-        </VButton> and <VButton
+        </VButton>
+        and
+        <VButton
           :is-loading="isBtnLoading"
           :is-full-width="false"
           type="link"
           @on-click="login()"
         >
-          Privacy Policy
-        </VButton>.
+          Privacy Policy </VButton
+        >.
       </p>
     </div>
   </div>

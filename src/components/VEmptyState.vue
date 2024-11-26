@@ -1,4 +1,4 @@
-<script>
+<script setup>
 import { useNotifyStore } from "../stores/notifications";
 import VButton from "./VButton.vue";
 

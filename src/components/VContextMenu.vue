@@ -1,5 +1,6 @@
 <script setup>
 import VButton from "./VButton.vue";
+import { ref } from "vue";
 
 const isMenuVisible = ref(false);
 

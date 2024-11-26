@@ -1,6 +1,6 @@
-<script>
+<script setup>
 import VButton from "./VButton.vue";
-import { onMounted, onBeforeUnmount } from "vue";
+import { onMounted, onBeforeUnmount, computed } from "vue";
 
 const props = defineProps({
   header: {
@@ -56,7 +56,7 @@ function closeModal() {
   onClose();
 }
 function handleKeyDown(event) {
-  if (event.key === "Escape") closeModal();
+  if (event?.key === "Escape") closeModal();
 }
 function onSend() {
   emit("onSend");
@@ -67,10 +67,6 @@ function onClose() {
 function onDelete() {
   emit("onDelete");
 }
-
-export default {
-  methods: {},
-};
 </script>
 
 <template>

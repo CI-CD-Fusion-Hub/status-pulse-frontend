@@ -123,7 +123,6 @@ function selectValue(item) {
 
   if (props.isMultiselect) {
     if (!dropdownValue.value.includes(selectedValue)) {
-      console.log("ÏN");
       dropdownValue.value.push(selectedValue);
       dropdownPlaceholder.value.push(selectedLabel);
     } else {
@@ -198,7 +197,7 @@ function onSelect() {
         <span v-else>{{ dropdownPlaceholder }}</span>
         <i class="bx bxs-down-arrow" :is-open="isOpen" />
       </a>
-      <div class="dropdown-menu" :is-vissible="isOpen">
+      <div class="dropdown-menu" :is-visible="isOpen">
         <VTextInput
           v-if="isSearchable && options.length !== 0"
           v-model:data="searchValue"
@@ -316,7 +315,7 @@ function onSelect() {
   border: solid 1px var(--context-menu-border);
 }
 
-.dropdown-holder .dropdown-menu[is-vissible="true"] {
+.dropdown-holder .dropdown-menu[is-visible="true"] {
   display: flex;
   flex-flow: column;
   gap: 8px;

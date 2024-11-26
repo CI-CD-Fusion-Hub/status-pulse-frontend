@@ -1,5 +1,5 @@
 <script setup>
-import {  ref, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 
 const props = defineProps({
   label: {
@@ -37,9 +37,9 @@ const options = {
 
 const isOpen = ref(false);
 
-onMounted = () => {
-  emit("update:data", this.data);
-};
+onMounted(() => {
+  emit("update:data", props.data);
+});
 
 function toggleDropdown() {
   isOpen.value = !isOpen.value;
@@ -67,7 +67,7 @@ function selectValue(item) {
           <i class="bx bxs-down-arrow" :is-open="isOpen" />
         </div>
       </a>
-      <div class="dropdown-menu" :is-vissible="isOpen">
+      <div class="dropdown-menu" :is-visible="isOpen">
         <ul>
           <li
             v-for="(key, val) in options"
@@ -173,7 +173,7 @@ function selectValue(item) {
   border: solid 1px var(--context-menu-border);
 }
 
-.dropdown-holder .dropdown-menu[is-vissible="true"] {
+.dropdown-holder .dropdown-menu[is-visible="true"] {
   display: flex;
   gap: 8px;
   position: absolute;

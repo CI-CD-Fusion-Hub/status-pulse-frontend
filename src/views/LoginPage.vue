@@ -1,115 +1,94 @@
-<script>
-import { useVuelidate } from '@vuelidate/core';
-import { email, helpers, required } from '@vuelidate/validators';
-import VTextInput from '../components/Form/VTextInput.vue';
-import VPasswordInput from '../components/Form/VPasswordInput.vue';
-import VCheckbox from '../components/Form/VCheckbox.vue';
-import VButton from '../components/VButton.vue';
-import { useNotifyStore } from '../stores/notifications';
-import { useUserStore } from '../stores/user';
+<script setup>
+import { useVuelidate } from "@vuelidate/core";
+import { email, helpers, required } from "@vuelidate/validators";
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import VTextInput from "../components/Form/VTextInput.vue";
+import VPasswordInput from "../components/Form/VPasswordInput.vue";
+import VCheckbox from "../components/Form/VCheckbox.vue";
+import VButton from "../components/VButton.vue";
+import { useNotifyStore } from "../stores/notifications";
+import { useUserStore } from "../stores/user";
 
-export default {
-  components: {
-    VTextInput,
-    VPasswordInput,
-    VCheckbox,
-    VButton,
+const router = useRouter();
+
+const formData = ref({
+  email: "",
+  password: "",
+  rememberMe: false,
+  isPasswordValid: false,
+});
+
+const rules = computed(() => ({
+  email: {
+    required: helpers.withMessage("Email field cannot be empty.", required),
+    email: helpers.withMessage(
+      "Email field is not a valid email address.",
+      email
+    ),
   },
-  setup() {
-    return { v$: useVuelidate() };
+  password: {
+    required: helpers.withMessage("Password field cannot be empty.", required),
   },
-  data() {
-    return {
-      backendUrl: import.meta.env.VITE_backendUrl,
-      isBtnLoading: false,
-      userStore: useUserStore(),
-      formData: {
-        email: null,
-        password: null,
-        rememberMe: false,
-        isPasswordValid: false,
-      },
-
-    };
+  isPasswordValid: {
+    required: helpers.withMessage(
+      "Password field doesn't meet required complexity.",
+      required
+    ),
   },
-  validations() {
-    return {
-      formData: {
-        email: {
-          required: helpers.withMessage('Email field cannot be empty.', required),
-          email: helpers.withMessage('Email field is not a valid email address.', email),
-        },
-        password: {
-          required: helpers.withMessage('Password field cannot be empty.', required),
-        },
-        isPasswordValid: {
-          required: helpers.withMessage('Password field doesn\'t meet required complexity.', required),
-        },
-      },
-    };
-  },
-  // async created() {
-  //   this.checkAuthMethod();
-  // },
-  methods: {
-    async login() {
-      try {
-        this.isBtnLoading = true;
-        const isValid = await this.v$.$validate();
+}));
 
-        if (!isValid) {
-          this.v$.formData.$errors.forEach((e) => {
-            useNotifyStore().add('error', e.$message);
-          });
-          this.isBtnLoading = false;
-          return;
-        }
+const v$ = useVuelidate(rules, formData);
 
-        const response = await this.axios({
-          method: 'post',
-          url: `${this.backendUrl}/login`,
-          data: this.formData,
-        });
+const backendUrl = import.meta.env.VITE_backendUrl;
+const isBtnLoading = ref(false);
+const userStore = useUserStore();
 
-        if (response.data.status === 'error') {
-          useNotifyStore().add(response.data.status, response.data.message);
-          this.isBtnLoading = false;
-          return;
-        }
+async function login() {
+  try {
+    isBtnLoading.value = true;
+    const isValid = await v$.value.$validate();
 
-        this.userStore.loadData();
-        this.$router.push({ path: '/' });
-        useNotifyStore().add(response.data.status, response.data.message);
-      }
-      catch (error) {
-        useNotifyStore().add('error', error.data?.message || 'Internal Server Error.');
-      }
+    if (!isValid) {
+      v$.value.$errors.forEach((e) => {
+        useNotifyStore().add("error", e.$message);
+      });
+      isBtnLoading.value = false;
+      return;
+    }
 
-      this.isBtnLoading = false;
-    },
-    async checkAuthMethod() {
-      try {
-        const response = await this.axios({
-          method: 'get',
-          url: `${this.backendUrl}/login/method`,
-          data: this.formData,
-        });
+    const response = await axios({
+      method: "post",
+      url: `${backendUrl}/login`,
+      data: formData.value,
+    });
 
-        if (!response.data.data)
-          window.location.href = `${this.backendUrl}/login`;
-      }
-      catch (error) {
-        console.log('Unable to get authentication method.');
-      }
-    },
-  },
-};
+    if (response.data.status === "error") {
+      useNotifyStore().add(response.data.status, response.data.message);
+      isBtnLoading.value = false;
+      return;
+    }
+
+    userStore.loadData();
+    router.push({ path: "/" });
+    useNotifyStore().add(response.data.status, response.data.message);
+  } catch (error) {
+    useNotifyStore().add(
+      "error",
+      error.data?.message || "Internal Server Error."
+    );
+  }
+
+  isBtnLoading.value = false;
+}
+
 </script>
 
 <template>
   <div class="container">
     <div class="text-holder">
-      <h1>Login to <br>Status-Pulse</h1>
+      <h1>Login to <br />Status-Pulse</h1>
       <p>Please enter your details.</p>
       <p>
         Don't have an account?

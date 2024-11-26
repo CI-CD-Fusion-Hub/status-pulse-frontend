@@ -1,7 +1,10 @@
 <script setup>
 import { useNotifyStore } from "../stores/notifications";
 import VButton from "./VButton.vue";
-import { onMounted, watch } from "vue";
+import { onMounted, watch, ref } from "vue";
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const props = defineProps({
   heading: {
@@ -30,13 +33,13 @@ function removeNotification(index) {
   allNotifications.splice(index, 1);
 }
 function generateBreadcrumbs() {
-  breadcrumbs.value = Array.isArray(this.$route.meta.breadcrumb)
-    ? this.$route.meta.breadcrumb
-    : [this.$route.meta.breadcrumb];
+  breadcrumbs.value = Array.isArray(route.meta.breadcrumb)
+    ? route.meta.breadcrumb
+    : [route.meta.breadcrumb];
   console.log(breadcrumbs.value);
 }
 
-watch($route(), () => {
+watch(route, () => {
   generateBreadcrumbs();
 });
 </script>

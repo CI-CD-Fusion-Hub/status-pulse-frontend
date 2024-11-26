@@ -1,85 +1,79 @@
 <script>
-import { useVuelidate } from '@vuelidate/core';
-import { email, helpers, required } from '@vuelidate/validators';
-import VCodeVerify from '../components/Form/VCodeVerify.vue';
-import VButton from '../components/VButton.vue';
-import { useNotifyStore } from '../stores/notifications';
-import { useUserStore } from '../stores/user';
+import { useVuelidate } from "@vuelidate/core";
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import { email, helpers, required } from "@vuelidate/validators";
+import VCodeVerify from "../components/Form/VCodeVerify.vue";
+import VButton from "../components/VButton.vue";
+import { useNotifyStore } from "../stores/notifications";
+import { useUserStore } from "../stores/user";
 
-export default {
-  components: {
-    VCodeVerify,
-    VButton,
+const router = useRouter();
+
+const backendUrl = import.meta.env.VITE_backendUrl;
+const isBtnLoading = ref(false);
+const formData = ref({
+  data: null,
+});
+
+const rules = computed(() => ({
+  email: {
+    required: helpers.withMessage("Email field cannot be empty.", required),
+    email: helpers.withMessage(
+      "Email field is not a valid email address.",
+      email
+    ),
   },
-  setup() {
-    return { v$: useVuelidate() };
-  },
-  data() {
-    return {
-      backendUrl: import.meta.env.VITE_backendUrl,
-      isBtnLoading: false,
-      userStore: useUserStore(),
-      formData: {
-        data: null,
-      },
+}));
 
-    };
-  },
-  validations() {
-    return {
-      formData: {
-        email: {
-          required: helpers.withMessage('Email field cannot be empty.', required),
-          email: helpers.withMessage('Email field is not a valid email address.', email),
-        },
-      },
-    };
-  },
-  methods: {
-    async resetPassword() {
-      try {
-        this.isBtnLoading = true;
-        const isValid = await this.v$.$validate();
+const v$ = useVuelidate(rules, formData);
 
-        if (!isValid) {
-          this.v$.formData.$errors.forEach((e) => {
-            useNotifyStore().add('error', e.$message);
-          });
-          this.isBtnLoading = false;
-          return;
-        }
+async function resetPassword() {
+  const userStore = useUserStore();
+  try {
+    isBtnLoading.value = true;
+    const isValid = await v$.value.$validate();
 
-        const response = await this.axios({
-          method: 'post',
-          url: `${this.backendUrl}/forgot_password`,
-          data: this.formData,
-        });
+    if (!isValid) {
+      v$.value.$errors.forEach((e) => {
+        useNotifyStore().add("error", e.$message);
+      });
+      isBtnLoading.value = false;
+      return;
+    }
 
-        if (response.data.status === 'error') {
-          useNotifyStore().add(response.data.status, response.data.message);
-          this.isBtnLoading = false;
-          return;
-        }
+    const response = await axios({
+      method: "post",
+      url: `${backendUrl}/forgot_password`,
+      data: formData.value,
+    });
 
-        this.userStore.loadData();
-        this.$router.push({ path: '/' });
-        useNotifyStore().add(response.data.status, response.data.message);
-      }
-      catch (error) {
-        useNotifyStore().add('error', error.data.message || 'Error loading data!');
-      }
+    if (response.data.status === "error") {
+      useNotifyStore().add(response.data.status, response.data.message);
+      isBtnLoading.value = false;
+      return;
+    }
 
-      this.isBtnLoading = false;
-    },
-  },
-};
+    userStore.loadData();
+    router.push({ path: "/" });
+    useNotifyStore().add(response.data.status, response.data.message);
+  } catch (error) {
+    useNotifyStore().add("error", error.data.message || "Error loading data!");
+  }
+
+  isBtnLoading.value = false;
+}
 </script>
 
 <template>
   <div class="container">
     <div class="text-holder">
       <h1>Code verification</h1>
-      <p>We have sent an verification code to your email exa****@mail.com. Enter the code below.</p>
+      <p>
+        We have sent an verification code to your email exa****@mail.com. Enter
+        the code below.
+      </p>
     </div>
     <div class="form-holder">
       <VCodeVerify
@@ -98,7 +92,8 @@ export default {
         Send
       </VButton>
       <p>
-        Didn’t receive code? <VButton
+        Didn’t receive code?
+        <VButton
           :is-loading="isBtnLoading"
           :is-full-width="false"
           type="link-important"

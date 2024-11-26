@@ -51,7 +51,7 @@ const isLowercaseValid = false;
 const isNumberValid = false;
 const isSpecialCharValid = false;
 const isLengthValid = false;
-const isInputValid = false;
+const isInputValid = ref(false);
 
 function hasUpperCase(str) {
   return /[A-Z]/.test(str);
@@ -87,10 +87,10 @@ function validate(value) {
   );
 
   // Check if any of the validations failed
-  isInputValid = !validator.includes(false);
+  isInputValid.value = !validator.includes(false);
 
   // Emit events
-  emit("update:isValid", isInputValid);
+  emit("update:isValid", isInputValid.value);
   emit("update:data", value);
 }
 </script>
